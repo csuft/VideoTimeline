@@ -1,0 +1,9 @@
+#ifndef __VERSION_H__
+#define __VERSION_H__
+
+// version variable that will be substituted by cmake
+// This shows an example using the $ variable type
+const char* verid = "${META_NAME_VERSION}";
+const char* vernum = "${META_VERSION_NUM}";
+
+#endif

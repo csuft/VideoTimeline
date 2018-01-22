@@ -1,0 +1,14 @@
+.idea
+cmake-build-debug
+/PanoramaCapture
+.qmake.stash
+qrc_shader.cpp
+moc_*
+*.o
+/Makefile*
+/PanoramaCapture.pro.user
+/Debug/
+.DS_Store
+/Release/
+/x64/
+/.vscode/
