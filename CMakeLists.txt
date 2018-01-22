@@ -32,14 +32,16 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in ${CMAKE_CURRENT_SOUR
 
 ################################################################################
 # Sources and headers  
+SET(RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/timeline.qrc) 
 FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui REQUIRED) 
 
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 FILE(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp") 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/)
 
 ################################################################################
 # Compile target
-ADD_EXECUTABLE ( ${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+ADD_EXECUTABLE ( ${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RESOURCES})
 # https://www.kdab.com/using-cmake-with-qt-5/
 qt5_use_modules(${PROJECT_NAME} Core Widgets Gui) 
