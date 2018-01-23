@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QFile>
-#include "mainwindow.h"
+#include "mainwindow.h" 
 
 int main(int argc, char* argv[]) {
 
@@ -10,11 +10,12 @@ int main(int argc, char* argv[]) {
 	bool ret = file.open(QFile::ReadOnly);
 	if (ret) {
 		qApp->setStyleSheet(file.readAll());
-		file.close(); 
+		file.close();
 	}
 
 	timeline::MainWindow timeline;
 	timeline.show();
+
 
 	return app.exec();
 }
