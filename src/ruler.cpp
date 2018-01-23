@@ -13,7 +13,8 @@ namespace timeline {
 		mRulerZoom(1.0),
 		mRulerColor(37, 38, 39),
 		mMouseTracking(true),
-		mDrawText(false)
+		mDrawText(false),
+		mDuration(0.0)
 	{ 
 		setMouseTracking(false);
 		QFont txtFont("Goudy Old Style", 12, 20);
@@ -58,13 +59,8 @@ namespace timeline {
 		//painter.drawLine(starPt, endPt);
 	}
 
-	void Ruler::setRulerWidth(int w) { 
-		int oldWidth = width();
-		int oldHeight = height();
-		if (w != oldWidth) {
-			setGeometry(0, 0, w, oldHeight);
-			update();
-		} 
+	void Ruler::setDuration(float duration) { 
+		mDuration = duration;
 	}
 
 	void Ruler::contextMenuEvent(QContextMenuEvent *event) {

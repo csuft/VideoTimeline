@@ -18,7 +18,7 @@ namespace timeline {
 		explicit Ruler(QWidget* parent = Q_NULLPTR);
 		~Ruler() = default;
 
-		void setRulerWidth(int width); 
+		void setDuration(float duration); 
 		qreal origin() const {
 			return mOrigin;
 		}
@@ -62,6 +62,7 @@ namespace timeline {
 		bool mMouseTracking;
 		bool mDrawText;
 		QColor mRulerColor;
+		float mDuration;
 	};
 }
 
