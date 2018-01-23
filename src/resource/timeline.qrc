@@ -11,5 +11,7 @@
         <file alias="zoomin">images/sliderIcon.png</file>
         <file alias="zoomout">images/sliderIcon0.png</file>
     </qresource>
-    <qresource prefix="/style"/>
+    <qresource prefix="/style">
+        <file alias="app">app.qss</file>
+    </qresource>
 </RCC>

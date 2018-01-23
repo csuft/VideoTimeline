@@ -6,6 +6,7 @@ namespace timeline {
 		: QWidget(parent)
 	{
 		setWindowIcon(QIcon(":/images/logo"));
+		setFixedHeight(150);
 	}
 
 }

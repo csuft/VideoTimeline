@@ -1,0 +1,7 @@
+/* class selector */
+* {
+	background: rgb(35, 35, 35);
+	color: rgb(91, 91, 91);
+	font-family: "Microsoft Yahei";
+}
+
