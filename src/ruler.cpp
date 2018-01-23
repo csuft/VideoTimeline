@@ -5,7 +5,7 @@ namespace timeline {
 	TimelineWidget::TimelineWidget(QWidget* parent /* = Q_NULLPTR */) 
 		: QWidget(parent)
 	{
-
+		setWindowIcon(QIcon(":/images/logo"));
 	}
 
 }

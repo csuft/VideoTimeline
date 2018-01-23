@@ -11,5 +11,6 @@ namespace timeline {
 	{
 		mZoomSlider = new QSlider(Qt::Horizontal, this);
 		mZoomIn = new QToolButton();
+
 	}
 }

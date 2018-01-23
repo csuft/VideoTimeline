@@ -2,9 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.8 )
 PROJECT( VideoTimeline CXX)
 
 ################################################################################
-# Compiler and linker options
-ADD_DEFINITIONS(-Wall) 
-
+# Compiler and linker options  
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_CXX_STANDARD 11)  
@@ -31,17 +29,17 @@ SET(META_VERSION_NUM         "Version: ${META_MAJOR_VERSION}.${META_MINOR_VERSIO
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h)
 
 ################################################################################
-# Sources and headers  
-SET(RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/timeline.qrc) 
+# Sources and headers   
 FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui REQUIRED) 
 
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 FILE(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp") 
+FILE(GLOB RESOURCE_FILES "{CMAKE_CURRENT_SOURCE_DIR}/src/resource/timeline.qrc")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/)
 
 ################################################################################
 # Compile target
-ADD_EXECUTABLE ( ${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RESOURCES})
+ADD_EXECUTABLE ( ${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} src/resource/timeline.qrc)
 # https://www.kdab.com/using-cmake-with-qt-5/
 qt5_use_modules(${PROJECT_NAME} Core Widgets Gui) 
