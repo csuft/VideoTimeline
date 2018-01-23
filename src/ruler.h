@@ -2,19 +2,28 @@
 #define _RULER_H
 
 #include <QWidget>
-#include "indicator.h"
-#include "zoomer.h"
+#include "indicator.h" 
 
 namespace timeline {
 
-	class TimelineWidget : public QWidget {
+	class Ruler : public QWidget {
 		Q_OBJECT
 	public:
-		TimelineWidget(QWidget* parent = Q_NULLPTR);
-		~TimelineWidget() = default;
+		Ruler(QWidget* parent = Q_NULLPTR);
+		~Ruler() = default;
 
-	
+	protected:
+		virtual void paintEvent(QPaintEvent *event) override;
+		virtual void contextMenuEvent(QContextMenuEvent *event) override; 
+
+	private:
+		void onIndicatorMove(const QMouseEvent& event);
+		void onIndicatorPress(const QMouseEvent& event);
+		void onIndicatorRelease(const QMouseEvent& event);
+
+	private: 
+		Indicator* mIndicator;
 	};
 }
 
-#endif
+#endif // _RULER_H

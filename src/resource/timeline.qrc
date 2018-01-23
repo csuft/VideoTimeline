@@ -7,7 +7,7 @@
         <file alias="logo">images/logo.png</file>
         <file alias="point">images/recordPoing.png</file>
         <file alias="pointEnabled">images/recordPoingSelect.png</file>
-        <file alias="sliderindicator">images/sliderDrag.png</file>
+        <file alias="sliderhandle">images/sliderDrag.png</file>
         <file alias="zoomin">images/sliderIcon.png</file>
         <file alias="zoomout">images/sliderIcon0.png</file>
     </qresource>

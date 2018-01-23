@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QFile>
-#include "ruler.h"
+#include "mainwindow.h"
 
 int main(int argc, char* argv[]) {
 
@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 		file.close(); 
 	}
 
-	timeline::TimelineWidget timeline;
+	timeline::MainWindow timeline;
 	timeline.show();
 
 	return app.exec();
