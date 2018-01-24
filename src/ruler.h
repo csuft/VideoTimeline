@@ -2,10 +2,12 @@
 #define _RULER_H
 
 #include <QWidget>
-#include "indicator.h" 
+#include <QTime> 
+#include <QLabel>
+#include "cutrect.h"
 
 QT_FORWARD_DECLARE_CLASS(QAction)
-QT_FORWARD_DECLARE_CLASS(QMenu)
+QT_FORWARD_DECLARE_CLASS(QMenu) 
 
 namespace timeline {
 
@@ -18,7 +20,7 @@ namespace timeline {
 		explicit Ruler(QWidget* parent = Q_NULLPTR);
 		~Ruler() = default;
 
-		void setDuration(qreal duration); 
+		void setDuration(QTime duration); 
 		qreal origin() const {
 			return mOrigin;
 		}
@@ -38,17 +40,16 @@ namespace timeline {
 		virtual void paintEvent(QPaintEvent *event) override;
 		virtual void contextMenuEvent(QContextMenuEvent *event) override; 
 		virtual void mouseMoveEvent(QMouseEvent *event) override;
+		virtual bool eventFilter(QObject *watched, QEvent *event) override;
 
-	private:
-		void onIndicatorMove(const QMouseEvent& event);
-		void onIndicatorPress(const QMouseEvent& event);
-		void onIndicatorRelease(const QMouseEvent& event); 
+	private: 
 		void drawScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin);
 		void drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, 
 			int startTickNo, qreal step, qreal startPosition);
 	private: 
 		// context menu
-		Indicator* mIndicator;
+		QLabel* mIndicator;
+		CutRect* mCutRectBox;
 		QMenu* mContextMenu;
 		QAction* mClearPoints;
 		QAction* mMakeCurrentPoint;
@@ -62,7 +63,7 @@ namespace timeline {
 		bool mMouseTracking;
 		bool mDrawText;
 		QColor mRulerColor;
-		qreal mDuration;
+		QTime mDuration;
 	};
 }
 

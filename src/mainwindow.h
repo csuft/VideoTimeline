@@ -1,13 +1,13 @@
 #ifndef _MAIN_WINDOW_H
 #define _MAIN_WINDOW_H
 
-#include <QWidget>
+#include <QScrollArea>
 #include "ruler.h"
-#include "zoomer.h"
+#include "zoomer.h" 
 
 namespace timeline {
 
-	class MainWindow : public QWidget {
+	class MainWindow : public QScrollArea {
 		Q_OBJECT
 	public:
 		MainWindow(QWidget* parent = Q_NULLPTR);

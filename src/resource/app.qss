@@ -1,10 +1,10 @@
-/* class selector */
+/* class selector 
 * {
 	background: rgb(35, 35, 35);
 	color: rgb(91, 91, 91);
 	font-family: "Microsoft Yahei";
 }
-
+*/
 /* QSlider styles */ 
 
 QSlider::groove:horizontal {
@@ -88,6 +88,10 @@ QToolButton {
 	background: transparent;
 }
 
+/* ID selectors */
+QWidget#cutrect {
+    background-color: qlineargradient(spread:pad, x1: 0 y1: 0, x2: 0 y2: 1, stop:0 rgba(38, 39, 40, 30), stop:1 rgba(48, 49, 50, 20));
+}
 
 
 

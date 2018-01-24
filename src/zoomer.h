@@ -1,8 +1,7 @@
 #ifndef _ZOOMER_H
 #define _ZOOMER_H
 
-#include <QWidget>
-#include <QScrollBar>
+#include <QWidget> 
 #include <QToolButton>
 #include <QSlider>
 
@@ -13,10 +12,17 @@ namespace timeline {
 		Q_OBJECT
 	public:
 		Zoomer(QWidget* parent = Q_NULLPTR);
+		void initializeControls();
 		~Zoomer() = default;
 
-	private:
-		QScrollBar* mScrollBar;
+	signals:
+		void zoomerChanged(int value);
+
+	private slots:
+		void onZoomInClicked(bool checked);
+		void onZoomOutClicked(bool checked); 
+
+	private: 
 		QToolButton* mZoomIn;
 		QToolButton* mZoomOut;
 		QSlider* mZoomSlider;

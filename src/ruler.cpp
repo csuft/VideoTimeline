@@ -13,27 +13,32 @@ namespace timeline {
 		mRulerZoom(1.0),
 		mRulerColor(37, 38, 39),
 		mMouseTracking(true),
-		mDrawText(false),
-		mDuration(0.0)
+		mDrawText(false), 
+		mCutRectBox(nullptr)
 	{ 
 		setMouseTracking(false);
 		QFont txtFont("Helvetica", 12, 20);
 		txtFont.setStyleHint(QFont::Helvetica, QFont::PreferAntialias);
 		setFont(txtFont);
 
-		mIndicator = new Indicator(this);
+		mIndicator = new QLabel(this);  
+		mIndicator->setCursor(Qt::SizeHorCursor);
+		mIndicator->move(0, 0);
+		mIndicator->setPixmap(QPixmap(":/images/indicator"));
+		mIndicator->setMinimumSize(19, 130);
+		mIndicator->installEventFilter(this);
+
+		mCutRectBox = new CutRect(this);
+		mCutRectBox->setObjectName("cutrect");
+		mCutRectBox->setGeometry(0, 40, this->width(), this->height() - 40);
 
 		mContextMenu = new QMenu(this);
 		mClearPoints = new QAction(tr("Clear All Points"), this);
 		mCutWithCurrentPos = new QAction(tr("Cut With Currrent Position"), this);
-		mMakeCurrentPoint = new QAction(tr("Mark in Current Position"), this);
-
-		connect(mIndicator, &Indicator::indicatorMove, this, &Ruler::onIndicatorMove);
-		connect(mIndicator, &Indicator::indicatorPress, this, &Ruler::onIndicatorPress);
-		connect(mIndicator, &Indicator::indicatorRelease, this, &Ruler::onIndicatorRelease);
+		mMakeCurrentPoint = new QAction(tr("Mark in Current Position"), this); 
 	}
 
-	void Ruler::paintEvent(QPaintEvent *event) {
+	void Ruler::paintEvent(QPaintEvent *event) {		
 		QPainter painter(this);
 		painter.setRenderHints(QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing);
 		QPen pen(Qt::white, 0);
@@ -57,9 +62,45 @@ namespace timeline {
 		QPointF endPt = rulerRect.bottomRight();
 		painter.setPen(QPen(Qt::white, 2));
 		painter.drawLine(starPt, endPt);
+
+		QWidget::paintEvent(event);
 	}
 
-	void Ruler::setDuration(qreal duration) { 
+	bool Ruler::eventFilter(QObject *watched, QEvent *event) {
+		if (watched == mIndicator)
+		{
+			static QPoint lastPnt;
+			static bool isHover = false;
+			if (event->type() == QEvent::MouseButtonPress)
+			{
+				QMouseEvent* e = static_cast<QMouseEvent*>(event);
+				if (mIndicator->rect().contains(e->pos()) &&  
+					(e->button() == Qt::LeftButton))  
+				{
+					lastPnt = e->pos();
+					isHover = true;
+				}
+			}
+			else if (event->type() == QEvent::MouseMove && isHover)
+			{
+				QMouseEvent* e = static_cast<QMouseEvent*>(event);
+				int dx = e->pos().x() - lastPnt.x();
+				int dy = e->pos().y() - lastPnt.y();
+				if (mIndicator->x() + dx < this->width() &&
+					mIndicator->x() + dx > 0){
+					mIndicator->move(mIndicator->x() + dx, mIndicator->y());
+				} 
+			}
+			else if (event->type() == QEvent::MouseButtonRelease && isHover)
+			{
+				isHover = false;
+			}
+		}
+
+		return false;
+	}
+
+	void Ruler::setDuration(QTime duration) { 
 		mDuration = duration;
 	}
 
@@ -75,18 +116,6 @@ namespace timeline {
 		mCursorPos = event->pos();
 		update();
 		QWidget::mouseMoveEvent(event);
-	}
-
-	void Ruler::onIndicatorMove(const QMouseEvent& event) {
-
-	}
-
-	void Ruler::onIndicatorPress(const QMouseEvent& event) {
-
-	}
-
-	void Ruler::onIndicatorRelease(const QMouseEvent& event) {
-
 	} 
 
 	void Ruler::setOrigin(const qreal origin)
