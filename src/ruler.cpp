@@ -8,7 +8,7 @@ namespace timeline {
 
 	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */)
 		: QWidget(parent),
-		mOrigin(25.0),
+		mOrigin(0.0),
 		mRulerUnit(1.0),
 		mRulerZoom(1.0),
 		mRulerColor(37, 38, 39),
@@ -17,7 +17,7 @@ namespace timeline {
 		mDuration(0.0)
 	{ 
 		setMouseTracking(false);
-		QFont txtFont("Goudy Old Style", 12, 20);
+		QFont txtFont("Helvetica", 12, 20);
 		txtFont.setStyleHint(QFont::Helvetica, QFont::PreferAntialias);
 		setFont(txtFont);
 
@@ -46,20 +46,20 @@ namespace timeline {
 		painter.fillRect(rulerRect, mRulerColor);
 
 		// drawing a scale of 25
-		drawAScaleMeter(&painter, rulerRect, 25, rulerRect.height() / 2);
+		drawScaleMeter(&painter, rulerRect, 25, rulerRect.height() / 2);
 		// drawing a scale of 100
 		mDrawText = true;
-		drawAScaleMeter(&painter, rulerRect, 100, 10);
+		drawScaleMeter(&painter, rulerRect, 100, 10);
 		mDrawText = false; 
 
 		// drawing no man's land between the ruler & view
-		//QPointF starPt = rulerRect.bottomLeft();
-		//QPointF endPt = rulerRect.bottomRight();
-		//painter.setPen(QPen(Qt::black, 2));
-		//painter.drawLine(starPt, endPt);
+		QPointF starPt = rulerRect.bottomLeft();
+		QPointF endPt = rulerRect.bottomRight();
+		painter.setPen(QPen(Qt::white, 2));
+		painter.drawLine(starPt, endPt);
 	}
 
-	void Ruler::setDuration(float duration) { 
+	void Ruler::setDuration(qreal duration) { 
 		mDuration = duration;
 	}
 
@@ -129,7 +129,7 @@ namespace timeline {
 		mRulerColor = color;
 	}
 	 
-	void Ruler::drawAScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin)
+	void Ruler::drawScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin)
 	{
 		scaleMeter = scaleMeter * mRulerUnit * mRulerZoom;
 
@@ -145,22 +145,22 @@ namespace timeline {
 		// Condition C # If origin point is right of the end mark, we have to draw
 		// from origin to start mark.
 		if (mOrigin >= rulerStartMark && mOrigin <= rulerEndMark) {
-			drawFromOriginTo(painter, rulerRect, mOrigin, rulerEndMark, 0, scaleMeter, startPositoin);
-			drawFromOriginTo(painter, rulerRect, mOrigin, rulerStartMark, 0, -scaleMeter, startPositoin);
+			drawTickers(painter, rulerRect, mOrigin, rulerEndMark, 0, scaleMeter, startPositoin);
+			drawTickers(painter, rulerRect, mOrigin, rulerStartMark, 0, -scaleMeter, startPositoin);
 		}
 		else if (mOrigin < rulerStartMark) {
 			int tickNo = int((rulerStartMark - mOrigin) / scaleMeter);
-			drawFromOriginTo(painter, rulerRect, mOrigin + scaleMeter * tickNo,
+			drawTickers(painter, rulerRect, mOrigin + scaleMeter * tickNo,
 				rulerEndMark, tickNo, scaleMeter, startPositoin);
 		}
 		else if (mOrigin > rulerEndMark) {
 			int tickNo = int((mOrigin - rulerEndMark) / scaleMeter);
-			drawFromOriginTo(painter, rulerRect, mOrigin - scaleMeter * tickNo,
+			drawTickers(painter, rulerRect, mOrigin - scaleMeter * tickNo,
 				rulerStartMark, tickNo, -scaleMeter, startPositoin);
 		}
 	}
 
-	void Ruler::drawFromOriginTo(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, int startTickNo,
+	void Ruler::drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, int startTickNo,
 		qreal step, qreal startPosition)
 	{
 		for (qreal current = startMark;

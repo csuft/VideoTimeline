@@ -6,8 +6,8 @@ namespace timeline {
 	MainWindow::MainWindow(QWidget* parent /* = Q_NULLPTR */)
 		: QWidget(parent)
 	{
-		setWindowIcon(QIcon(":/images/logo"));
-		setFixedHeight(150);
+		setWindowIcon(QIcon(":/images/logo")); 
+		resize(1000, 150);
 
 		QVBoxLayout* mainLayout = new QVBoxLayout(this);
 		mainLayout->setSpacing(0);

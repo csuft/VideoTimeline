@@ -18,7 +18,7 @@ namespace timeline {
 		explicit Ruler(QWidget* parent = Q_NULLPTR);
 		~Ruler() = default;
 
-		void setDuration(float duration); 
+		void setDuration(qreal duration); 
 		qreal origin() const {
 			return mOrigin;
 		}
@@ -43,8 +43,8 @@ namespace timeline {
 		void onIndicatorMove(const QMouseEvent& event);
 		void onIndicatorPress(const QMouseEvent& event);
 		void onIndicatorRelease(const QMouseEvent& event); 
-		void drawAScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin);
-		void drawFromOriginTo(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, 
+		void drawScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin);
+		void drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, 
 			int startTickNo, qreal step, qreal startPosition);
 	private: 
 		// context menu
@@ -62,7 +62,7 @@ namespace timeline {
 		bool mMouseTracking;
 		bool mDrawText;
 		QColor mRulerColor;
-		float mDuration;
+		qreal mDuration;
 	};
 }
 

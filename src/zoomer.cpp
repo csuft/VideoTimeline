@@ -25,7 +25,7 @@ namespace timeline {
 		mainLayout->addWidget(mZoomIn);
 		mainLayout->addWidget(mZoomSlider);
 		mainLayout->addWidget(mZoomOut);
-		mainLayout->addWidget(mScrollBar);
+		mainLayout->addWidget(mScrollBar, 1);
 		setLayout(mainLayout);
 	}
 }
