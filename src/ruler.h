@@ -3,8 +3,7 @@
 
 #include <QWidget>
 #include <QTime> 
-#include <QLabel>
-#include "cutrect.h"
+#include <QLabel> 
 
 QT_FORWARD_DECLARE_CLASS(QAction)
 QT_FORWARD_DECLARE_CLASS(QMenu) 
@@ -47,9 +46,13 @@ namespace timeline {
 		void drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, 
 			int startTickNo, qreal step, qreal startPosition);
 	private: 
-		// context menu
+		// sub controls
 		QLabel* mIndicator;
-		CutRect* mCutRectBox;
+		QLabel* mLeftBorder;
+		QLabel* mRightBorder;
+		QFrame* mRectBox;
+
+		// context menu
 		QMenu* mContextMenu;
 		QAction* mClearPoints;
 		QAction* mMakeCurrentPoint;

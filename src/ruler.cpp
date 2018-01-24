@@ -13,8 +13,7 @@ namespace timeline {
 		mRulerZoom(1.0),
 		mRulerColor(37, 38, 39),
 		mMouseTracking(true),
-		mDrawText(false), 
-		mCutRectBox(nullptr)
+		mDrawText(false)
 	{ 
 		setMouseTracking(false);
 		QFont txtFont("Helvetica", 12, 20);
@@ -28,9 +27,23 @@ namespace timeline {
 		mIndicator->setMinimumSize(19, 130);
 		mIndicator->installEventFilter(this);
 
-		mCutRectBox = new CutRect(this);
-		mCutRectBox->setObjectName("cutrect");
-		mCutRectBox->setGeometry(0, 40, this->width(), this->height() - 40);
+		mLeftBorder = new QLabel(this);
+		mLeftBorder->setPixmap(QPixmap(":/images/cutleft"));
+		mLeftBorder->setCursor(Qt::SizeHorCursor);
+		mLeftBorder->setFixedSize(10, 86);
+		mLeftBorder->move(0, 40);
+		mLeftBorder->installEventFilter(this);
+
+		mRightBorder = new QLabel(this);
+		mRightBorder->setPixmap(QPixmap(":/images/cutright"));
+		mRightBorder->setFixedSize(10, 86);
+		mRightBorder->move(800, 40);
+		mRightBorder->setCursor(Qt::SizeHorCursor);
+		mRightBorder->installEventFilter(this);
+
+		mRectBox = new QFrame(this);
+		mRectBox->setObjectName("cutrect");
+		mRectBox->setGeometry(87, 40, 700, 80);
 
 		mContextMenu = new QMenu(this);
 		mClearPoints = new QAction(tr("Clear All Points"), this);
