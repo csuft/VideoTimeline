@@ -11,7 +11,7 @@ namespace timeline {
 		mZoomSlider(Q_NULLPTR)
 	{
 		setFixedWidth(150);
-		
+		setCursor(Qt::PointingHandCursor);
 		initializeControls();
 		QHBoxLayout* mainLayout = new QHBoxLayout(this);
 		mainLayout->setSpacing(5);
@@ -24,8 +24,8 @@ namespace timeline {
 
 	void Zoomer::initializeControls() {
 		mZoomSlider = new QSlider(Qt::Horizontal, this);
-		mZoomSlider->setRange(1, 6);
-		mZoomSlider->setSliderPosition(3);
+		mZoomSlider->setRange(1, 8);
+		mZoomSlider->setSliderPosition(4);
 		
 		mZoomIn = new QToolButton(this);
 		mZoomIn->setIcon(QIcon(":/images/zoomin"));

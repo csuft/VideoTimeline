@@ -19,21 +19,28 @@ namespace timeline {
 		explicit Ruler(QWidget* parent = Q_NULLPTR);
 		~Ruler() = default;
 
-		void setDuration(QTime duration); 
-		qreal origin() const {
+		inline void setDuration(QTime duration) {
+			mDuration = duration;
+		}
+		inline qreal origin() const {
 			return mOrigin;
 		}
-		qreal rulerUnit() const {
+		inline qreal rulerUnit() const {
 			return mRulerUnit;
 		}
-		qreal rulerZoom() const {
+		inline qreal rulerZoom() const {
 			return mRulerZoom;
 		}
 		void setOrigin(const qreal origin);
 		void setRulerUnit(const qreal rulerUnit);
 		void setRulerZoom(const qreal rulerZoom); 
 		void setMouseTrack(const bool track); 
-		void setRulerColor(const QColor& color); 
+		void setHeaderColor(const QColor& color) {
+			mHeaderBgrd = color;
+		}
+		void setBodyColor(const QColor& color) {
+			mBodyBgrd = color;
+		}
 
 	protected:
 		virtual void paintEvent(QPaintEvent *event) override;
@@ -45,6 +52,8 @@ namespace timeline {
 		void drawScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin);
 		void drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, 
 			int startTickNo, qreal step, qreal startPosition);
+		void getTickerString(int tickerNo);
+
 	private: 
 		// sub controls
 		QLabel* mIndicator;
@@ -65,7 +74,8 @@ namespace timeline {
 		QPoint mCursorPos;
 		bool mMouseTracking;
 		bool mDrawText;
-		QColor mRulerColor;
+		QColor mBodyBgrd;
+		QColor mHeaderBgrd;
 		QTime mDuration;
 	};
 }
