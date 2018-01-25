@@ -8,9 +8,8 @@ namespace timeline {
 		: QScrollArea(parent)
 	{
 		setWindowIcon(QIcon(":/images/logo")); 
-		resize(1000, 150);
-		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-		horizontalScrollBar()->setRange(0, 100); 
+		resize(800, 150);
+		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); 
 
 		QVBoxLayout* mainLayout = new QVBoxLayout(this);
 		mainLayout->setSpacing(0);
@@ -19,8 +18,7 @@ namespace timeline {
 		addScrollBarWidget(mZoomer, Qt::AlignLeft);
 		
 		mRuler = new Ruler(this);
-		mainLayout->addWidget(mRuler); 
-		setLayout(mainLayout);
+		setWidget(mRuler);
 
 		connect(mZoomer, &Zoomer::zoomerIn, mRuler, &Ruler::onZoomerIn);
 		connect(mZoomer, &Zoomer::zoomerOut, mRuler, &Ruler::onZoomerOut);

@@ -3,8 +3,7 @@
 #include <QAction>
 #include <QContextMenuEvent>
 #include <QPainter>
-#include <QApplication>
-#include <QStyleOptionFocusRect>
+#include <QDebug> 
 
 #define HEADER_HEIGHT 40
 
@@ -18,6 +17,7 @@ namespace timeline {
 		mInterval(30.0)
 	{ 
 		setMouseTracking(false); 
+		resize(1000, 150);
 		mIndicator = new Indicator(this);
 		mIndicator->installEventFilter(this);
 
@@ -109,6 +109,20 @@ namespace timeline {
 		QWidget::mouseMoveEvent(event);
 	} 
 
+	void Ruler::wheelEvent(QWheelEvent *event) {
+		QPoint numDegrees = event->angleDelta() / 8; 
+		if (!numDegrees.isNull()) {
+			if (numDegrees.y() > 0) {
+				onZoomerIn();
+			}
+			if (numDegrees.y() < 0)
+			{
+				onZoomerOut();
+			}
+		}
+		event->accept();
+	}
+
 	void Ruler::setOrigin(const qreal origin)
 	{
 		if (mOrigin != origin) {
@@ -148,13 +162,17 @@ namespace timeline {
 	}
 
 	void Ruler::onZoomerIn() {
-		mInterval -= 2.5; 
-		update();
+		if (mInterval > 20) {
+			mInterval -= 2;
+			resize(this->width() - 50, this->height());
+		} 
 	}
 
 	void Ruler::onZoomerOut() {
-		mInterval += 2.5;
-		update();
+		if (mInterval < 40) {
+			mInterval += 2;
+			resize(this->width() + 50, this->height());
+		} 
 	}
 
 	void Ruler::drawScaleRuler(QPainter* painter, QRectF rulerRect) { 
