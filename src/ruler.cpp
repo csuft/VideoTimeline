@@ -231,14 +231,7 @@ namespace timeline {
 		qreal rulerStartMark = rulerRect.left();
 		qreal rulerEndMark = rulerRect.right();
 
-		if (mOrigin >= rulerStartMark && mOrigin <= rulerEndMark) {
-			drawTickers(painter, rulerRect, mOrigin, rulerEndMark); 
-		}
-	}
-
-	void Ruler::drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark)
-	{
-		for (qreal current = startMark; current <= endMark; current += mInterval)
+		for (qreal current = mOrigin; current <= rulerEndMark; current += mInterval)
 		{
 			qreal x1 = current;
 			qreal y1 = rulerRect.top() + HEADER_HEIGHT - 5;
@@ -247,7 +240,7 @@ namespace timeline {
 			painter->drawLine(QLineF(x1, y1, x2, y2));
 			//painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, getTickerString(current));
 		}
-	}
+	} 
 }
 
 

@@ -9,11 +9,7 @@ namespace timeline {
 	{
 		setWindowIcon(QIcon(":/images/logo")); 
 		resize(800, 150);
-		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); 
-
-		QVBoxLayout* mainLayout = new QVBoxLayout(this);
-		mainLayout->setSpacing(0);
-		mainLayout->setContentsMargins(0, 0, 0, 0);
+		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  
 		mZoomer = new Zoomer(this);
 		addScrollBarWidget(mZoomer, Qt::AlignLeft);
 		
