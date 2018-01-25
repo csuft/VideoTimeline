@@ -2,6 +2,7 @@
 #define _RULER_H
 
 #include <QWidget>
+#include <QTimer>
 #include <QTime> 
 #include "indicator.h" 
 
@@ -11,18 +12,14 @@ QT_FORWARD_DECLARE_CLASS(QMenu)
 namespace timeline {
 
 	class Ruler : public QWidget {
-		Q_OBJECT 
-		Q_PROPERTY(qreal origin READ origin WRITE setOrigin) 
+		Q_OBJECT  
 	public:
-		explicit Ruler(QWidget* parent = Q_NULLPTR);
+		explicit Ruler(QWidget* parent = Q_NULLPTR, qreal frameRate = 30.0);
 		~Ruler() = default;
 
-		inline void setDuration(QTime duration) {
-			mDuration = duration;
+		inline void setDuration(int duration) {
+			mTotalSeconds = duration;
 		}
-		inline qreal origin() const {
-			return mOrigin;
-		}  
 		void setOrigin(const qreal origin);   
 		inline void setHeaderColor(const QColor& color) {
 			mHeaderBgrd = color;
@@ -31,21 +28,27 @@ namespace timeline {
 			mBodyBgrd = color;
 		}
 
+	signals:
+		void changeSliderPosition(int level);
+
 	public slots:
-		void onZoomerIn();
-		void onZoomerOut();
+		void onZoomerIn(int level);
+		void onZoomerOut(int level);
+		void onTimeOut();
 
 	protected:
 		virtual void paintEvent(QPaintEvent *event) override;
-		virtual void contextMenuEvent(QContextMenuEvent *event) override; 
-		virtual void mouseMoveEvent(QMouseEvent *event) override;
+		virtual void contextMenuEvent(QContextMenuEvent *event) override;  
 		virtual void wheelEvent(QWheelEvent *event) override;
 		virtual bool eventFilter(QObject *watched, QEvent *event) override;
+		virtual void mousePressEvent(QMouseEvent* event) override;
+		virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
 	private: 
 		void drawScaleRuler(QPainter* painter, QRectF rulerRect);
 		void drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark);
 		QString getTickerString(qreal tickerNo);
+		int secondsPerInterval();
 
 	private: 
 		// sub controls
@@ -53,6 +56,7 @@ namespace timeline {
 		QLabel* mLeftBorder;
 		QLabel* mRightBorder;
 		QFrame* mRectBox;
+		int mSliderLevel;
 
 		// context menu
 		QMenu* mContextMenu;
@@ -65,8 +69,12 @@ namespace timeline {
 		qreal mInterval;
 		QPoint mCursorPos;  
 		QColor mBodyBgrd;
-		QColor mHeaderBgrd;
-		QTime mDuration;
+		QColor mHeaderBgrd; 
+		quint32 mTotalSeconds;
+
+		// updater
+		QTimer* mUpdater;
+		qreal mFrameRate;
 	};
 }
 

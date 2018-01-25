@@ -22,6 +22,7 @@ namespace timeline {
 
 		connect(mZoomer, &Zoomer::zoomerIn, mRuler, &Ruler::onZoomerIn);
 		connect(mZoomer, &Zoomer::zoomerOut, mRuler, &Ruler::onZoomerOut);
+		connect(mRuler, &Ruler::changeSliderPosition, mZoomer, &Zoomer::onChangeSliderPosition);
 	}
 
 }

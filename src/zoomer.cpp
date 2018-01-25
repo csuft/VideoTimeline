@@ -42,7 +42,7 @@ namespace timeline {
 		int currentValue = mZoomSlider->value();
 		if (currentValue > MIN_LEVEL) {
 			mZoomSlider->setSliderPosition(--currentValue);
-			emit zoomerIn();
+			emit zoomerIn(currentValue);
 		}
 	}
 
@@ -50,17 +50,22 @@ namespace timeline {
 		int currentValue = mZoomSlider->value();
 		if (currentValue < MAX_LEVEL) {
 			mZoomSlider->setSliderPosition(++currentValue);
-			emit zoomerOut();
+			emit zoomerOut(currentValue);
 		}
 	}
 
 	void Zoomer::onSliderChanged(int value) {
 		if (value > mCurrentLevel) {
-			emit zoomerOut();
+			emit zoomerOut(value);
 		}
 		else if (value < mCurrentLevel) {
-			emit zoomerIn();
+			emit zoomerIn(value);
 		} 
 		mCurrentLevel = value;
+	}
+
+	void Zoomer::onChangeSliderPosition(int level) {
+		mCurrentLevel = level;
+		mZoomSlider->setSliderPosition(level);
 	}
 }

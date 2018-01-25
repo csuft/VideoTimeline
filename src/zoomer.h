@@ -19,13 +19,14 @@ namespace timeline {
 		~Zoomer() = default;
 
 	signals:
-		void zoomerIn();
-		void zoomerOut();
+		void zoomerIn(int level);
+		void zoomerOut(int level);
 
-	private slots:
+	public slots:
 		void onZoomInClicked(bool checked);
 		void onZoomOutClicked(bool checked); 
 		void onSliderChanged(int value);
+		void onChangeSliderPosition(int level);
 
 	private: 
 		QToolButton* mZoomIn;

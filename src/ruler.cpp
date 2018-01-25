@@ -6,18 +6,21 @@
 #include <QDebug> 
 
 #define HEADER_HEIGHT 40
+#define START_END_PADDING 20
+#define MAX_INTERVAL 40
+#define MIN_INTERVAL 20
 
 namespace timeline {
 
-	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */)
+	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */, qreal frameRate)
 		: QWidget(parent),
 		mOrigin(19.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
-		mInterval(30.0)
-	{ 
-		setMouseTracking(false); 
-		resize(1000, 150);
+		mInterval(30.0),
+		mSliderLevel(1),
+		mTotalSeconds(126)
+	{  
 		mIndicator = new Indicator(this);
 		mIndicator->installEventFilter(this);
 
@@ -43,6 +46,16 @@ namespace timeline {
 		mClearPoints = new QAction(tr("Clear All Points"), this);
 		mCutWithCurrentPos = new QAction(tr("Cut With Currrent Position"), this);
 		mMakeCurrentPoint = new QAction(tr("Mark in Current Position"), this); 
+
+		mUpdater = new QTimer(this);
+		if (mFrameRate == 0.0) {
+			mFrameRate = 30.0;
+		}
+		mUpdater->setInterval(1000/mFrameRate);
+		mUpdater->setSingleShot(false);
+		connect(mUpdater, &QTimer::timeout, this, &Ruler::onTimeOut);
+
+		resize(mTotalSeconds*mInterval + START_END_PADDING, 120);
 	}
 
 	bool Ruler::eventFilter(QObject *watched, QEvent *event) {
@@ -101,26 +114,29 @@ namespace timeline {
 		mContextMenu->addAction(mMakeCurrentPoint);
 		mContextMenu->exec(QCursor::pos());
 		event->accept();
-	} 
-
-	void Ruler::mouseMoveEvent(QMouseEvent *event) {
-		mCursorPos = event->pos();
-		update();
-		QWidget::mouseMoveEvent(event);
-	} 
+	}  
 
 	void Ruler::wheelEvent(QWheelEvent *event) {
 		QPoint numDegrees = event->angleDelta() / 8; 
 		if (!numDegrees.isNull()) {
 			if (numDegrees.y() > 0) {
-				onZoomerIn();
+				onZoomerIn(mSliderLevel);
 			}
 			if (numDegrees.y() < 0)
 			{
-				onZoomerOut();
+				onZoomerOut(mSliderLevel);
 			}
+			emit changeSliderPosition(mSliderLevel);
 		}
 		event->accept();
+	}
+
+	void Ruler::mousePressEvent(QMouseEvent* event) {
+
+	}
+
+	void Ruler::mouseReleaseEvent(QMouseEvent* event) {
+
 	}
 
 	void Ruler::setOrigin(const qreal origin)
@@ -134,7 +150,7 @@ namespace timeline {
 	void Ruler::paintEvent(QPaintEvent *event) { 
 		QPainter painter(this);
 		QFont font = painter.font();
-		font.setPointSize(10);
+		font.setPointSize(8);
 		painter.setFont(font);
 		painter.setRenderHints(QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing);
 		QPen pen(QColor(181, 181, 181), 1);
@@ -148,31 +164,67 @@ namespace timeline {
 		painter.fillRect(QRect(rulerRect.left(), rulerRect.top() + HEADER_HEIGHT, 
 			rulerRect.width(), rulerRect.height() - HEADER_HEIGHT), mBodyBgrd);
 
-		if (!mDuration.isValid()) {
-			//return;
-		}
+		if (mTotalSeconds) {
+			// draw tickers and time labels
+			drawScaleRuler(&painter, rulerRect);
+		} 
+	}
 
-		// draw tickers and time labels
-		drawScaleRuler(&painter, rulerRect);  
+	int Ruler::secondsPerInterval() { 
+		switch (mSliderLevel)
+		{
+		case 1:
+			return 16;
+			break;
+		case 2:
+			return 8;
+			break;
+		case 3:
+			return 4;
+			break;
+		case 4: 
+		case 5:
+		case 6:
+		case 7:
+		case 8: 
+		default:
+			return 2;
+			break;
+		}
 	}
 	
-	QString Ruler::getTickerString(qreal tickerNo) {
-		
+	QString Ruler::getTickerString(qreal currentPos) {
+		qreal pos = currentPos - mOrigin;
+		int totalSecs = pos / mInterval;
+		QTime currentTime(totalSecs / 3600, totalSecs / 60, totalSecs % 60);
+		if (totalSecs % 2 == 0) { 
+			if (totalSecs != 0) {
+				currentTime = currentTime.addSecs(secondsPerInterval()); 
+			}
+			return currentTime.toString("mm:ss");
+		}
+
 		return "";
 	}
 
-	void Ruler::onZoomerIn() {
-		if (mInterval > 20) {
-			mInterval -= 2;
-			resize(this->width() - 50, this->height());
+	void Ruler::onZoomerIn(int level) {
+		mSliderLevel = level;
+		if (mInterval > MIN_INTERVAL) {
+			mInterval -= 2; 
+			// fix me: resize widget
 		} 
 	}
 
-	void Ruler::onZoomerOut() {
-		if (mInterval < 40) {
-			mInterval += 2;
-			resize(this->width() + 50, this->height());
+	void Ruler::onZoomerOut(int level) {
+		mSliderLevel = level;
+		if (mInterval < MAX_INTERVAL) {
+			mInterval += 2; 
+			// fix me: resize widget
 		} 
+	}
+
+	void Ruler::onTimeOut() {
+
 	}
 
 	void Ruler::drawScaleRuler(QPainter* painter, QRectF rulerRect) { 
