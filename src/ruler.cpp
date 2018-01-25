@@ -13,19 +13,12 @@ namespace timeline {
 	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */)
 		: QWidget(parent),
 		mOrigin(19.0),
-		mRulerUnit(1.0),
-		mRulerZoom(1.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
-		mMouseTracking(true),
-		mDrawText(false)
+		mInterval(30.0)
 	{ 
 		setMouseTracking(false); 
-		mIndicator = new QLabel(this);
-		mIndicator->setCursor(Qt::SizeHorCursor);
-		mIndicator->move(0, 0);
-		mIndicator->setPixmap(QPixmap(":/images/indicator"));
-		mIndicator->setMinimumSize(19, 130);
+		mIndicator = new Indicator(this);
 		mIndicator->installEventFilter(this);
 
 		mLeftBorder = new QLabel(this);
@@ -122,32 +115,9 @@ namespace timeline {
 			mOrigin = origin;
 			update();
 		}
-	}
-
-	void Ruler::setRulerUnit(const qreal rulerUnit) {
-		if (mRulerUnit != rulerUnit) {
-			mRulerUnit = rulerUnit;
-			update();
-		}
-	}
-
-	void Ruler::setRulerZoom(const qreal rulerZoom)
-	{
-		if (mRulerZoom != rulerZoom) {
-			mRulerZoom = rulerZoom;
-			update();
-		}
-	}
-	  
-	void Ruler::setMouseTrack(const bool track)
-	{
-		if (mMouseTracking != track) {
-			mMouseTracking = track;
-			update();
-		}
 	}  
 	 
-	void Ruler::paintEvent(QPaintEvent *event) {
+	void Ruler::paintEvent(QPaintEvent *event) { 
 		QPainter painter(this);
 		QFont font = painter.font();
 		font.setPointSize(10);
@@ -163,61 +133,49 @@ namespace timeline {
 		// paint body background color
 		painter.fillRect(QRect(rulerRect.left(), rulerRect.top() + HEADER_HEIGHT, 
 			rulerRect.width(), rulerRect.height() - HEADER_HEIGHT), mBodyBgrd);
-		drawScaleMeter(&painter, rulerRect, 25, HEADER_HEIGHT);
-		// drawing a scale of 100
-		mDrawText = true;
-		drawScaleMeter(&painter, rulerRect, 100, HEADER_HEIGHT);
-		mDrawText = false;
 
-		QWidget::paintEvent(event);
+		if (!mDuration.isValid()) {
+			//return;
+		}
+
+		// draw tickers and time labels
+		drawScaleRuler(&painter, rulerRect);  
 	}
 	
-	void Ruler::getTickerString(int tickerNo) {
-
-
+	QString Ruler::getTickerString(qreal tickerNo) {
+		
+		return "";
 	}
 
-	void Ruler::drawScaleMeter(QPainter* painter, QRectF rulerRect, qreal scaleMeter, qreal startPositoin) {
-		scaleMeter = scaleMeter * mRulerUnit * mRulerZoom;
+	void Ruler::onZoomerIn() {
+		mInterval -= 2.5; 
+		update();
+	}
+
+	void Ruler::onZoomerOut() {
+		mInterval += 2.5;
+		update();
+	}
+
+	void Ruler::drawScaleRuler(QPainter* painter, QRectF rulerRect) { 
 		qreal rulerStartMark = rulerRect.left();
 		qreal rulerEndMark = rulerRect.right();
 
-		// Condition A # If origin point is between the start & end mark,
-		// we have to draw both from origin to left mark & origin to right mark.
-		// Condition B # If origin point is left of the start mark, we have to draw
-		// from origin to end mark.
-		// Condition C # If origin point is right of the end mark, we have to draw
-		// from origin to start mark.
 		if (mOrigin >= rulerStartMark && mOrigin <= rulerEndMark) {
-			drawTickers(painter, rulerRect, mOrigin, rulerEndMark, 0, scaleMeter, startPositoin);
-			drawTickers(painter, rulerRect, mOrigin, rulerStartMark, 0, -scaleMeter, startPositoin);
-		}
-		else if (mOrigin < rulerStartMark) {
-			int tickNo = int((rulerStartMark - mOrigin) / scaleMeter);
-			drawTickers(painter, rulerRect, mOrigin + scaleMeter * tickNo,
-				rulerEndMark, tickNo, scaleMeter, startPositoin);
-		}
-		else if (mOrigin > rulerEndMark) {
-			int tickNo = int((mOrigin - rulerEndMark) / scaleMeter);
-			drawTickers(painter, rulerRect, mOrigin - scaleMeter * tickNo,
-				rulerStartMark, tickNo, -scaleMeter, startPositoin);
+			drawTickers(painter, rulerRect, mOrigin, rulerEndMark); 
 		}
 	}
 
-	void Ruler::drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark, int startTickNo,
-		qreal step, qreal startPosition)
+	void Ruler::drawTickers(QPainter* painter, QRectF rulerRect, qreal startMark, qreal endMark)
 	{
-		for (qreal current = startMark;
-			(step < 0 ? current >= endMark : current <= endMark); current += step)
+		for (qreal current = startMark; current <= endMark; current += mInterval)
 		{
 			qreal x1 = current;
-			qreal y1 = rulerRect.top() + startPosition - 5;
+			qreal y1 = rulerRect.top() + HEADER_HEIGHT - 5;
 			qreal x2 = current;
 			qreal y2 = rulerRect.bottom() - HEADER_HEIGHT;
 			painter->drawLine(QLineF(x1, y1, x2, y2));
-			if (mDrawText) { 
-				painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, QString::number(qAbs(int(step) * startTickNo++)));
-			}
+			//painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, getTickerString(current));
 		}
 	}
 }

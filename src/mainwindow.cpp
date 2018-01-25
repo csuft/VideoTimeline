@@ -17,9 +17,13 @@ namespace timeline {
 		mainLayout->setContentsMargins(0, 0, 0, 0);
 		mZoomer = new Zoomer(this);
 		addScrollBarWidget(mZoomer, Qt::AlignLeft);
+		
 		mRuler = new Ruler(this);
 		mainLayout->addWidget(mRuler); 
 		setLayout(mainLayout);
+
+		connect(mZoomer, &Zoomer::zoomerIn, mRuler, &Ruler::onZoomerIn);
+		connect(mZoomer, &Zoomer::zoomerOut, mRuler, &Ruler::onZoomerOut);
 	}
 
 }

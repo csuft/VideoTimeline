@@ -5,6 +5,9 @@
 #include <QToolButton>
 #include <QSlider>
 
+#define MAX_LEVEL 8
+#define MIN_LEVEL 1
+
 namespace timeline {
 
 	class Zoomer : public QWidget {
@@ -16,16 +19,19 @@ namespace timeline {
 		~Zoomer() = default;
 
 	signals:
-		void zoomerChanged(int value);
+		void zoomerIn();
+		void zoomerOut();
 
 	private slots:
 		void onZoomInClicked(bool checked);
 		void onZoomOutClicked(bool checked); 
+		void onSliderChanged(int value);
 
 	private: 
 		QToolButton* mZoomIn;
 		QToolButton* mZoomOut;
 		QSlider* mZoomSlider;
+		int mCurrentLevel;
 	};
 	 
 }

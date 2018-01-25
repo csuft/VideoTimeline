@@ -7,8 +7,9 @@ namespace timeline {
 	Zoomer::Zoomer(QWidget* parent /* = Q_NULLPTR */)
 		: QWidget(parent),
 		mZoomIn(Q_NULLPTR),
-		mZoomOut(Q_NULLPTR), 
-		mZoomSlider(Q_NULLPTR)
+		mZoomOut(Q_NULLPTR),
+		mZoomSlider(Q_NULLPTR),
+		mCurrentLevel(1)
 	{
 		setFixedWidth(150);
 		setCursor(Qt::PointingHandCursor);
@@ -24,32 +25,42 @@ namespace timeline {
 
 	void Zoomer::initializeControls() {
 		mZoomSlider = new QSlider(Qt::Horizontal, this);
-		mZoomSlider->setRange(1, 8);
-		mZoomSlider->setSliderPosition(4);
+		mZoomSlider->setRange(MIN_LEVEL, MAX_LEVEL); // every step is 2.5 
+		mZoomSlider->setSliderPosition(MIN_LEVEL);
 		
 		mZoomIn = new QToolButton(this);
 		mZoomIn->setIcon(QIcon(":/images/zoomin"));
 		mZoomOut = new QToolButton(this);
 		mZoomOut->setIcon(QIcon(":/images/zoomout")); 
 
-		connect(mZoomSlider, &QAbstractSlider::valueChanged, this, &Zoomer::zoomerChanged);
+		connect(mZoomSlider, &QAbstractSlider::valueChanged, this, &Zoomer::onSliderChanged);
 		connect(mZoomIn, &QAbstractButton::clicked, this, &Zoomer::onZoomInClicked);
 		connect(mZoomOut, &QAbstractButton::clicked, this, &Zoomer::onZoomOutClicked);
 	}
 
 	void Zoomer::onZoomInClicked(bool checked) {
 		int currentValue = mZoomSlider->value();
-		if (currentValue > 1) {
+		if (currentValue > MIN_LEVEL) {
 			mZoomSlider->setSliderPosition(--currentValue);
-			emit zoomerChanged(currentValue);
+			emit zoomerIn();
 		}
 	}
 
 	void Zoomer::onZoomOutClicked(bool checked) {
 		int currentValue = mZoomSlider->value();
-		if (currentValue < 6) {
+		if (currentValue < MAX_LEVEL) {
 			mZoomSlider->setSliderPosition(++currentValue);
-			emit zoomerChanged(currentValue);
+			emit zoomerOut();
 		}
+	}
+
+	void Zoomer::onSliderChanged(int value) {
+		if (value > mCurrentLevel) {
+			emit zoomerOut();
+		}
+		else if (value < mCurrentLevel) {
+			emit zoomerIn();
+		} 
+		mCurrentLevel = value;
 	}
 }
