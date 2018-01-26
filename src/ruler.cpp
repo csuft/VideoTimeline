@@ -2,9 +2,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QContextMenuEvent>
-#include <QPainter>
-#include <QDebug> 
-#include <QtMath>
+#include <QPainter> 
 
 #define HEADER_HEIGHT 40
 #define BODY_HEIGHT 80
