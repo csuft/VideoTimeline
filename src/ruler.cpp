@@ -7,23 +7,26 @@
 
 #define HEADER_HEIGHT 40
 #define BODY_HEIGHT 80
-#define START_END_PADDING 20
+#define START_END_PADDING 60
 #define MAX_INTERVAL 40
 #define MIN_INTERVAL 20
 #define CUT_MARKER_WIDTH 10
 #define CUT_MARKER_HEIGHT 86
+#define TIME_LABEL_OFFSET 10
 
 namespace timeline {
 
 	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */, qreal frameRate)
 		: QWidget(parent),
-		mOrigin(19.0),
+		mOrigin(10.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
-		mInterval(30.0),
+		mIntervalLength(30.0),
 		mSliderLevel(1),
-		mTotalSeconds(126)
+		mTotalSeconds(126),
+		mRectWidth(mIntervalLength*mTotalSeconds/secondsPerInterval())
 	{  
+		setAttribute(Qt::WA_OpaquePaintEvent);
 		initializeChildren();
 
 		mContextMenu = new QMenu(this);
@@ -39,7 +42,7 @@ namespace timeline {
 		mUpdater->setSingleShot(false);
 		connect(mUpdater, &QTimer::timeout, this, &Ruler::onTimeOut);
 
-		resize(mTotalSeconds*mInterval + START_END_PADDING, 120);
+		resize(mRectWidth + START_END_PADDING, 120);
 	}
 
 	void Ruler::initializeChildren() {
@@ -56,7 +59,7 @@ namespace timeline {
 		mRightBorder = new QLabel(this);
 		mRightBorder->setPixmap(QPixmap(":/images/cutright"));
 		mRightBorder->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
-		mRightBorder->move(800, HEADER_HEIGHT);
+		mRightBorder->move(mRectWidth + CUT_MARKER_WIDTH, HEADER_HEIGHT);
 		mRightBorder->setCursor(Qt::SizeHorCursor);
 		mRightBorder->installEventFilter(this);
 
@@ -86,13 +89,13 @@ namespace timeline {
 				int dy = e->pos().y() - lastPnt.y();
 
 				if (watched == mIndicator) {
-					if (mIndicator->x() + dx < this->width() &&
-						mIndicator->x() + dx > 0) {
+					if (mIndicator->x() + dx <= mRectWidth - CUT_MARKER_WIDTH &&
+						mIndicator->x() + dx >= 0) {
 						mIndicator->move(mIndicator->x() + dx, mIndicator->y());
 					}
 				}
 				if (watched == mLeftBorder) {
-					if (mLeftBorder->x() + dx <= this->width() &&
+					if (mLeftBorder->x() + dx + CUT_MARKER_WIDTH <= mRectWidth &&
 						mLeftBorder->x() + dx >= 0 &&
 						mLeftBorder->x() + dx + CUT_MARKER_WIDTH <= mRightBorder->x()) {
 						mLeftBorder->move(mLeftBorder->x() + dx, mLeftBorder->y());
@@ -100,7 +103,7 @@ namespace timeline {
 					}
 				}
 				if (watched == mRightBorder) {
-					if (mRightBorder->x() + dx <= this->width() &&
+					if (mRightBorder->x() + dx <= mRectWidth + CUT_MARKER_WIDTH &&
 						mRightBorder->x() + dx >= 0 &&
 						mRightBorder->x() + dx - CUT_MARKER_WIDTH >= mLeftBorder->x()) {
 						mRightBorder->move(mRightBorder->x() + dx, mRightBorder->y());
@@ -185,33 +188,32 @@ namespace timeline {
 		switch (mSliderLevel)
 		{
 		case 1:
-			return 16;
-			break;
+			return 16; 
 		case 2:
-			return 8;
-			break;
+			return 8; 
 		case 3:
-			return 4;
-			break;
+			return 4; 
 		case 4: 
 		case 5:
 		case 6:
 		case 7:
 		case 8: 
 		default:
-			return 2;
-			break;
+			return 2; 
 		}
 	}
 	
 	QString Ruler::getTickerString(qreal currentPos) {
 		qreal pos = currentPos - mOrigin;
-		int totalSecs = pos / mInterval;
-		if (totalSecs % 2 == 0) { 
-			QTime currentTime(totalSecs / 3600, totalSecs / 60, totalSecs % 60);
-			if (totalSecs != 0) {
-				currentTime = currentTime.addSecs(secondsPerInterval()); 
-			}
+		int intervalNums = pos / mIntervalLength;
+		if (intervalNums == 0) {
+			return "00:00";
+		}
+		QTime currentTime(intervalNums * secondsPerInterval() / 3600, 
+			intervalNums * secondsPerInterval() / 60,
+			intervalNums * secondsPerInterval() % 60);
+		
+		if (intervalNums % 2 == 0) {
 			return currentTime.toString("mm:ss");
 		}
 
@@ -220,16 +222,16 @@ namespace timeline {
 
 	void Ruler::onZoomerIn(int level) {
 		mSliderLevel = level;
-		if (mInterval > MIN_INTERVAL) {
-			mInterval -= 2; 
+		if (mIntervalLength > MIN_INTERVAL) {
+			mIntervalLength -= 2;
 			// fix me: resize widget
 		} 
 	}
 
 	void Ruler::onZoomerOut(int level) {
 		mSliderLevel = level;
-		if (mInterval < MAX_INTERVAL) {
-			mInterval += 2; 
+		if (mIntervalLength < MAX_INTERVAL) {
+			mIntervalLength += 2;
 			// fix me: resize widget
 		} 
 	}
@@ -242,20 +244,30 @@ namespace timeline {
 		qreal rulerStartMark = rulerRect.left();
 		qreal rulerEndMark = rulerRect.right();
 
-		for (qreal current = mOrigin; current <= rulerEndMark; current += mInterval)
+		for (qreal current = mOrigin; current <= rulerEndMark; current += 2* mIntervalLength)
 		{
 			qreal x1 = current;
 			qreal y1 = rulerRect.top() + HEADER_HEIGHT - 5;
 			qreal x2 = current;
 			qreal y2 = rulerRect.bottom();
 
+			// draw 2 tickers within one circle.
 			QPen tickerPen(QColor(61, 61, 61), 1);
 			painter->setPen(tickerPen);
 			painter->drawLine(QLineF(x1, y1, x2, y2));
-
+			if (x1 + mIntervalLength <= rulerEndMark) {
+				painter->drawLine(QLineF(x1 + mIntervalLength, y1, x2 + mIntervalLength, y2));
+			}
+			
+			// draw 2 time text within one circle.
 			QPen textPen(QColor(121, 121, 121), 1);
 			painter->setPen(textPen);
-			painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, getTickerString(current));
+			painter->drawText(x1 - TIME_LABEL_OFFSET, y1 - HEADER_HEIGHT / 4, getTickerString(x1));
+			if (x1 + mIntervalLength - TIME_LABEL_OFFSET <= rulerEndMark) {
+				painter->drawText(x1 + mIntervalLength - TIME_LABEL_OFFSET, y1 - HEADER_HEIGHT / 4,
+					getTickerString(x1 + mIntervalLength));
+			}
+			
 		}
 	} 
 }

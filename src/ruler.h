@@ -57,7 +57,7 @@ namespace timeline {
 		QLabel* mLeftBorder;
 		QLabel* mRightBorder;
 		QFrame* mRectBox;
-		int mSliderLevel;
+		int mSliderLevel; 
 
 		// context menu
 		QMenu* mContextMenu;
@@ -67,11 +67,12 @@ namespace timeline {
 
 		// ruler members
 		qreal mOrigin;  
-		qreal mInterval;
+		qreal mIntervalLength;
 		QPoint mCursorPos;  
 		QColor mBodyBgrd;
 		QColor mHeaderBgrd; 
 		quint32 mTotalSeconds;
+		quint32 mRectWidth;
 
 		// updater
 		QTimer* mUpdater;
