@@ -14,18 +14,27 @@ namespace timeline {
 	class Ruler : public QWidget {
 		Q_OBJECT  
 	public:
-		explicit Ruler(QWidget* parent = Q_NULLPTR, qreal frameRate = 30.0);
-		~Ruler() = default;
+		explicit Ruler(QWidget* parent = Q_NULLPTR, int duration = 126);
+		~Ruler() = default;  
 
-		inline void setDuration(int duration) {
-			mTotalSeconds = duration;
-		}
-		void setOrigin(const qreal origin);   
 		inline void setHeaderColor(const QColor& color) {
 			mHeaderBgrd = color;
 		}
+
+		inline void setDuration(quint32 duration) {
+			resetChildren(duration);
+		}
+
 		inline void setBodyColor(const QColor& color) {
 			mBodyBgrd = color;
+		}
+
+		inline int beginTime() const {
+			return mBeginMarkerTime;
+		}
+
+		inline int endTime() const {
+			return mEndMarkerTime;
 		}
 
 	signals:
@@ -33,8 +42,8 @@ namespace timeline {
 
 	public slots:
 		void onZoomerIn(int level);
-		void onZoomerOut(int level);
-		void onTimeOut();
+		void onZoomerOut(int level); 
+		void onMoveIndicator(qreal frameTime);
 
 	protected:
 		virtual void paintEvent(QPaintEvent *event) override;
@@ -45,19 +54,25 @@ namespace timeline {
 		virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
 	private: 
-		void initializeChildren();
+		void setupChildren();
+		void resetChildren(quint32 duration);
+		void updateChildren();
 		void drawScaleRuler(QPainter* painter, QRectF rulerRect); 
 		QString getTickerString(qreal tickerNo);
 		int secondsPerInterval();
+		qreal lengthPerSecond();
 		void updateRectBox();
 
 	private: 
 		// sub controls
 		Indicator* mIndicator;
-		QLabel* mLeftBorder;
-		QLabel* mRightBorder;
+		QLabel* mBeginMarker;
+		QLabel* mEndMarker;
 		QFrame* mRectBox;
 		int mSliderLevel; 
+		qreal mBeginMarkerTime;  // time unit/s
+		qreal mEndMarkerTime; // time unit/s
+		qreal mIndicatorTime;   // time unit/s
 
 		// context menu
 		QMenu* mContextMenu;
@@ -71,12 +86,8 @@ namespace timeline {
 		QPoint mCursorPos;  
 		QColor mBodyBgrd;
 		QColor mHeaderBgrd; 
-		quint32 mTotalSeconds;
-		quint32 mRectWidth;
-
-		// updater
-		QTimer* mUpdater;
-		qreal mFrameRate;
+		quint32 mDuration;  // time unit/s
+		qreal mRectWidth;
 	};
 }
 

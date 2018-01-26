@@ -3,7 +3,7 @@
 
 // version variable that will be substituted by cmake
 // This shows an example using the $ variable type
-const char* verid = "Product: TimelineRuler Commit: c3db41b05c3cf1755680d5214386ae3e97c06670";
+const char* verid = "Product: TimelineRuler Commit: 43553007e7bb3cabc3fbc0c0374298e5a0807350";
 const char* vernum = "Version: 0.0.1";
 
 #endif

@@ -4,6 +4,7 @@
 #include <QContextMenuEvent>
 #include <QPainter>
 #include <QDebug> 
+#include <QtMath>
 
 #define HEADER_HEIGHT 40
 #define BODY_HEIGHT 80
@@ -16,61 +17,83 @@
 
 namespace timeline {
 
-	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */, qreal frameRate)
+	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */, int duration)
 		: QWidget(parent),
 		mOrigin(10.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
 		mIntervalLength(30.0),
 		mSliderLevel(1),
-		mTotalSeconds(126),
-		mRectWidth(mIntervalLength*mTotalSeconds/secondsPerInterval())
+		mDuration(duration),
+		mRectWidth(mIntervalLength * mDuration / secondsPerInterval())
 	{  
 		setAttribute(Qt::WA_OpaquePaintEvent);
-		initializeChildren();
+		setupChildren();
 
 		mContextMenu = new QMenu(this);
 		mClearPoints = new QAction(tr("Clear All Points"), this);
 		mCutWithCurrentPos = new QAction(tr("Cut With Currrent Position"), this);
-		mMakeCurrentPoint = new QAction(tr("Mark in Current Position"), this); 
-
-		mUpdater = new QTimer(this);
-		if (mFrameRate == 0.0) {
-			mFrameRate = 30.0;
-		}
-		mUpdater->setInterval(1000/mFrameRate);
-		mUpdater->setSingleShot(false);
-		connect(mUpdater, &QTimer::timeout, this, &Ruler::onTimeOut);
+		mMakeCurrentPoint = new QAction(tr("Mark in Current Position"), this);  
 
 		resize(mRectWidth + START_END_PADDING, 120);
 	}
 
-	void Ruler::initializeChildren() {
+	void Ruler::setupChildren() {
 		mIndicator = new Indicator(this);
 		mIndicator->installEventFilter(this);
+		mIndicatorTime = 0;
 
-		mLeftBorder = new QLabel(this);
-		mLeftBorder->setPixmap(QPixmap(":/images/cutleft"));
-		mLeftBorder->setCursor(Qt::SizeHorCursor);
-		mLeftBorder->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
-		mLeftBorder->move(0, HEADER_HEIGHT);
-		mLeftBorder->installEventFilter(this);
+		mBeginMarker = new QLabel(this);
+		mBeginMarker->setPixmap(QPixmap(":/images/cutleft"));
+		mBeginMarker->setCursor(Qt::SizeHorCursor);
+		mBeginMarker->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
+		mBeginMarker->move(0, HEADER_HEIGHT);
+		mBeginMarker->installEventFilter(this);
+		mBeginMarkerTime = 0;
 
-		mRightBorder = new QLabel(this);
-		mRightBorder->setPixmap(QPixmap(":/images/cutright"));
-		mRightBorder->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
-		mRightBorder->move(mRectWidth + CUT_MARKER_WIDTH, HEADER_HEIGHT);
-		mRightBorder->setCursor(Qt::SizeHorCursor);
-		mRightBorder->installEventFilter(this);
+		mEndMarker = new QLabel(this);
+		mEndMarker->setPixmap(QPixmap(":/images/cutright"));
+		mEndMarker->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
+		mEndMarker->move(mRectWidth + CUT_MARKER_WIDTH, HEADER_HEIGHT);
+		mEndMarker->setCursor(Qt::SizeHorCursor);
+		mEndMarker->installEventFilter(this);
+		mEndMarkerTime = (mRectWidth + CUT_MARKER_WIDTH)/lengthPerSecond();
 
 		mRectBox = new QFrame(this);
 		mRectBox->setObjectName("cutrect");
-		mRectBox->setGeometry(mLeftBorder->rect().right(), mLeftBorder->y(), mRightBorder->x() - mLeftBorder->rect().right(), BODY_HEIGHT);
+		mRectBox->setGeometry(mBeginMarker->rect().right(), mBeginMarker->y(), 
+			mEndMarker->x() - mBeginMarker->rect().right(), BODY_HEIGHT);
+	}
+
+	void Ruler::resetChildren(quint32 duration) {
+		mDuration = duration; 
+		mRectWidth = mIntervalLength * mDuration / secondsPerInterval();
+		mIndicator->move(0, 0);
+		mBeginMarker->move(0, HEADER_HEIGHT);
+		mEndMarker->move(mRectWidth + CUT_MARKER_WIDTH, HEADER_HEIGHT);
+		mRectBox->setGeometry(mBeginMarker->rect().right(), mBeginMarker->y(),
+			mEndMarker->x() - mBeginMarker->rect().right(), BODY_HEIGHT); 
+	}
+
+	void Ruler::onMoveIndicator(qreal frameTime) {
+
+	}
+
+	// update children when the ruler scaled up or down
+	void Ruler::updateChildren() {
+		mRectWidth = mIntervalLength * mDuration / secondsPerInterval();
+		
+		mBeginMarker->move(mBeginMarkerTime * mIntervalLength / secondsPerInterval(), mBeginMarker->y());
+		mEndMarker->move(mEndMarkerTime * mIntervalLength / secondsPerInterval(), mEndMarker->y());
+		mRectBox->setGeometry(mBeginMarker->x() + CUT_MARKER_WIDTH, mBeginMarker->y(),
+			mEndMarker->x() - mBeginMarker->x() - CUT_MARKER_WIDTH, BODY_HEIGHT);
+		mIndicator->move(mIndicatorTime * mIntervalLength / secondsPerInterval(), mIndicator->y());
+		update();
 	}
 
 	bool Ruler::eventFilter(QObject *watched, QEvent *event) {
-		if (watched == mIndicator || watched == mLeftBorder 
-			|| watched == mRightBorder)
+		if (watched == mIndicator || watched == mBeginMarker 
+			|| watched == mEndMarker)
 		{
 			static QPoint lastPnt;
 			static bool isHover = false;
@@ -91,22 +114,25 @@ namespace timeline {
 				if (watched == mIndicator) {
 					if (mIndicator->x() + dx <= mRectWidth - CUT_MARKER_WIDTH &&
 						mIndicator->x() + dx >= 0) {
+						mIndicatorTime = (mIndicator->x() + dx)/lengthPerSecond();
 						mIndicator->move(mIndicator->x() + dx, mIndicator->y());
 					}
 				}
-				if (watched == mLeftBorder) {
-					if (mLeftBorder->x() + dx + CUT_MARKER_WIDTH <= mRectWidth &&
-						mLeftBorder->x() + dx >= 0 &&
-						mLeftBorder->x() + dx + CUT_MARKER_WIDTH <= mRightBorder->x()) {
-						mLeftBorder->move(mLeftBorder->x() + dx, mLeftBorder->y());
+				if (watched == mBeginMarker) {
+					if (mBeginMarker->x() + dx + CUT_MARKER_WIDTH <= mRectWidth &&
+						mBeginMarker->x() + dx >= 0 &&
+						mBeginMarker->x() + dx + CUT_MARKER_WIDTH <= mEndMarker->x()) {
+						mBeginMarkerTime = (mBeginMarker->x() + dx)/lengthPerSecond();
+						mBeginMarker->move(mBeginMarker->x() + dx, mBeginMarker->y());
 						updateRectBox();
 					}
 				}
-				if (watched == mRightBorder) {
-					if (mRightBorder->x() + dx <= mRectWidth + CUT_MARKER_WIDTH &&
-						mRightBorder->x() + dx >= 0 &&
-						mRightBorder->x() + dx - CUT_MARKER_WIDTH >= mLeftBorder->x()) {
-						mRightBorder->move(mRightBorder->x() + dx, mRightBorder->y());
+				if (watched == mEndMarker) {
+					if (mEndMarker->x() + dx <= mRectWidth + CUT_MARKER_WIDTH &&
+						mEndMarker->x() + dx >= 0 &&
+						mEndMarker->x() + dx - CUT_MARKER_WIDTH >= mBeginMarker->x()) {
+						mEndMarkerTime = (mEndMarker->x() + dx)/lengthPerSecond();
+						mEndMarker->move(mEndMarker->x() + dx, mEndMarker->y());
 						updateRectBox();
 					}
 				}
@@ -120,8 +146,8 @@ namespace timeline {
 	} 
 
 	void Ruler::updateRectBox() { 
-		mRectBox->setGeometry(mLeftBorder->x() + CUT_MARKER_WIDTH, mLeftBorder->y(), 
-			mRightBorder->x() - mLeftBorder->x() - CUT_MARKER_WIDTH, BODY_HEIGHT);
+		mRectBox->setGeometry(mBeginMarker->x() + CUT_MARKER_WIDTH, mBeginMarker->y(), 
+			mEndMarker->x() - mBeginMarker->x() - CUT_MARKER_WIDTH, BODY_HEIGHT);
 	}
 
 	void Ruler::contextMenuEvent(QContextMenuEvent *event) {
@@ -153,15 +179,7 @@ namespace timeline {
 
 	void Ruler::mouseReleaseEvent(QMouseEvent* event) {
 
-	}
-
-	void Ruler::setOrigin(const qreal origin)
-	{
-		if (mOrigin != origin) {
-			mOrigin = origin;
-			update();
-		}
-	}  
+	} 
 	 
 	void Ruler::paintEvent(QPaintEvent *event) { 
 		QPainter painter(this);
@@ -178,12 +196,30 @@ namespace timeline {
 		painter.fillRect(QRect(rulerRect.left(), rulerRect.top() + HEADER_HEIGHT, 
 			rulerRect.width(), rulerRect.height() - HEADER_HEIGHT), mBodyBgrd);
 
-		if (mTotalSeconds) {
+		if (mDuration) {
 			// draw tickers and time labels
 			drawScaleRuler(&painter, rulerRect);
 		} 
 	}
 
+	qreal Ruler::lengthPerSecond() {
+		switch (mSliderLevel)
+		{
+		case 1:
+			return mIntervalLength / 16.0;
+		case 2:
+			return mIntervalLength / 8.0;
+		case 3:
+			return mIntervalLength / 4.0;
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		default:
+			return mIntervalLength / 2.0; 
+		}
+	}
 	int Ruler::secondsPerInterval() { 
 		switch (mSliderLevel)
 		{
@@ -224,7 +260,7 @@ namespace timeline {
 		mSliderLevel = level;
 		if (mIntervalLength > MIN_INTERVAL) {
 			mIntervalLength -= 2;
-			// fix me: resize widget
+			updateChildren();
 		} 
 	}
 
@@ -232,13 +268,9 @@ namespace timeline {
 		mSliderLevel = level;
 		if (mIntervalLength < MAX_INTERVAL) {
 			mIntervalLength += 2;
-			// fix me: resize widget
+			updateChildren();
 		} 
-	}
-
-	void Ruler::onTimeOut() {
-
-	}
+	} 
 
 	void Ruler::drawScaleRuler(QPainter* painter, QRectF rulerRect) { 
 		qreal rulerStartMark = rulerRect.left();
