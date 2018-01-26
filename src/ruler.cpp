@@ -6,9 +6,12 @@
 #include <QDebug> 
 
 #define HEADER_HEIGHT 40
+#define BODY_HEIGHT 80
 #define START_END_PADDING 20
 #define MAX_INTERVAL 40
 #define MIN_INTERVAL 20
+#define CUT_MARKER_WIDTH 10
+#define CUT_MARKER_HEIGHT 86
 
 namespace timeline {
 
@@ -21,26 +24,7 @@ namespace timeline {
 		mSliderLevel(1),
 		mTotalSeconds(126)
 	{  
-		mIndicator = new Indicator(this);
-		mIndicator->installEventFilter(this);
-
-		mLeftBorder = new QLabel(this);
-		mLeftBorder->setPixmap(QPixmap(":/images/cutleft"));
-		mLeftBorder->setCursor(Qt::SizeHorCursor);
-		mLeftBorder->setFixedSize(10, 86);
-		mLeftBorder->move(0, HEADER_HEIGHT);
-		mLeftBorder->installEventFilter(this);
-
-		mRightBorder = new QLabel(this);
-		mRightBorder->setPixmap(QPixmap(":/images/cutright"));
-		mRightBorder->setFixedSize(10, 86);
-		mRightBorder->move(800, HEADER_HEIGHT);
-		mRightBorder->setCursor(Qt::SizeHorCursor);
-		mRightBorder->installEventFilter(this);
-
-		mRectBox = new QFrame(this);
-		mRectBox->setObjectName("cutrect");
-		mRectBox->setGeometry(87, 40, 700, 80);
+		initializeChildren();
 
 		mContextMenu = new QMenu(this);
 		mClearPoints = new QAction(tr("Clear All Points"), this);
@@ -56,6 +40,29 @@ namespace timeline {
 		connect(mUpdater, &QTimer::timeout, this, &Ruler::onTimeOut);
 
 		resize(mTotalSeconds*mInterval + START_END_PADDING, 120);
+	}
+
+	void Ruler::initializeChildren() {
+		mIndicator = new Indicator(this);
+		mIndicator->installEventFilter(this);
+
+		mLeftBorder = new QLabel(this);
+		mLeftBorder->setPixmap(QPixmap(":/images/cutleft"));
+		mLeftBorder->setCursor(Qt::SizeHorCursor);
+		mLeftBorder->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
+		mLeftBorder->move(0, HEADER_HEIGHT);
+		mLeftBorder->installEventFilter(this);
+
+		mRightBorder = new QLabel(this);
+		mRightBorder->setPixmap(QPixmap(":/images/cutright"));
+		mRightBorder->setFixedSize(CUT_MARKER_WIDTH, CUT_MARKER_HEIGHT);
+		mRightBorder->move(800, HEADER_HEIGHT);
+		mRightBorder->setCursor(Qt::SizeHorCursor);
+		mRightBorder->installEventFilter(this);
+
+		mRectBox = new QFrame(this);
+		mRectBox->setObjectName("cutrect");
+		mRectBox->setGeometry(mLeftBorder->rect().right(), mLeftBorder->y(), mRightBorder->x() - mLeftBorder->rect().right(), BODY_HEIGHT);
 	}
 
 	bool Ruler::eventFilter(QObject *watched, QEvent *event) {
@@ -87,26 +94,32 @@ namespace timeline {
 				if (watched == mLeftBorder) {
 					if (mLeftBorder->x() + dx <= this->width() &&
 						mLeftBorder->x() + dx >= 0 &&
-						mLeftBorder->x() + dx <= mRightBorder->x()) {
+						mLeftBorder->x() + dx + CUT_MARKER_WIDTH <= mRightBorder->x()) {
 						mLeftBorder->move(mLeftBorder->x() + dx, mLeftBorder->y());
+						updateRectBox();
 					}
 				}
 				if (watched == mRightBorder) {
 					if (mRightBorder->x() + dx <= this->width() &&
 						mRightBorder->x() + dx >= 0 &&
-						mRightBorder->x() + dx >= mLeftBorder->x()) {
+						mRightBorder->x() + dx - CUT_MARKER_WIDTH >= mLeftBorder->x()) {
 						mRightBorder->move(mRightBorder->x() + dx, mRightBorder->y());
+						updateRectBox();
 					}
 				}
 			}
-			else if (event->type() == QEvent::MouseButtonRelease && isHover)
-			{
+			else if (event->type() == QEvent::MouseButtonRelease && isHover) {
 				isHover = false;
 			}
 		}
 
 		return false;
 	} 
+
+	void Ruler::updateRectBox() { 
+		mRectBox->setGeometry(mLeftBorder->x() + CUT_MARKER_WIDTH, mLeftBorder->y(), 
+			mRightBorder->x() - mLeftBorder->x() - CUT_MARKER_WIDTH, BODY_HEIGHT);
+	}
 
 	void Ruler::contextMenuEvent(QContextMenuEvent *event) {
 		mContextMenu->addAction(mClearPoints);
@@ -153,8 +166,6 @@ namespace timeline {
 		font.setPointSize(8);
 		painter.setFont(font);
 		painter.setRenderHints(QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing);
-		QPen pen(QColor(181, 181, 181), 1);
-		painter.setPen(pen); 
 
 		QRectF rulerRect = this->rect(); 
 		// paint header background color
@@ -196,8 +207,8 @@ namespace timeline {
 	QString Ruler::getTickerString(qreal currentPos) {
 		qreal pos = currentPos - mOrigin;
 		int totalSecs = pos / mInterval;
-		QTime currentTime(totalSecs / 3600, totalSecs / 60, totalSecs % 60);
 		if (totalSecs % 2 == 0) { 
+			QTime currentTime(totalSecs / 3600, totalSecs / 60, totalSecs % 60);
 			if (totalSecs != 0) {
 				currentTime = currentTime.addSecs(secondsPerInterval()); 
 			}
@@ -236,9 +247,15 @@ namespace timeline {
 			qreal x1 = current;
 			qreal y1 = rulerRect.top() + HEADER_HEIGHT - 5;
 			qreal x2 = current;
-			qreal y2 = rulerRect.bottom() - HEADER_HEIGHT;
+			qreal y2 = rulerRect.bottom();
+
+			QPen tickerPen(QColor(61, 61, 61), 1);
+			painter->setPen(tickerPen);
 			painter->drawLine(QLineF(x1, y1, x2, y2));
-			//painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, getTickerString(current));
+
+			QPen textPen(QColor(121, 121, 121), 1);
+			painter->setPen(textPen);
+			painter->drawText(x1 - 10, y1 - HEADER_HEIGHT/4, getTickerString(current));
 		}
 	} 
 }

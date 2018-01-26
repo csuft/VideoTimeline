@@ -89,8 +89,9 @@ QToolButton {
 }
 
 /* ID selectors */
-QWidget#cutrect {
-    background-color: qlineargradient(spread:pad, x1: 0 y1: 0, x2: 0 y2: 1, stop:0 rgba(38, 39, 40, 30), stop:1 rgba(48, 49, 50, 20));
+QFrame#cutrect {
+    border: 1px solid rgb(100,100,100);
+    background-color: qlineargradient(spread:pad, x1: 0 y1: 0, x2: 0 y2: 1, stop:0 rgba(100,100, 100, 50), stop:1 rgba(98, 99, 96, 50));
 }
 
 

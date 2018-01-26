@@ -45,9 +45,11 @@ namespace timeline {
 		virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
 	private: 
+		void initializeChildren();
 		void drawScaleRuler(QPainter* painter, QRectF rulerRect); 
 		QString getTickerString(qreal tickerNo);
 		int secondsPerInterval();
+		void updateRectBox();
 
 	private: 
 		// sub controls
