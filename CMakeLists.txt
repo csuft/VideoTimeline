@@ -17,7 +17,7 @@ IF(NOT GIT_SHA1)
     SET(GIT_REV "0")
 ENDIF()
 
-SET(META_PROJECT_NAME        "TimelineRuler") 
+SET(META_PROJECT_NAME        "VideoTimeLine") 
 SET(META_MAJOR_VERSION       "0")
 SET(META_MINOR_VERSION       "0")
 SET(META_PATCH_VERSION       "1")
@@ -30,16 +30,20 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in ${CMAKE_CURRENT_SOUR
 
 ################################################################################
 # Sources and headers   
-FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui REQUIRED) 
+FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui Qml REQUIRED) 
 
-FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
-FILE(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp") 
-FILE(GLOB RESOURCE_FILES "{CMAKE_CURRENT_SOURCE_DIR}/src/resource/timeline.qrc")
+FILE(GLOB V1_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v1/*.h")
+FILE(GLOB V1_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v1/*.cpp")  
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/)
+FILE(GLOB V2_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v2/*.h")
+FILE(GLOB V2_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v2/*.cpp")  
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 ################################################################################
 # Compile target
-ADD_EXECUTABLE ( ${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} src/resource/timeline.qrc)
+ADD_EXECUTABLE(TimelineRuler ${V1_SOURCE_FILES} ${V1_HEADER_FILES} ${V1_RESOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/v1/resource/timeline.qrc)
+ADD_EXECUTABLE(TimelineQML ${V2_RESOURCE_FILES} ${V2_HEADER_FILES} ${V2_SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/v2/resource/timeline.qrc)
 # https://www.kdab.com/using-cmake-with-qt-5/
-qt5_use_modules(${PROJECT_NAME} Core Widgets Gui) 
+qt5_use_modules(TimelineRuler Core Widgets Gui) 
+qt5_use_modules(TimelineQML Core Widgets Gui Qml) 

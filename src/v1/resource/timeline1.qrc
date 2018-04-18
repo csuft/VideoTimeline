@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="indicator">images/cut1.png</file>
+        <file alias="cutleft">images/cutLeft.png</file>
+        <file alias="cutline">images/cutLine.png</file>
+        <file alias="cutright">images/cutRight.png</file>
+        <file alias="logo">images/logo.png</file>
+        <file alias="point">images/recordPoing.png</file>
+        <file alias="pointEnabled">images/recordPoingSelect.png</file>
+        <file alias="sliderhandle">images/sliderDrag.png</file>
+        <file alias="zoomin">images/sliderIcon.png</file>
+        <file alias="zoomout">images/sliderIcon0.png</file>
+    </qresource>
+    <qresource prefix="/style">
+        <file alias="app">app.qss</file>
+    </qresource>
+</RCC>
