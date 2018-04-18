@@ -87,7 +87,7 @@ namespace timeline {
 		QColor mBodyBgrd;
 		QColor mHeaderBgrd; 
 		quint32 mDuration;  // time unit/s
-		qreal mRectWidth;
+		qreal mRectWidth; 
 	};
 }
 

@@ -5,7 +5,7 @@ PROJECT( VideoTimeline CXX)
 # Compiler and linker options  
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
-SET(CMAKE_CXX_STANDARD 11)  
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 # Include cmake modules
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

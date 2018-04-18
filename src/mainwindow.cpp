@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QVBoxLayout> 
 #include <QScrollBar>
+#include <QDebug>
 
 namespace timeline {
 
@@ -15,7 +16,7 @@ namespace timeline {
 		
 		mRuler = new Ruler(this);
 		setWidget(mRuler);
-
+		
 		connect(mZoomer, &Zoomer::zoomerIn, mRuler, &Ruler::onZoomerIn);
 		connect(mZoomer, &Zoomer::zoomerOut, mRuler, &Ruler::onZoomerOut);
 		connect(mRuler, &Ruler::changeSliderPosition, mZoomer, &Zoomer::onChangeSliderPosition);

@@ -16,7 +16,7 @@
 namespace timeline {
 
 	Ruler::Ruler(QWidget* parent /* = Q_NULLPTR */, int duration)
-		: QWidget(parent),
+		: QWidget(parent), 
 		mOrigin(10.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
@@ -74,7 +74,10 @@ namespace timeline {
 	}
 
 	void Ruler::onMoveIndicator(qreal frameTime) {
-
+		if (frameTime > mDuration || frameTime < 0) {
+			return;
+		}
+		mIndicator->move(frameTime * lengthPerSecond(), mIndicator->y());
 	}
 
 	// update children when the ruler scaled up or down
@@ -189,10 +192,10 @@ namespace timeline {
 		QRectF rulerRect = this->rect(); 
 		// paint header background color
 		painter.fillRect(QRect(rulerRect.left(), rulerRect.top(), 
-			rulerRect.width(), HEADER_HEIGHT), mHeaderBgrd);
+			this->width(), HEADER_HEIGHT), mHeaderBgrd);
 		// paint body background color
 		painter.fillRect(QRect(rulerRect.left(), rulerRect.top() + HEADER_HEIGHT, 
-			rulerRect.width(), rulerRect.height() - HEADER_HEIGHT), mBodyBgrd);
+			this->width(), rulerRect.height() - HEADER_HEIGHT), mBodyBgrd);
 
 		if (mDuration) {
 			// draw tickers and time labels
