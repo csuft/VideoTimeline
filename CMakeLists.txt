@@ -37,13 +37,15 @@ FILE(GLOB V1_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v1/*.cpp")
 
 FILE(GLOB V2_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v2/*.h")
 FILE(GLOB V2_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/v2/*.cpp")  
+FILE(GLOB V2_FORMS "${CMAKE_CURRENT_SOURCE_DIR}/src/v2/ui/*.ui")
+qt5_wrap_ui(V2_UI_HEADERS ${V2_FORMS})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 ################################################################################
 # Compile target
 ADD_EXECUTABLE(TimelineRuler ${V1_SOURCE_FILES} ${V1_HEADER_FILES} ${V1_RESOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/v1/resource/timeline.qrc)
-ADD_EXECUTABLE(TimelineQML ${V2_RESOURCE_FILES} ${V2_HEADER_FILES} ${V2_SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/v2/resource/timeline.qrc)
+ADD_EXECUTABLE(TimelineQML ${V2_UI_HEADERS} ${V2_RESOURCE_FILES} ${V2_HEADER_FILES} ${V2_SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/v2/resource/timeline.qrc)
 # https://www.kdab.com/using-cmake-with-qt-5/
 qt5_use_modules(TimelineRuler Core Widgets Gui) 
-qt5_use_modules(TimelineQML Core Widgets Gui Qml) 
+qt5_use_modules(TimelineQML Core Widgets Gui Qml QuickWidgets) 

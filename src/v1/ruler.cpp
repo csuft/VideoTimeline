@@ -20,11 +20,10 @@ namespace timeline {
 		mOrigin(10.0),
 		mBodyBgrd(37, 38, 39),
 		mHeaderBgrd(32, 32, 32),
-		mIntervalLength(30.0),
+		mIntervalLength(130.0),
 		mSliderLevel(1),
 		mDuration(duration),
-		mRectWidth(mIntervalLength * mDuration / secondsPerInterval())
-	{  
+		mRectWidth(mIntervalLength * mDuration / secondsPerInterval()) {  
 		setAttribute(Qt::WA_OpaquePaintEvent);
 		setupChildren();
 

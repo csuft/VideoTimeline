@@ -1,55 +1,8 @@
 /* class selector */
 * {
-	background: rgb(35, 35, 35);
-	color: rgb(91, 91, 91);
+	background: rgb(45, 45, 45);
+	color: rgb(211, 221, 211);
 	font-family: "Microsoft Yahei";
-}
-
-/* QSlider styles */ 
-
-QSlider::groove:horizontal {
-    border: 1px solid #bbb;
-    background: white;
-    height: 3px; 
-	left: 12px;
-	right: 12px;
-}
-
-QSlider::sub-page:horizontal { 
-    border: 1px solid #777;
-    height: 3px; 
-}
-
-QSlider::add-page:horizontal {
-    background: #fff;
-    border: 1px solid #777;
-    height: 3px; 
-}
-
-QSlider::handle:horizontal { 
-    border: 1px solid #777;
-    width: 13px;
-	border-image: url(:/images/sliderhandle);
-    margin: -7px; 
-}
-
-QSlider::handle:horizontal:hover { 
-    border: 1px solid #444; 
-}
-
-QSlider::sub-page:horizontal:disabled {
-    background: #bbb;
-    border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-    background: #eee;
-    border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-    background: #eee;
-    border: 1px solid #aaa; 
 }
 
 /* QScrollBar styles */
@@ -86,14 +39,94 @@ QScrollBar::sub-page:horizontal{
 QToolButton {
 	border: none;
 	background: transparent;
+} 
+
+QLabel#frameIndexLabel {
+    border: 1px solid rgb(231,231,231);
+	border-right: none;
 }
 
-/* ID selectors */
-QFrame#cutrect {
-    border: 1px solid rgb(100,100,100);
-    background-color: qlineargradient(spread:pad, x1: 0 y1: 0, x2: 0 y2: 1, stop:0 rgba(100,100, 100, 50), stop:1 rgba(98, 99, 96, 50));
+QWidget#videoTrackHead {
+    border: 1px solid rgb(231,231,231);
+	border-right: none;
+	border-top: none;
 }
 
+QWidget#audioTrackHead {
+    border: 1px solid rgb(231,231,231);
+	border-right: none;
+	border-top: none;
+}
+
+QWidget#timelineRuler,
+QWidget#videoTrackContainer {
+    border-bottom: 1px solid rgb(231,231,231);
+}
+
+QScrollArea#timelineScrollArea {
+    border: 1px solid rgb(231,231,231);
+	border-left: none;
+}
+
+QSlider {
+    background: transparent;
+}
+
+/* add-page: the area after handle */
+QSlider::groove:horizontal,
+QSlider::add-page:horizontal { 
+	background: #808080; 
+	height: 3px; 
+	border-radius: 2px; 
+}
+
+/* sub-page: the area before handle */
+QSlider::sub-page:horizontal {
+	height: 3px; 
+	border-radius: 2px;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #4D4D4D, stop:1 #292929); 
+}
+
+QSlider::handle:horizontal {
+	width:8px;
+	border-radius:4px;
+	margin:-3px 0px -3px 0px;
+	background: rgb(231,231,231);
+}
+
+QSlider::handle:horizontal:hover {
+	background: rgb(239,239,239);
+}
+
+
+/* QScrollBar styles */
+QScrollBar:vertical {
+	background: transparent; 
+}
+
+QScrollBar::handle:vertical {
+	background: rgb(115,115,115); 
+}
+
+QScrollBar::add-line:vertical {
+	border: nonde;
+	background: transparent;
+}
+
+QScrollBar::sub-line:vertical {
+	border: none;
+	background: transparent;
+} 
+
+QScrollBar::add-page:vertical{
+	border: none;
+	background: transparent;
+}
+
+QScrollBar::sub-page:vertical{
+	border: none;
+	background: transparent;
+}
 
 
 

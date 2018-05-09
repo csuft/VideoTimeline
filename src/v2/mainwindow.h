@@ -2,6 +2,7 @@
 #define _MAIN_WINDOW_H 
 
 #include <QMainWindow>
+#include "timeline.h"
 
 namespace timeline {
 
@@ -9,7 +10,10 @@ namespace timeline {
 		Q_OBJECT
 	public:
 		MainWindow(QWidget* parent = Q_NULLPTR);
-		~MainWindow() = default; 
+		~MainWindow() = default;  
+
+	private:
+		Timeline* mTimeline;
 	};
 }
 

@@ -1,6 +1,19 @@
 <RCC>
-    <qresource prefix="/images"/>
+    <qresource prefix="/images">
+        <file alias="audiowave">images/audio-meter.png</file>
+        <file alias="volume">images/audio-volume-high.png</file>
+        <file alias="volumemute">images/audio-volume-muted.png</file>
+        <file alias="cutclip">images/edit-cut.png</file>
+        <file alias="prevmarker">images/format-indent-less.png</file>
+        <file alias="nextmarker">images/format-indent-more.png</file>
+        <file alias="locked">images/object-locked.png</file>
+        <file alias="unlocked">images/object-unlocked.png</file>
+        <file alias="splitclip">images/slice.png</file>
+        <file alias="snap">images/snap.png</file>
+        <file alias="zoomin">images/zoom-in.png</file>
+        <file alias="zoomout">images/zoom-out.png</file>
+    </qresource>
     <qresource prefix="/style">
-        <file>app.qss</file>
+        <file alias="app">app.qss</file>
     </qresource>
 </RCC>
