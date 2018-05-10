@@ -2,7 +2,9 @@
 #define _MAIN_WINDOW_H 
 
 #include <QMainWindow>
+
 #include "timeline.h"
+#include "timelinetrackmodel.h"
 
 namespace timeline {
 
@@ -11,9 +13,15 @@ namespace timeline {
 	public:
 		MainWindow(QWidget* parent = Q_NULLPTR);
 		~MainWindow() = default;  
+		void load(bool force = false);
 
+	private slots:
+		void onVisibilityChanged(bool visible);
+		void clearSelectionIfInvalid();
+	
 	private:
-		Timeline* mTimeline;
+		Timeline* mTimelineWidget;
+		TimelineTracksModel* mTimelineModel;
 	};
 }
 
