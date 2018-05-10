@@ -1,28 +1,10 @@
-/*
- * Copyright (c) 2013-2016 Meltytech, LLC
- * Author: Dan Dennedy <dan@dennedy.org>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 import QtQuick 2.2
 import QtQml.Models 2.1
 import QtQuick.Controls 1.0
-import Shotcut.Controls 1.0
+import Studio.Timeline 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
-import 'Timeline.js' as Logic
+import 'Timeline.js' as TimelineLogic
 
 Rectangle {
     id: root
@@ -58,21 +40,17 @@ Rectangle {
             adjustZoom(wheel.angleDelta.y / 720)
         }
         if (wheel.modifiers & Qt.ShiftModifier) {
-            multitrack.trackHeight = Math.max(30, multitrack.trackHeight + wheel.angleDelta.y / 5)
+            timelinetracks.trackHeight = Math.max(30, timelinetracks.trackHeight + wheel.angleDelta.y / 5)
         }
     }
 
     function makeTracksTaller() {
-        multitrack.trackHeight += 20
+        timelinetracks.trackHeight += 20
     }
 
     function makeTracksShorter() {
-        multitrack.trackHeight = Math.max(30, multitrack.trackHeight - 20)
-    }
-
-    function pulseLockButtonOnTrack(index) {
-        trackHeaderRepeater.itemAt(index).pulseLockButton()
-    }
+        timelinetracks.trackHeight = Math.max(30, timelinetracks.trackHeight - 20)
+    } 
 
     function selectMultitrack() {
         for (var i = 0; i < trackHeaderRepeater.count; i++)
@@ -80,13 +58,11 @@ Rectangle {
         cornerstone.selected = true
     }
 
-    property int headerWidth: 140
     property int currentTrack: 0
     property color selectedTrackColor: Qt.rgba(0.8, 0.8, 0, 0.3);
     property alias trackCount: tracksRepeater.count
     property bool stopScrolling: false
-    property color shotcutBlue: Qt.rgba(23/255, 92/255, 118/255, 1.0)
-    property alias ripple: toolbar.ripple
+    property color studioYellow: Qt.rgba(255/255, 215/255, 0/255, 1.0) 
 
     onCurrentTrackChanged: timeline.selection = []
 
@@ -100,22 +76,16 @@ Rectangle {
     DropArea {
         anchors.fill: parent
         onEntered: {
-            if (drag.formats.indexOf('application/mlt+xml') >= 0)
-                drag.acceptProposedAction()
+            
         }
-        onExited: Logic.dropped()
+        onExited: {
+
+        }
         onPositionChanged: {
-            if (drag.formats.indexOf('application/mlt+xml') >= 0)
-                Logic.dragging(drag, drag.text)
+            
         }
         onDropped: {
-            if (drop.formats.indexOf('application/mlt+xml') >= 0) {
-                if (currentTrack >= 0) {
-                    Logic.acceptDrop(drop.getDataAsString('application/mlt+xml'))
-                    drop.acceptProposedAction()
-                }
-            }
-            Logic.dropped()
+            
         }
     }
 
@@ -129,123 +99,16 @@ Rectangle {
 
     Row {
         anchors.top: toolbar.bottom
-        Column {
-            z: 1
-
-            Rectangle {
-                id: cornerstone
-                property bool selected: false
-                // Padding between toolbar and track headers.
-                width: headerWidth
-                height: ruler.height
-                color: selected? shotcutBlue : activePalette.window
-                border.color: selected? 'red' : 'transparent'
-                border.width: selected? 1 : 0
-                z: 1
-                Label {
-                    text: qsTr('Master')
-                    visible: tracksRepeater.count
-                    color: activePalette.windowText
-                    elide: Qt.ElideRight
-                    x: 8
-                    y: 2
-                    width: parent.width - 8
-                }
-                ToolButton {
-                    visible: multitrack.filtered
-                    anchors.right: parent.right
-                    anchors.rightMargin: 4
-                    anchors.verticalCenter: parent.verticalCenter
-                    implicitWidth: 20
-                    implicitHeight: 20
-                    iconName: 'view-filter'
-                    iconSource: 'qrc:///icons/oxygen/32x32/status/view-filter.png'
-                    tooltip: qsTr('Filters')
-                    onClicked: {
-                        timeline.selectMultitrack()
-                        timeline.filteredClicked()
-                    }
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton
-                    onClicked: timeline.selectMultitrack()
-                }
-            }
-            Flickable {
-                // Non-slider scroll area for the track headers.
-                contentY: scrollView.flickableItem.contentY
-                width: headerWidth
-                height: trackHeaders.height
-                interactive: false
-
-                Column {
-                    id: trackHeaders
-                    Repeater {
-                        id: trackHeaderRepeater
-                        model: multitrack
-                        TrackHead {
-                            trackName: model.name
-                            isMute: model.mute
-                            isHidden: model.hidden
-                            isComposite: model.composite
-                            isLocked: model.locked
-                            isVideo: !model.audio
-                            isFiltered: model.filtered
-                            width: headerWidth
-                            height: Logic.trackHeight(model.audio)
-                            selected: false
-                            current: index === currentTrack
-                            onIsLockedChanged: tracksRepeater.itemAt(index).isLocked = isLocked
-                            onClicked: {
-                                currentTrack = index
-                                timeline.selectTrackHead(currentTrack)
-                            }
-                        }
-                    }
-                }
-                Rectangle {
-                    // thin dividing line between headers and tracks
-                    color: activePalette.windowText
-                    width: 1
-                    x: parent.x + parent.width
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                }
-            }
-        }
         MouseArea {
             id: tracksArea
-            width: root.width - headerWidth
-            height: root.height
-
-            // This provides continuous scrubbing and scimming at the left/right edges.
+            width: root.width
+            height: root.height 
             focus: true
             hoverEnabled: true
-            onClicked: timeline.position = (scrollView.flickableItem.contentX + mouse.x) / multitrack.scaleFactor
-            property bool scim: false
-            onReleased: scim = false
-            onExited: scim = false
+            onClicked: timeline.position = (scrollView.flickableItem.contentX + mouse.x) / timelinetracks.scaleFactor
             onPositionChanged: {
                 if (mouse.modifiers === Qt.ShiftModifier || mouse.buttons === Qt.LeftButton) {
-                    timeline.position = (scrollView.flickableItem.contentX + mouse.x) / multitrack.scaleFactor
-                    scim = true
-                }
-                else
-                    scim = false
-            }
-            Timer {
-                id: scrubTimer
-                interval: 25
-                repeat: true
-                running: parent.scim && parent.containsMouse
-                         && (parent.mouseX < 50 || parent.mouseX > parent.width - 50)
-                         && (timeline.position * multitrack.scaleFactor >= 50)
-                onTriggered: {
-                    if (parent.mouseX < 50)
-                        timeline.position -= 10
-                    else
-                        timeline.position += 10
+                    timeline.position = (scrollView.flickableItem.contentX + mouse.x) / timelinetracks.scaleFactor
                 }
             }
 
@@ -253,7 +116,7 @@ Rectangle {
                 Flickable {
                     // Non-slider scroll area for the Ruler.
                     contentX: scrollView.flickableItem.contentX
-                    width: root.width - headerWidth
+                    width: root.width
                     height: ruler.height
                     interactive: false
 
@@ -261,27 +124,27 @@ Rectangle {
                         id: ruler
                         width: tracksContainer.width
                         index: index
-                        timeScale: multitrack.scaleFactor
+                        timeScale: timelinetracks.scaleFactor
                     }
                 }
                 ScrollView {
                     id: scrollView
-                    width: root.width - headerWidth
+                    width: root.width 
                     height: root.height - ruler.height - toolbar.height
         
                     Item {
-                        width: tracksContainer.width + headerWidth
+                        width: tracksContainer.width 
                         height: trackHeaders.height + 30 // 30 is padding
                         Column {
                             // These make the striped background for the tracks.
                             // It is important that these are not part of the track visual hierarchy;
                             // otherwise, the clips will be obscured by the Track's background.
                             Repeater {
-                                model: multitrack
+                                model: timelinetracks
                                 delegate: Rectangle {
                                     width: tracksContainer.width
                                     color: (index === currentTrack)? selectedTrackColor : (index % 2)? activePalette.alternateBase : activePalette.base
-                                    height: Logic.trackHeight(audio)
+                                    height: TimelineLogic.trackHeight(audio)
                                 }
                             }
                         }
@@ -291,23 +154,7 @@ Rectangle {
                         }
                     }
                 }
-            }
-
-            CornerSelectionShadow {
-                y: tracksRepeater.count ? tracksRepeater.itemAt(currentTrack).y + ruler.height - scrollView.flickableItem.contentY : 0
-                clip: timeline.selection.length ?
-                        tracksRepeater.itemAt(currentTrack).clipAt(timeline.selection[0]) : null
-                opacity: clip && clip.x + clip.width < scrollView.flickableItem.contentX ? 1 : 0
-            }
-
-            CornerSelectionShadow {
-                y: tracksRepeater.count ? tracksRepeater.itemAt(currentTrack).y + ruler.height - scrollView.flickableItem.contentY : 0
-                clip: timeline.selection.length ?
-                        tracksRepeater.itemAt(currentTrack).clipAt(timeline.selection[timeline.selection.length - 1]) : null
-                opacity: clip && clip.x > scrollView.flickableItem.contentX + scrollView.width ? 1 : 0
-                anchors.right: parent.right
-                mirrorGradient: true
-            }
+            } 
 
             Rectangle {
                 id: cursor
@@ -315,13 +162,13 @@ Rectangle {
                 color: activePalette.text
                 width: 1
                 height: root.height - scrollView.__horizontalScrollBar.height - toolbar.height
-                x: timeline.position * multitrack.scaleFactor - scrollView.flickableItem.contentX
+                x: timeline.position * timelinetracks.scaleFactor - scrollView.flickableItem.contentX
                 y: 0
             }
             TimelinePlayhead {
                 id: playhead
                 visible: timeline.position > -1
-                x: timeline.position * multitrack.scaleFactor - scrollView.flickableItem.contentX - 5
+                x: timeline.position * timelinetracks.scaleFactor - scrollView.flickableItem.contentX - 5
                 y: 0
                 width: 11
                 height: 5
@@ -331,13 +178,13 @@ Rectangle {
 
     Rectangle {
         id: dropTarget
-        height: multitrack.trackHeight
+        height: timelinetracks.trackHeight
         opacity: 0.5
         visible: false
         Text {
             anchors.fill: parent
             anchors.leftMargin: 100
-            text: toolbar.ripple? qsTr('Insert') : qsTr('Overwrite')
+            text: toolbar.ripple? qsTr('Insert') : qsTr('Overwrite Track')
             style: Text.Outline
             styleColor: 'white'
             font.pixelSize: Math.min(Math.max(parent.height * 0.8, 15), 30)
@@ -399,35 +246,9 @@ Rectangle {
     }
 
     Menu {
-        id: menu
+        id: menu  
         MenuItem {
-            text: qsTr('Add Audio Track')
-            shortcut: 'Ctrl+U'
-            onTriggered: timeline.addAudioTrack();
-        }
-        MenuItem {
-            text: qsTr('Add Video Track')
-            shortcut: 'Ctrl+Y'
-            onTriggered: timeline.addVideoTrack();
-        }
-        MenuItem {
-            text: qsTr('Insert Track')
-            onTriggered: timeline.insertTrack()
-        }
-        MenuItem {
-            text: qsTr('Remove Track')
-            onTriggered: timeline.removeTrack()
-        }
-        MenuSeparator {}
-        MenuItem {
-            text: qsTr("Ripple All Tracks")
-            checkable: true
-            checked: settings.timelineRippleAllTracks
-            onTriggered: settings.timelineRippleAllTracks = checked
-        }
-        MenuSeparator {}
-        MenuItem {
-            enabled: multitrack.trackHeight >= 50
+            enabled: timelinetracks.trackHeight >= 50
             text: qsTr('Make Tracks Shorter')
             shortcut: 'Ctrl+-'
             onTriggered: makeTracksShorter()
@@ -466,7 +287,7 @@ Rectangle {
         MenuItem {
             text: qsTr('Reload')
             onTriggered: {
-                multitrack.reload()
+                timelinetracks.reload()
             }
         }
         onPopupVisibleChanged: {
@@ -480,14 +301,14 @@ Rectangle {
 
     DelegateModel {
         id: trackDelegateModel
-        model: multitrack
+        model: timelinetracks
         Track {
-            model: multitrack
+            model: timelinetracks
             rootIndex: trackDelegateModel.modelIndex(index)
-            height: Logic.trackHeight(audio)
+            height: TimelineLogic.trackHeight(audio)
             isAudio: audio
             isCurrentTrack: currentTrack === index
-            timeScale: multitrack.scaleFactor
+            timeScale: timelinetracks.scaleFactor
             selection: timeline.selection
             onClipClicked: {
                 currentTrack = track.DelegateModel.itemsIndex
@@ -512,7 +333,7 @@ Rectangle {
                 }
                 // Show distance moved as time in a "bubble" help.
                 var track = tracksRepeater.itemAt(clip.trackIndex)
-                var delta = Math.round((clip.x - clip.originalX) / multitrack.scaleFactor)
+                var delta = Math.round((clip.x - clip.originalX) / timelinetracks.scaleFactor)
                 var s = timeline.timecode(Math.abs(delta))
                 // remove leading zeroes
                 if (s.substring(0, 3) === '00:')
@@ -556,25 +377,21 @@ Rectangle {
     
     Connections {
         target: timeline
-        onPositionChanged: if (!stopScrolling) Logic.scrollIfNeeded()
-        onDragging: Logic.dragging(pos, duration)
-        onDropped: Logic.dropped()
-        onDropAccepted: Logic.acceptDrop(xml)
-        onSelectionChanged: {
-            cornerstone.selected = timeline.isMultitrackSelected()
-            var selectedTrack = timeline.selectedTrack()
-            for (var i = 0; i < trackHeaderRepeater.count; i++)
-                trackHeaderRepeater.itemAt(i).selected = (i === selectedTrack)
+        onPositionChanged: if (!stopScrolling) TimelineLogic.scrollIfNeeded()
+        onDragging: TimelineLogic.dragging(pos, duration)
+        onDropped: TimelineLogic.dropped()
+        onDropAccepted: TimelineLogic.acceptDrop(xml)
+        onSelectionChanged: { 
+
         }
     }
 
     Connections {
-        target: multitrack
-        onLoaded: toolbar.scaleSlider.value = Math.pow(multitrack.scaleFactor - 0.01, 1.0 / 3.0)
-        onScaleFactorChanged: Logic.scrollIfNeeded()
+        target: timelinetracks
+        onLoaded: toolbar.scaleSlider.value = Math.pow(timelinetracks.scaleFactor - 0.01, 1.0 / 3.0)
+        onScaleFactorChanged: TimelineLogic.scrollIfNeeded()
     }
-
-    // This provides continuous scrolling at the left/right edges.
+ 
     Timer {
         id: scrollTimer
         interval: 25

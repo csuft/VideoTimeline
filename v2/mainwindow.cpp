@@ -18,7 +18,7 @@ namespace timeline {
 		setWindowIcon(QIcon(":/images/logo")); 
 		resize(800, 150);  
 
-		qmlRegisterType<TimelineTracksModel>("Timeline.TracksModel", 1, 0, "TimelineTracksModel");
+		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
 		mTimelineWidget->engine()->addImportPath(importPath.path());
 		mTimelineWidget->engine()->addImageProvider(QString("thumbnail"), new ThumbnailProvider);
