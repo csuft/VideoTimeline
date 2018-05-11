@@ -8,38 +8,6 @@
 
 namespace timeline {
 
-	class TimelineTransition : public QQuickPaintedItem {
-		Q_OBJECT
-			Q_PROPERTY(QColor colorA MEMBER m_colorA NOTIFY propertyChanged)
-			Q_PROPERTY(QColor colorB MEMBER m_colorB NOTIFY propertyChanged)
-
-	public:
-		TimelineTransition() {
-			setAntialiasing(QPainter::Antialiasing);
-			connect(this, SIGNAL(propertyChanged()), this, SLOT(update()));
-		}
-
-		void paint(QPainter *painter) {
-			QLinearGradient gradient(0, 0, 0, height());
-			gradient.setColorAt(0, m_colorA);
-			gradient.setColorAt(1, m_colorB);
-
-			QPainterPath path;
-			path.moveTo(0, 0);
-			path.lineTo(width(), height());
-			path.lineTo(width(), 0);
-			path.lineTo(0, height());
-			painter->fillPath(path, gradient);
-			painter->strokePath(path, painter->pen());
-		}
-	signals:
-		void propertyChanged();
-
-	private:
-		QColor m_colorA;
-		QColor m_colorB;
-	};
-
 	class TimelinePlayhead : public QQuickPaintedItem {
 		void paint(QPainter *painter) {
 			QPainterPath path;
@@ -124,9 +92,7 @@ namespace timeline {
 }
 
 
-void registerTimelineItems()
-{
-    qmlRegisterType<timeline::TimelineTransition>("Studio.Timeline", 1, 0, "TimelineTransition");
+void registerTimelineItems() { 
     qmlRegisterType<timeline::TimelinePlayhead>("Studio.Timeline", 1, 0, "TimelinePlayhead");
     qmlRegisterType<timeline::TimelineTriangle>("Studio.Timeline", 1, 0, "TimelineTriangle");
     qmlRegisterType<timeline::TimelineWaveform>("Studio.Timeline", 1, 0, "TimelineWaveform");

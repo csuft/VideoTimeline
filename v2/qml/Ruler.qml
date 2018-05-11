@@ -4,13 +4,13 @@ import QtQuick.Controls 1.0
 Rectangle {
     property int index: 0
     property real timeScale: 1.0
-    property int stepSize: Math.round(136 * Math.max(1.0, timeScale))
+    property int stepSize: Math.round(135 * Math.max(1.0, timeScale))
 
     SystemPalette { id: activePalette }
 
     id: rulerTop
     enabled: false
-    height: 24
+    height: 30
     color: activePalette.base
 
     Repeater {
@@ -21,10 +21,9 @@ Rectangle {
             width: 1
             color: activePalette.windowText
             x: index * stepSize
-            Label {
-                anchors.left: parent.right
+            Label { 
                 anchors.leftMargin: 2
-                anchors.bottom: parent.bottom
+                anchors.bottom: parent.top
                 anchors.bottomMargin: 2
                 color: activePalette.windowText
                 x: index * stepSize + 2

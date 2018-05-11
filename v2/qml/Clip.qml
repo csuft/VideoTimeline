@@ -5,33 +5,25 @@ import QtGraphicalEffects 1.0
 import QtQml.Models 2.2
 import QtQuick.Window 2.2
 
+//  Component instances can directly access the component scopes of their ancestors.
 Rectangle {
     id: clipRoot
     property string clipName: ''
-    property string clipResource: ''
-    property string mltService: ''
+    property string clipSource: '' 
     property int inPoint: 0
     property int outPoint: 0
     property int clipDuration: 0
     property bool isBlank: false
-    property bool isAudio: false
-    property bool isTransition: false
-    property var audioLevels
-    property int fadeIn: 0
-    property int fadeOut: 0
+    property bool isAudio: false 
+    property var audioLevels 
     property int trackIndex
-    property int originalTrackIndex: trackIndex
-    property int originalClipIndex: index
     property int originalX: x
-    property bool selected: false
-    property string hash: ''
-    property double speed: 1.0
+    property bool selected: false  
 
     signal clicked(var clip)
     signal moved(var clip)
     signal dragged(var clip, var mouse)
-    signal dropped(var clip)
-    signal draggedToTrack(var clip, int direction)
+    signal dropped(var clip) 
     signal trimmingIn(var clip, real delta, var mouse)
     signal trimmedIn(var clip)
     signal trimmingOut(var clip, real delta, var mouse)
@@ -51,23 +43,18 @@ Rectangle {
         }
     }
 
-    border.color: selected? 'red' : 'black'
+    border.color: selected? 'yellow' : 'black'
     border.width: isBlank? 0 : 1
-    clip: true
+    // If clipping is enabled, an item will clip its own painting, 
+    // as well as the painting of its children, to its bounding rectangle.
+    clip: true 
     Drag.active: mouseArea.drag.active
     Drag.proposedAction: Qt.MoveAction
     opacity: Drag.active? 0.5 : 1.0
 
     function getColor() {
-        return isBlank? 'transparent' : isTransition? 'mediumpurple' : isAudio? 'darkseagreen' : root.shotcutBlue
-    }
-
-    function reparent(track) {
-        parent = track
-        isAudio = track.isAudio
-        height = track.height
-        generateWaveform()
-    }
+        return isBlank? 'transparent' : isAudio? 'darkseagreen' : root.studioYellow
+    } 
 
     function generateWaveform() {
         if (!waveform.visible) return
@@ -76,14 +63,6 @@ Rectangle {
         waveformRepeater.model = Math.ceil(waveform.innerWidth / waveform.maxWidth)
         for (var i = 0; i < waveformRepeater.count; i++)
             waveformRepeater.itemAt(0).update()
-    }
-
-    function imagePath(time) {
-        if (isAudio || isBlank || isTransition) {
-            return ''
-        } else {
-            return 'image://thumbnail/' + hash + '/' + mltService + '/' + clipResource + '#' + time
-        }
     }
 
     onAudioLevelsChanged: generateWaveform()
@@ -113,15 +92,7 @@ Rectangle {
         width: height * 16.0/9.0
         fillMode: Image.PreserveAspectFit
         source: imagePath(inPoint)
-    }
-
-    TimelineTransition {
-        visible: isTransition
-        anchors.fill: parent
-        property var color: isAudio? 'darkseagreen' : root.shotcutBlue
-        colorA: color
-        colorB: clipRoot.selected ? Qt.darker(color) : Qt.lighter(color)
-    }
+    } 
 
     Row {
         id: waveform
@@ -130,7 +101,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.margins: parent.border.width
-        opacity: 0.7
+        opacity: 0.5
         property int maxWidth: 10000
         property int innerWidth: clipRoot.width - clipRoot.border.width * 2
 
@@ -141,8 +112,8 @@ Rectangle {
                 height: waveform.height
                 fillColor: getColor()
                 property int channels: 2
-                inPoint: Math.round((clipRoot.inPoint + index * waveform.maxWidth / timeScale) * speed) * channels
-                outPoint: inPoint + Math.round(width / timeScale * speed) * channels
+                inPoint: Math.round((clipRoot.inPoint + index * waveform.maxWidth / timeScale)) * channels
+                outPoint: inPoint + Math.round(width / timeScale) * channels
                 levels: audioLevels
             }
         }
@@ -151,21 +122,21 @@ Rectangle {
     Rectangle {
         // audio peak line
         width: parent.width - parent.border.width * 2
-        visible: !isBlank && !isTransition
+        visible: !isBlank
         height: 1
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.leftMargin: parent.border.width
         anchors.bottomMargin: waveform.height * 0.9
         color: Qt.darker(parent.color)
-        opacity: 0.7
+        opacity: 0.5
     }
 
     Rectangle {
         // text background
         color: 'lightgray'
-        visible: !isBlank && !isTransition
-        opacity: 0.7
+        visible: !isBlank 
+        opacity: 0.5
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.topMargin: parent.border.width
@@ -178,7 +149,7 @@ Rectangle {
     Text {
         id: label
         text: clipName
-        visible: !isBlank && !isTransition
+        visible: !isBlank 
         font.pointSize: 8
         anchors {
             top: parent.top
@@ -250,10 +221,6 @@ Rectangle {
             clipRoot.clicked(clipRoot)
         }
         onPositionChanged: {
-            if (mouse.y < 0 && trackIndex > 0)
-                parent.draggedToTrack(clipRoot, -1)
-            else if (mouse.y > height && (trackIndex + 1) < root.trackCount)
-                parent.draggedToTrack(clipRoot, 1)
             parent.dragged(clipRoot, mouse)
         }
         onReleased: {
@@ -268,7 +235,7 @@ Rectangle {
                 parent.dropped(clipRoot)
             }
         }
-        onDoubleClicked: timeline.position = clipRoot.x / multitrack.scaleFactor
+        onDoubleClicked: timeline.position = clipRoot.x / timelinetracks.scaleFactor
         onWheel: zoomByWheel(wheel)
 
         MouseArea {
@@ -281,195 +248,11 @@ Rectangle {
                 isBlank? Qt.ArrowCursor : Qt.OpenHandCursor
             onClicked: menu.show()
         }
-    }
-
-    TimelineTriangle {
-        id: fadeInTriangle
-        visible: !isBlank && !isTransition
-        width: parent.fadeIn * timeScale
-        height: parent.height - parent.border.width * 2
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: parent.border.width
-        opacity: 0.5
-        onWidthChanged: {
-            if (width === 0) {
-                fadeInControl.anchors.horizontalCenter = undefined
-                fadeInControl.anchors.left = fadeInTriangle.left
-            } else if (fadeInControl.anchors.left && !fadeInMouseArea.pressed) {
-                fadeInControl.anchors.left = undefined
-                fadeInControl.anchors.horizontalCenter = fadeInTriangle.right
-            }
-        }
-    }
-    Rectangle {
-        id: fadeInControl
-        enabled: !isBlank && !isTransition
-        anchors.left: fadeInTriangle.width > radius? undefined : fadeInTriangle.left
-        anchors.horizontalCenter: fadeInTriangle.width > radius? fadeInTriangle.right : undefined
-        anchors.top: fadeInTriangle.top
-        anchors.topMargin: -3
-        width: 20
-        height: 20
-        radius: 10
-        color: 'black'
-        border.width: 2
-        border.color: 'white'
-        opacity: 0
-        Drag.active: fadeInMouseArea.drag.active
-        MouseArea {
-            id: fadeInMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            drag.target: parent
-            drag.axis: Drag.XAxis
-            property int startX
-            property int startFadeIn
-            onEntered: parent.opacity = 0.7
-            onExited: parent.opacity = 0
-            onPressed: {
-                root.stopScrolling = true
-                startX = parent.x
-                startFadeIn = fadeIn
-                parent.anchors.left = undefined
-                parent.anchors.horizontalCenter = undefined
-                parent.opacity = 1
-                // trackRoot.clipSelected(clipRoot, trackRoot) TODO
-            }
-            onReleased: {
-                root.stopScrolling = false
-                if (fadeInTriangle.width > parent.radius)
-                    parent.anchors.horizontalCenter = fadeInTriangle.right
-                else
-                    parent.anchors.left = fadeInTriangle.left
-                bubbleHelp.hide()
-            }
-            onPositionChanged: {
-                if (mouse.buttons === Qt.LeftButton) {
-                    var delta = Math.round((parent.x - startX) / timeScale)
-                    var duration = startFadeIn + delta
-                    timeline.fadeIn(trackIndex, index, duration)
-
-                    // Show fade duration as time in a "bubble" help.
-                    var s = timeline.timecode(Math.max(duration, 0))
-                    bubbleHelp.show(clipRoot.x, trackRoot.y + clipRoot.height, s.substring(6))
-                }
-            }
-        }
-        SequentialAnimation on scale {
-            loops: Animation.Infinite
-            running: fadeInMouseArea.containsMouse
-            NumberAnimation {
-                from: 1.0
-                to: 0.5
-                duration: 250
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                from: 0.5
-                to: 1.0
-                duration: 250
-                easing.type: Easing.InOutQuad
-            }
-        }
-    }
-
-    TimelineTriangle {
-        id: fadeOutTriangle
-        visible: !isBlank && !isTransition
-        width: parent.fadeOut * timeScale
-        height: parent.height - parent.border.width * 2
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: parent.border.width
-        opacity: 0.5
-        transform: Scale { xScale: -1; origin.x: fadeOutTriangle.width / 2}
-        onWidthChanged: {
-            if (width === 0) {
-                fadeOutControl.anchors.horizontalCenter = undefined
-                fadeOutControl.anchors.right = fadeOutTriangle.right
-            } else if (fadeOutControl.anchors.right && !fadeOutMouseArea.pressed) {
-                fadeOutControl.anchors.right = undefined
-                fadeOutControl.anchors.horizontalCenter = fadeOutTriangle.left
-            }
-        }
-    }
-    Rectangle {
-        id: fadeOutControl
-        enabled: !isBlank && !isTransition
-        anchors.right: fadeOutTriangle.width > radius? undefined : fadeOutTriangle.right
-        anchors.horizontalCenter: fadeOutTriangle.width > radius? fadeOutTriangle.left : undefined
-        anchors.top: fadeOutTriangle.top
-        anchors.topMargin: -3
-        width: 20
-        height: 20
-        radius: 10
-        color: 'black'
-        border.width: 2
-        border.color: 'white'
-        opacity: 0
-        Drag.active: fadeOutMouseArea.drag.active
-        MouseArea {
-            id: fadeOutMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            drag.target: parent
-            drag.axis: Drag.XAxis
-            property int startX
-            property int startFadeOut
-            onEntered: parent.opacity = 0.7
-            onExited: parent.opacity = 0
-            onPressed: {
-                root.stopScrolling = true
-                startX = parent.x
-                startFadeOut = fadeOut
-                parent.anchors.right = undefined
-                parent.anchors.horizontalCenter = undefined
-                parent.opacity = 1
-            }
-            onReleased: {
-                root.stopScrolling = false
-                if (fadeOutTriangle.width > parent.radius)
-                    parent.anchors.horizontalCenter = fadeOutTriangle.left
-                else
-                    parent.anchors.right = fadeOutTriangle.right
-                bubbleHelp.hide()
-            }
-            onPositionChanged: {
-                if (mouse.buttons === Qt.LeftButton) {
-                    var delta = Math.round((startX - parent.x) / timeScale)
-                    var duration = startFadeOut + delta
-                    timeline.fadeOut(trackIndex, index, duration)
-
-                    // Show fade duration as time in a "bubble" help.
-                    var s = timeline.timecode(Math.max(duration, 0))
-                    bubbleHelp.show(clipRoot.x + clipRoot.width, trackRoot.y + clipRoot.height, s.substring(6))
-                }
-            }
-        }
-        SequentialAnimation on scale {
-            loops: Animation.Infinite
-            running: fadeOutMouseArea.containsMouse
-            NumberAnimation {
-                from: 1.0
-                to: 0.5
-                duration: 250
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                from: 0.5
-                to: 1.0
-                duration: 250
-                easing.type: Easing.InOutQuad
-            }
-        }
-    }
+    } 
 
     Rectangle {
         id: trimIn
-        enabled: !isBlank && !isTransition
+        enabled: !isBlank
         anchors.left: parent.left
         anchors.leftMargin: 0
         height: parent.height
@@ -518,7 +301,7 @@ Rectangle {
     }
     Rectangle {
         id: trimOut
-        enabled: !isBlank && !isTransition
+        enabled: !isBlank 
         anchors.right: parent.right
         anchors.rightMargin: 0
         height: parent.height
@@ -571,49 +354,35 @@ Rectangle {
             popup()
         }
         MenuItem {
-            visible: !isBlank && !isTransition
+            visible: !isBlank 
             text: qsTr('Cut')
-            onTriggered: {
-                if (!trackRoot.isLocked) {
-                    timeline.copyClip(trackIndex, index)
-                    timeline.remove(trackIndex, index)
-                } else {
-                    root.pulseLockButtonOnTrack(currentTrack)
-                }
+            onTriggered: { 
+                timeline.copyClip(trackIndex, index)
+                timeline.remove(trackIndex, index) 
             }
         }
         MenuItem {
-            visible: !isBlank && !isTransition
+            visible: !isBlank 
             text: qsTr('Copy')
             onTriggered: timeline.copyClip(trackIndex, index)
         }
         MenuSeparator {
-            visible: !isBlank && !isTransition
+            visible: !isBlank 
         }
         MenuItem {
             text: qsTr('Remove')
             onTriggered: timeline.remove(trackIndex, index)
         }
-        MenuItem {
-            visible: !isBlank
-            text: qsTr('Lift')
-            onTriggered: timeline.lift(trackIndex, index)
-        }
         MenuSeparator {
-            visible: !isBlank && !isTransition
+            visible: !isBlank 
         }
         MenuItem {
-            visible: !isBlank && !isTransition
-            text: qsTr('Split At Playhead (S)')
+            visible: !isBlank 
+            text: qsTr('Split At Playhead')
             onTriggered: timeline.splitClip(trackIndex, index)
         }
         MenuItem {
-            id: mergeItem
-            text: qsTr('Merge with next clip')
-            onTriggered: timeline.mergeClipWithNext(trackIndex, index, false)
-        }
-        MenuItem {
-            visible: !isBlank && !isTransition && settings.timelineShowWaveforms
+            visible: !isBlank && settings.timelineShowWaveforms
             text: qsTr('Rebuild Audio Waveform')
             onTriggered: timeline.remakeAudioLevels(trackIndex, index)
         }

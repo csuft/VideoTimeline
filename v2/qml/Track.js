@@ -35,14 +35,13 @@ function snapClip(clip, repeater) {
             }
         }
     }
-    if (!toolbar.scrub) {
-        var cursorX = scrollView.flickableItem.contentX + cursor.x
-        if (left > cursorX - SNAP && left < cursorX + SNAP)
-            // Snap around cursor/playhead.
-            clip.x = cursorX
-        if (right > cursorX - SNAP && right < cursorX + SNAP)
-            clip.x = cursorX - clip.width
-    }
+
+    var cursorX = scrollView.flickableItem.contentX + cursor.x
+    if (left > cursorX - SNAP && left < cursorX + SNAP)
+        // Snap around cursor/playhead.
+        clip.x = cursorX
+    if (right > cursorX - SNAP && right < cursorX + SNAP)
+        clip.x = cursorX - clip.width 
 }
 
 function snapTrimIn(clip, delta) {
@@ -115,13 +114,11 @@ function snapDrop(pos, repeater) {
                 return
             }
         }
-    }
-    if (!toolbar.scrub) {
-        var cursorX = scrollView.flickableItem.contentX + cursor.x
-        if (left > cursorX - SNAP && left < cursorX + SNAP)
-            // Snap around cursor/playhead.
-            dropTarget.x = cursorX + headerWidth - scrollView.flickableItem.contentX
-        if (right > cursorX - SNAP && right < cursorX + SNAP)
-            dropTarget.x = cursorX - dropTarget.width + headerWidth - scrollView.flickableItem.contentX
-    }
+    } 
+    var cursorX = scrollView.flickableItem.contentX + cursor.x
+    if (left > cursorX - SNAP && left < cursorX + SNAP)
+        // Snap around cursor/playhead.
+        dropTarget.x = cursorX + headerWidth - scrollView.flickableItem.contentX
+    if (right > cursorX - SNAP && right < cursorX + SNAP)
+        dropTarget.x = cursorX - dropTarget.width + headerWidth - scrollView.flickableItem.contentX 
 }

@@ -5,6 +5,7 @@
 #include "qmlview.h"
 
 #include <QDebug>
+#include <QVBoxLayout>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QDockWidget>
@@ -14,10 +15,12 @@ namespace timeline {
 	MainWindow::MainWindow(QWidget* parent /* = Q_NULLPTR */)
 		: QMainWindow(parent),
 		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
-		mTimelineModel(new TimelineTracksModel){
+		mTimelineModel(new TimelineTracksModel),
+		mAddClipBtn(new QPushButton("Add Clip", this)){
 		setWindowIcon(QIcon(":/images/logo")); 
 		resize(800, 150);  
 
+		QVBoxLayout* mainLayout = new QVBoxLayout;
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
 		mTimelineWidget->engine()->addImportPath(importPath.path());
@@ -29,15 +32,19 @@ namespace timeline {
 		mTimelineWidget->rootContext()->setContextProperty("timelinetracks", mTimelineModel);
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
-		setCentralWidget(mTimelineWidget); 
-
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
+		
+		mainLayout->addWidget(mTimelineWidget, 1);
+		mainLayout->addWidget(mAddClipBtn, 0, Qt::AlignRight);
+		centralWidget()->setLayout(mainLayout);
+
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else
 		connect(this, &QDockWidget::visibilityChanged, this, &MainWindow::load);
 #endif
 		connect(mTimelineModel, &TimelineTracksModel::modified, this, &MainWindow::clearSelectionIfInvalid);
+		connect(mAddClipBtn, &QAbstractButton::clicked, this, &MainWindow::onAddClip);
 	} 
 
 	void MainWindow::onVisibilityChanged(bool visible) {
@@ -66,6 +73,10 @@ namespace timeline {
 	}
 
 	void MainWindow::clearSelectionIfInvalid() {
+
+	}
+
+	void MainWindow::onAddClip() {
 
 	}
 }

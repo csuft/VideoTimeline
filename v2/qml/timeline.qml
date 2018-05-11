@@ -50,13 +50,7 @@ Rectangle {
 
     function makeTracksShorter() {
         timelinetracks.trackHeight = Math.max(30, timelinetracks.trackHeight - 20)
-    } 
-
-    function selectMultitrack() {
-        for (var i = 0; i < trackHeaderRepeater.count; i++)
-            trackHeaderRepeater.itemAt(i).selected = false
-        cornerstone.selected = true
-    }
+    }  
 
     property int currentTrack: 0
     property color selectedTrackColor: Qt.rgba(0.8, 0.8, 0, 0.3);
@@ -114,7 +108,6 @@ Rectangle {
 
             Column {
                 Flickable {
-                    // Non-slider scroll area for the Ruler.
                     contentX: scrollView.flickableItem.contentX
                     width: root.width
                     height: ruler.height
@@ -184,7 +177,7 @@ Rectangle {
         Text {
             anchors.fill: parent
             anchors.leftMargin: 100
-            text: toolbar.ripple? qsTr('Insert') : qsTr('Overwrite Track')
+            text: qsTr('Overwrite Track')
             style: Text.Outline
             styleColor: 'white'
             font.pixelSize: Math.min(Math.max(parent.height * 0.8, 15), 30)
@@ -345,33 +338,10 @@ Rectangle {
                 scrollTimer.running = false
                 bubbleHelp.hide()
             }
-            onClipDraggedToTrack: {
-                var i = clip.trackIndex + direction
-                if (i >= 0  && i < tracksRepeater.count) {
-                    var track = tracksRepeater.itemAt(i)
-                    clip.reparent(track)
-                    clip.trackIndex = track.DelegateModel.itemsIndex
-                }
-            }
             onCheckSnap: {
                 for (var i = 0; i < tracksRepeater.count; i++)
                     tracksRepeater.itemAt(i).snapClip(clip)
-            }
-            Image {
-                anchors.fill: parent
-                source: "qrc:///icons/light/16x16/track-locked.png"
-                fillMode: Image.Tile
-                opacity: parent.isLocked
-                visible: opacity
-                Behavior on opacity { NumberAnimation {} }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        mouse.accepted = true;
-                        trackHeaderRepeater.itemAt(index).pulseLockButton()
-                    }
-                }
-            }
+            } 
         }
     }
     

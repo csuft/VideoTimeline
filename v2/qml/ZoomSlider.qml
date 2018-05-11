@@ -24,10 +24,10 @@ Rectangle {
         maximumValue: 3.0
         value: 1
         function setScaleFactor() {
-            multitrack.scaleFactor = Math.pow(value, 3) + 0.01
+            timelinetracks.scaleFactor = Math.pow(value, 3) + 0.01
         }
         onValueChanged: {
-            if (!pressed && typeof multitrack.scaleFactor != 'undefined')
+            if (!pressed && typeof timelinetracks.scaleFactor != 'undefined')
                 setScaleFactor()
         }
         onPressedChanged: {

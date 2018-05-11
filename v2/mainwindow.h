@@ -2,6 +2,7 @@
 #define _MAIN_WINDOW_H 
 
 #include <QMainWindow>
+#include <QPushButton>
 
 #include "timeline.h"
 #include "timelinetrackmodel.h"
@@ -22,10 +23,12 @@ namespace timeline {
 	private slots:
 		void onVisibilityChanged(bool visible);
 		void clearSelectionIfInvalid();
+		void onAddClip();
 	
 	private:
 		Timeline* mTimelineWidget;
 		TimelineTracksModel* mTimelineModel;
+		QPushButton* mAddClipBtn;
 	};
 }
 

@@ -1,5 +1,5 @@
-#ifndef MULTITRACKMODEL_H
-#define MULTITRACKMODEL_H
+#ifndef TIMELINETRACKMODEL_H
+#define TIMELINETRACKMODEL_H
 
 #include <QAbstractItemModel>
 #include <QList>
@@ -19,21 +19,14 @@ namespace timeline {
 	public: 
 		enum {
 			NameRole = Qt::UserRole + 1,
-			ResourceRole,   
-			ServiceRole,    
+			SourceRole,      
 			IsBlankRole,      
 			StartRole,      
 			DurationRole,
 			InPointRole,     
-			OutPointRole,    
-			FramerateRole,   
+			OutPointRole,      
 			IsAudioRole,
-			AudioLevelsRole, 
-			IsTransitionRole, 
-			FileHashRole,   
-			IsLockedRole,  
-			IsMuteRole,    
-			IsHiddenRole,   
+			AudioLevelsRole,         
 		};
 
 		explicit TimelineTracksModel(QObject *parent = 0);
@@ -93,25 +86,8 @@ namespace timeline {
 		void joinClips(int trackIndex, int clipIndex); 
 		void fadeIn(int trackIndex, int clipIndex, int duration);
 		void fadeOut(int trackIndex, int clipIndex, int duration);
-		bool addTransitionValid(int fromTrack, int toTrack, int clipIndex, int position);
-		int addTransition(int trackIndex, int clipIndex, int position);
-		void removeTransition(int trackIndex, int clipIndex);
-		void removeTransitionByTrimIn(int trackIndex, int clipIndex, int delta);
-		void removeTransitionByTrimOut(int trackIndex, int clipIndex, int delta);
-		bool trimTransitionInValid(int trackIndex, int clipIndex, int delta);
-		void trimTransitionIn(int trackIndex, int clipIndex, int delta);
-		bool trimTransitionOutValid(int trackIndex, int clipIndex, int delta);
-		void trimTransitionOut(int trackIndex, int clipIndex, int delta);
-		bool addTransitionByTrimInValid(int trackIndex, int clipIndex, int delta);
-		void addTransitionByTrimIn(int trackIndex, int clipIndex, int delta);
-		bool addTransitionByTrimOutValid(int trackIndex, int clipIndex, int delta);
-		void addTransitionByTrimOut(int trackIndex, int clipIndex, int delta);
-		bool removeTransitionByTrimInValid(int trackIndex, int clipIndex, int delta);
-		bool removeTransitionByTrimOutValid(int trackIndex, int clipIndex, int delta); 
 
-	private: 
-		bool m_isMakingTransition;
-
+	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position);
 		void relocateClip(int trackIndex, int clipIndex, int position);
 		void moveClipInBlank(int trackIndex, int clipIndex, int position);
@@ -127,4 +103,4 @@ namespace timeline {
 }
 
 
-#endif // MULTITRACKMODEL_H
+#endif // TIMELINETRACKMODEL_H
