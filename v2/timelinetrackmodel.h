@@ -5,12 +5,12 @@
 #include <QList>
 #include <QString> 
 
-namespace timeline {
+namespace timeline { 
 
 	typedef enum {
-		AudioTrackType = 0,
-		VideoTrackType
-	} TrackType; 
+		AudioTrack = 0,
+		VideoTrack
+	} TrackIndex; 
 
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
@@ -18,6 +18,7 @@ namespace timeline {
 		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
 	public: 
 		enum {
+			/// clip only
 			NameRole = Qt::UserRole + 1,
 			SourceRole,      
 			IsBlankRole,      
@@ -26,7 +27,7 @@ namespace timeline {
 			InPointRole,     
 			OutPointRole,      
 			IsAudioRole,
-			AudioLevelsRole,         
+			AudioLevelsRole   
 		};
 
 		explicit TimelineTracksModel(QObject *parent = 0);
@@ -46,14 +47,13 @@ namespace timeline {
 		Q_INVOKABLE void reload();
 		void close();
 		int clipIndex(int trackIndex, int position);
-		bool trimClipInValid(int trackIndex, int clipIndex, int delta, bool ripple);
-		bool trimClipOutValid(int trackIndex, int clipIndex, int delta, bool ripple);
+		bool trimClipInValid(int trackIndex, int clipIndex, int delta);
+		bool trimClipOutValid(int trackIndex, int clipIndex, int delta);
 		int trackHeight() const;
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale);
-		void insertOrAdjustBlankAt(QList<int> tracks, int position, int length);
-		bool mergeClipWithNext(int trackIndex, int clipIndex, bool dryrun);
+		void insertOrAdjustBlankAt(QList<int> tracks, int position, int length); 
 
 	signals:
 		void created();
@@ -67,25 +67,18 @@ namespace timeline {
 		void durationChanged(); 
 
 	public slots: 
-		void setTrackName(int row, const QString &value);
-		void setTrackMute(int row, bool mute);
-		void setTrackHidden(int row, bool hidden); 
-		void setTrackLock(int row, bool lock);
-		int trimClipIn(int trackIndex, int clipIndex, int delta, bool ripple);
+		void setTrackName(int row, const QString &value); 
+		int trimClipIn(int trackIndex, int clipIndex, int delta);
 		void notifyClipIn(int trackIndex, int clipIndex);
-		int trimClipOut(int trackIndex, int clipIndex, int delta, bool ripple);
+		int trimClipOut(int trackIndex, int clipIndex, int delta);
 		void notifyClipOut(int trackIndex, int clipIndex);
-		bool moveClipValid(int fromTrack, int toTrack, int clipIndex, int position);
-		bool moveClip(int fromTrack, int toTrack, int clipIndex, int position);
-		int overwriteClip(int trackIndex, int position, bool seek = true);
-		QString overwrite(int trackIndex,int position, bool seek = true);
+		bool moveClipValid(int clipIndex, int position);
+		bool moveClip(int clipIndex, int position); 
 		int insertClip(int trackIndex, int position);
 		int appendClip(int trackIndex);
 		void removeClip(int trackIndex, int clipIndex); 
 		void splitClip(int trackIndex, int clipIndex, int position);
-		void joinClips(int trackIndex, int clipIndex); 
-		void fadeIn(int trackIndex, int clipIndex, int duration);
-		void fadeOut(int trackIndex, int clipIndex, int duration);
+		void joinClips(int trackIndex, int clipIndex);  
 
 	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position);
@@ -95,7 +88,7 @@ namespace timeline {
 		void consolidateBlanksAllTracks();
 		void getAudioLevels();
 		void removeBlankPlaceholder(int trackIndex);
-		void removeRegion(int trackIndex, int position, int length);
+		int tracksCount() const { return 2; }
 
 	private slots:
 		void adjustBackgroundDuration();
