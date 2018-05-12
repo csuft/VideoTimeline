@@ -18,7 +18,7 @@ namespace timeline {
 		mTimelineModel(new TimelineTracksModel),
 		mAddClipBtn(new QPushButton("Add Clip", this)) {
 		setWindowIcon(QIcon(":/images/audiowave")); 
-		resize(800, 150);   
+		resize(810, 300);   
 
 		QVBoxLayout* mainLayout = new QVBoxLayout;
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
@@ -102,6 +102,9 @@ namespace timeline {
 		return QList<int>();
 	}
 
+	QString MainWindow::timecode(int frames) {
+		return QString::number(frames);
+	}
 }
 
 

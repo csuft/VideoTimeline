@@ -96,7 +96,7 @@ ToolBar {
     
     Action {
         id: cutAction
-        tooltip: qsTr('Cut - Copy the current clip to the Source\nplayer and ripple delete it')
+        tooltip: qsTr('Cut - Copy the current clip to the Source')
         iconName: 'edit-cut'
         iconSource: 'qrc:///images/images/audio-meter.png'
         enabled: timeline.selection
@@ -105,7 +105,7 @@ ToolBar {
 
         Action {
         id: deleteAction
-        tooltip: qsTr('Remove current clip\nshifting following clips to the left')
+        tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'
         iconSource: 'qrc:/list-remove.png'
         onTriggered: timeline.remove(currentTrack, timeline.selection[0])
@@ -113,7 +113,7 @@ ToolBar {
 
     Action {
         id: copyAction
-        tooltip: qsTr('Copy - Copy the current clip to the Source player (C)')
+        tooltip: qsTr('Copy - Copy the current clip')
         iconName: 'edit-copy'
         iconSource: 'qrc::///images/images/audio-volume-muted.png'
         enabled: timeline.selection.length
@@ -122,7 +122,7 @@ ToolBar {
 
     Action {
         id: insertAction
-        tooltip: qsTr('Paste - Insert clip into the current track\nshifting following clips to the right (V)')
+        tooltip: qsTr('Paste - Insert clip into the current track')
         iconName: 'edit-paste'
         iconSource: 'qrc:///images/images/audio-volume-high.png'
         onTriggered: timeline.insert(currentTrack)

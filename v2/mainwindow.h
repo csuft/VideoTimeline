@@ -25,6 +25,7 @@ namespace timeline {
 		int currentTrack() const; 
 		void setSelection(QList<int> selection = QList<int>(), int trackIndex = -1);
 		QList<int> selection() const;
+		Q_INVOKABLE QString timecode(int frames);
 
 	signals:
 		void positionChanged();
@@ -34,7 +35,7 @@ namespace timeline {
 	private slots:
 		void onVisibilityChanged(bool visible);
 		void clearSelectionIfInvalid();
-		void onAddClip();
+		void onAddClip(); 
 	
 	private:
 		Timeline* mTimelineWidget;
