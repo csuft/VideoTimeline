@@ -54,6 +54,16 @@ ToolBar {
             implicitHeight: 24
         } 
         ToolButton {
+            id: snapButton
+            implicitWidth: 28
+            implicitHeight: 24
+            checkable: true
+            checked: true
+            iconName: 'snap'
+            iconSource: 'qrc:///images/images/snap.png'
+            tooltip: qsTr('Toggle snapping')
+        }
+        ToolButton {
             action: zoomOutAction
             implicitWidth: 28
             implicitHeight: 24
@@ -76,21 +86,36 @@ ToolBar {
             cached: true
         }
     } 
-
+    Action {
+        id: menuAction
+        tooltip: qsTr('Display a menu of additional actions')
+        iconName: 'format-justify-fill'
+        iconSource: 'qrc:///images/images/sliderDrag.png'
+        onTriggered: menu.popup()
+    }
+    
     Action {
         id: cutAction
         tooltip: qsTr('Cut - Copy the current clip to the Source\nplayer and ripple delete it')
         iconName: 'edit-cut'
-        iconSource: 'qrc:/edit-cut.png'
-        enabled: timeline.selection.length
+        iconSource: 'qrc:///images/images/audio-meter.png'
+        enabled: timeline.selection
         onTriggered: timeline.removeSelection(true)
     }
+
+        Action {
+        id: deleteAction
+        tooltip: qsTr('Remove current clip\nshifting following clips to the left')
+        iconName: 'list-remove'
+        iconSource: 'qrc:/list-remove.png'
+        onTriggered: timeline.remove(currentTrack, timeline.selection[0])
+   }
 
     Action {
         id: copyAction
         tooltip: qsTr('Copy - Copy the current clip to the Source player (C)')
         iconName: 'edit-copy'
-        iconSource: 'qrc:/edit-copy.png'
+        iconSource: 'qrc::///images/images/audio-volume-muted.png'
         enabled: timeline.selection.length
         onTriggered: timeline.copyClip(currentTrack, timeline.selection[0])
     }
@@ -99,7 +124,7 @@ ToolBar {
         id: insertAction
         tooltip: qsTr('Paste - Insert clip into the current track\nshifting following clips to the right (V)')
         iconName: 'edit-paste'
-        iconSource: 'qrc:/edit-paste.png'
+        iconSource: 'qrc:///images/images/audio-volume-high.png'
         onTriggered: timeline.insert(currentTrack)
     } 
 
@@ -107,7 +132,7 @@ ToolBar {
         id: overwriteAction
         tooltip: qsTr('Overwrite clip onto the current track')
         iconName: 'overwrite'
-        iconSource: 'qrc:/overwrite.png'
+        iconSource: 'qrc:///images/images/object-locked.png'
         onTriggered: timeline.overwrite(currentTrack)
     }
 
@@ -115,7 +140,7 @@ ToolBar {
         id: splitAction
         tooltip: qsTr('Split At Playhead')
         iconName: 'slice'
-        iconSource: 'qrc:/slice.png'
+        iconSource: 'qrc:///images/images/slice.png'
         onTriggered: timeline.splitClip(currentTrack)
     }
 
@@ -123,7 +148,7 @@ ToolBar {
         id: zoomOutAction
         tooltip: qsTr("Zoom timeline out (-)")
         iconName: 'zoom-out'
-        iconSource: 'qrc:/zoom-out.png'
+        iconSource: 'qrc:///images/images/zoom-out.png'
         onTriggered: root.zoomOut()
     }
 
@@ -131,7 +156,7 @@ ToolBar {
         id: zoomInAction
         tooltip: qsTr("Zoom timeline in (+)")
         iconName: 'zoom-in'
-        iconSource: 'qrc:/zoom-in.png'
+        iconSource: "qrc:///images/images/zoom-out.png"
         onTriggered: root.zoomIn()
     }
 }

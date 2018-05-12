@@ -16,9 +16,9 @@ namespace timeline {
 		: QMainWindow(parent),
 		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
 		mTimelineModel(new TimelineTracksModel),
-		mAddClipBtn(new QPushButton("Add Clip", this)){
-		setWindowIcon(QIcon(":/images/logo")); 
-		resize(800, 150);  
+		mAddClipBtn(new QPushButton("Add Clip", this)) {
+		setWindowIcon(QIcon(":/images/audiowave")); 
+		resize(800, 150);   
 
 		QVBoxLayout* mainLayout = new QVBoxLayout;
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
@@ -36,7 +36,9 @@ namespace timeline {
 		
 		mainLayout->addWidget(mTimelineWidget, 1);
 		mainLayout->addWidget(mAddClipBtn, 0, Qt::AlignRight);
-		centralWidget()->setLayout(mainLayout);
+		QWidget* containerWidget = new QWidget(this);
+		containerWidget->setLayout(mainLayout);
+		setCentralWidget(containerWidget);
 
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
@@ -56,7 +58,7 @@ namespace timeline {
 	void MainWindow::load(bool force /* = false */) {
 		if (mTimelineWidget->source().isEmpty() || force) {
 			QDir sourcePath = QmlUtilities::qmlDir();
-			mTimelineWidget->setSource(QUrl::fromLocalFile(sourcePath.filePath("timeline.qml")));
+			mTimelineWidget->setSource(QUrl("qrc:/script/qml/timeline.qml"));
 			//disconnect(this, &QDockWidget::visibilityChanged, this, &MainWindow::onVisibilityChanged);
 			//connect(mTimelineWidget->rootObject(), SIGNAL(currentTrackChanged), 
 			//	this, SIGNAL(currentTrackChanged));
@@ -91,6 +93,15 @@ namespace timeline {
 	int MainWindow::currentTrack() const {
 		return 0;
 	}
+
+	void MainWindow::setSelection(QList<int> selection, int trackIndex) {
+
+	}
+
+	QList<int> MainWindow::selection() const {
+		return QList<int>();
+	}
+
 }
 
 

@@ -57,7 +57,7 @@ Rectangle {
             width: model.duration * timeScale
             height: trackRoot.height
             trackIndex: trackRoot.DelegateModel.itemsIndex  
-            selected: trackRoot.isCurrentTrack && trackRoot.selection.indexOf(index) !== -1
+            selected: trackRoot.isCurrentTrack
 
             onClicked: trackRoot.clipClicked(clip, trackRoot);
             onMoved: {

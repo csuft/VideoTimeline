@@ -1,19 +1,30 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="audiowave">images/audio-meter.png</file>
-        <file alias="volume">images/audio-volume-high.png</file>
-        <file alias="volumemute">images/audio-volume-muted.png</file>
-        <file alias="cutclip">images/edit-cut.png</file>
-        <file alias="prevmarker">images/format-indent-less.png</file>
-        <file alias="nextmarker">images/format-indent-more.png</file>
-        <file alias="locked">images/object-locked.png</file>
-        <file alias="unlocked">images/object-unlocked.png</file>
-        <file alias="splitclip">images/slice.png</file>
-        <file alias="snap">images/snap.png</file>
-        <file alias="zoomin">images/zoom-in.png</file>
-        <file alias="zoomout">images/zoom-out.png</file>
+        <file>images/audio-meter.png</file>
+        <file>images/audio-volume-high.png</file>
+        <file>images/audio-volume-muted.png</file>
+        <file>images/edit-cut.png</file>
+        <file>images/format-indent-less.png</file>
+        <file>images/format-indent-more.png</file>
+        <file>images/object-locked.png</file>
+        <file>images/object-unlocked.png</file>
+        <file>images/slice.png</file>
+        <file>images/snap.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/zoom-out.png</file>
+        <file>images/sliderDrag.png</file>
     </qresource>
     <qresource prefix="/style">
         <file alias="application">app.qss</file>
+    </qresource>
+    <qresource prefix="/script">
+        <file>qml/Clip.qml</file>
+        <file>qml/Ruler.qml</file>
+        <file>qml/Timeline.js</file>
+        <file>qml/timeline.qml</file>
+        <file>qml/TimelineToolbar.qml</file>
+        <file>qml/Track.js</file>
+        <file>qml/Track.qml</file>
+        <file>qml/ZoomSlider.qml</file>
     </qresource>
 </RCC>

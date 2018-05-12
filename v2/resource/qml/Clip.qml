@@ -69,7 +69,7 @@ Rectangle {
 
     Image {
         id: outThumbnail
-        visible: settings.timelineShowThumbnails
+        visible: false
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.topMargin: parent.border.width
@@ -78,25 +78,23 @@ Rectangle {
         anchors.bottomMargin: parent.height / 2
         width: height * 16.0/9.0
         fillMode: Image.PreserveAspectFit
-        source: imagePath(outPoint)
     }
 
     Image {
         id: inThumbnail
-        visible: settings.timelineShowThumbnails
+        visible: false
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.topMargin: parent.border.width
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height / 2
         width: height * 16.0/9.0
-        fillMode: Image.PreserveAspectFit
-        source: imagePath(inPoint)
+        fillMode: Image.PreserveAspectFit 
     } 
 
     Row {
         id: waveform
-        visible: !isBlank && settings.timelineShowWaveforms && !trackHeaderRepeater.itemAt(trackIndex).isMute
+        visible: !isBlank
         height: isAudio? parent.height : parent.height / 2
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -141,7 +139,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.topMargin: parent.border.width
         anchors.leftMargin: parent.border.width +
-            ((isAudio || !settings.timelineShowThumbnails) ? 0 : inThumbnail.width)
+            ((isAudio) ? 0 : inThumbnail.width)
         width: label.width + 2
         height: label.height
     }
@@ -156,7 +154,7 @@ Rectangle {
             left: parent.left
             topMargin: parent.border.width + 1
             leftMargin: parent.border.width +
-                ((isAudio || !settings.timelineShowThumbnails) ? 0 : inThumbnail.width) + 1
+                ((isAudio) ? 0 : inThumbnail.width) + 1
         }
         color: 'black'
     }
@@ -242,10 +240,7 @@ Rectangle {
             anchors.fill: parent
             acceptedButtons: Qt.RightButton
             propagateComposedEvents: true
-            cursorShape: (trimInMouseArea.drag.active || trimOutMouseArea.drag.active)? Qt.SizeHorCursor :
-                (fadeInMouseArea.drag.active || fadeOutMouseArea.drag.active)? Qt.PointingHandCursor :
-                drag.active? Qt.ClosedHandCursor :
-                isBlank? Qt.ArrowCursor : Qt.OpenHandCursor
+            cursorShape: Qt.ArrowCursor
             onClicked: menu.show()
         }
     } 
@@ -382,7 +377,7 @@ Rectangle {
             onTriggered: timeline.splitClip(trackIndex, index)
         }
         MenuItem {
-            visible: !isBlank && settings.timelineShowWaveforms
+            visible: !isBlank
             text: qsTr('Rebuild Audio Waveform')
             onTriggered: timeline.remakeAudioLevels(trackIndex, index)
         }

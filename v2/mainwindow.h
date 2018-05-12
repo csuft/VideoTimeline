@@ -13,6 +13,7 @@ namespace timeline {
 		Q_OBJECT 
 		Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 		Q_PROPERTY(int currentTrack READ currentTrack WRITE setCurrentTrack NOTIFY currentTrackChanged) 
+		Q_PROPERTY(QList<int> selection READ selection WRITE setSelection NOTIFY selectionChanged)
 
 	public:
 		MainWindow(QWidget* parent = Q_NULLPTR);
@@ -22,11 +23,13 @@ namespace timeline {
 		void setPosition(int position);
 		void setCurrentTrack(int currentTrack);
 		int currentTrack() const; 
+		void setSelection(QList<int> selection = QList<int>(), int trackIndex = -1);
+		QList<int> selection() const;
 
 	signals:
 		void positionChanged();
 		void currentTrackChanged();
-		void selectionChanged();
+		void selectionChanged(); 
 
 	private slots:
 		void onVisibilityChanged(bool visible);
@@ -38,6 +41,12 @@ namespace timeline {
 		TimelineTracksModel* mTimelineModel;
 		QPushButton* mAddClipBtn;
 		int m_position;
+		struct Selection {
+			QList<int> selectedClips;
+			int selectedTrack;
+			bool isMultitrackSelected;
+		};
+		Selection m_selection;
 	};
 }
 

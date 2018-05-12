@@ -66,7 +66,7 @@ namespace timeline {
 	} 
 
 	void registerTimelineItems() {
-		//qmlRegisterType<timeline::TimelinePlayhead>("Studio.Timeline", 1, 0, "TimelinePlayhead");
+		qmlRegisterType<timeline::TimelinePlayhead>("Studio.Timeline", 1, 0, "TimelinePlayhead");
 		qmlRegisterType<TimelineTriangle>("Studio.Timeline", 1, 0, "TimelineTriangle");
 		qmlRegisterType<TimelineWaveform>("Studio.Timeline", 1, 0, "TimelineWaveform");
 	}

@@ -127,7 +127,7 @@ Rectangle {
         
                     Item {
                         width: tracksContainer.width 
-                        height: trackHeaders.height + 30 // 30 is padding
+                        height: tracksContainer.height + 30 // 30 is padding
                         Column {
                             // These make the striped background for the tracks.
                             // It is important that these are not part of the track visual hierarchy;
@@ -188,7 +188,7 @@ Rectangle {
     Rectangle {
         id: bubbleHelp
         property alias text: bubbleHelpLabel.text
-        color: application.toolTipBaseColor
+        color: 'black'
         width: bubbleHelpLabel.width + 8
         height: bubbleHelpLabel.height + 8
         radius: 4
@@ -211,7 +211,7 @@ Rectangle {
         ]
         Label {
             id: bubbleHelpLabel
-            color: application.toolTipTextColor
+            color: 'black'
             anchors.centerIn: parent
         }
         function show(x, y, text) {
@@ -250,33 +250,7 @@ Rectangle {
             text: qsTr('Make Tracks Taller')
             shortcut: 'Ctrl+='
             onTriggered: makeTracksTaller()
-        }
-        MenuItem {
-            text: qsTr('Show Audio Waveforms')
-            checkable: true
-            checked: settings.timelineShowWaveforms
-            onTriggered: {
-                if (checked) {
-                    if (settings.timelineShowWaveforms) {
-                        settings.timelineShowWaveforms = checked
-                        for (var i = 0; i < tracksRepeater.count; i++)
-                            tracksRepeater.itemAt(i).redrawWaveforms()
-                    } else {
-                        settings.timelineShowWaveforms = checked
-                        for (var i = 0; i < tracksRepeater.count; i++)
-                            tracksRepeater.itemAt(i).remakeWaveforms(false)
-                    }
-                } else {
-                    settings.timelineShowWaveforms = checked
-                }
-            }
-        }
-        MenuItem {
-            text: qsTr('Show Video Thumbnails')
-            checkable: true
-            checked: settings.timelineShowThumbnails
-            onTriggered: settings.timelineShowThumbnails = checked
-        }
+        }  
         MenuItem {
             text: qsTr('Reload')
             onTriggered: {
@@ -284,7 +258,7 @@ Rectangle {
             }
         }
         onPopupVisibleChanged: {
-            if (visible && application.OS === 'Windows' && __popupGeometry.height > 0) {
+            if (visible && Qt.application.OS === 'Windows' && __popupGeometry.height > 0) {
                 // Try to fix menu running off screen. This only works intermittently.
                 menu.__yOffset = Math.min(0, Screen.height - (__popupGeometry.y + __popupGeometry.height + 40))
                 menu.__xOffset = Math.min(0, Screen.width - (__popupGeometry.x + __popupGeometry.width))
@@ -328,7 +302,7 @@ Rectangle {
                 var track = tracksRepeater.itemAt(clip.trackIndex)
                 var delta = Math.round((clip.x - clip.originalX) / timelinetracks.scaleFactor)
                 var s = timeline.timecode(Math.abs(delta))
-                // remove leading zeroes
+                
                 if (s.substring(0, 3) === '00:')
                     s = s.substring(3)
                 s = ((delta < 0)? '-' : (delta > 0)? '+' : '') + s
@@ -342,17 +316,6 @@ Rectangle {
                 for (var i = 0; i < tracksRepeater.count; i++)
                     tracksRepeater.itemAt(i).snapClip(clip)
             } 
-        }
-    }
-    
-    Connections {
-        target: timeline
-        onPositionChanged: if (!stopScrolling) TimelineLogic.scrollIfNeeded()
-        onDragging: TimelineLogic.dragging(pos, duration)
-        onDropped: TimelineLogic.dropped()
-        onDropAccepted: TimelineLogic.acceptDrop(xml)
-        onSelectionChanged: { 
-
         }
     }
 
