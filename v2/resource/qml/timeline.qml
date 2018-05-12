@@ -1,7 +1,7 @@
 import QtQuick 2.2
 import QtQml.Models 2.1
 import QtQuick.Controls 1.0
-//import Studio.Timeline 1.0
+import Studio.Timeline 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import 'Timeline.js' as TimelineLogic
@@ -31,19 +31,10 @@ Rectangle {
 
     DropArea {
         anchors.fill: parent
-        onEntered: {
-
-        }
-        onExited: {
-
-        }
-        onPositionChanged: {
-
-        }
-
-        onDropped: {
-
-        }
+        onEntered: {}
+        onExited: {}
+        onPositionChanged: {}
+        onDropped: {}
     }
 
     TimelineToolbar {
@@ -55,19 +46,15 @@ Rectangle {
 
     Row {
         anchors.top: toolbar.bottom
+        width: parent.width
+        height: parent.height - toolbar.height
         MouseArea {
             id: tracksMouseArea
             anchors.fill: parent
             focus: true 
             hoverEnabled: true
-            width: parent.width
-            height: parent.height - toolbar.height
-            onClicked: {
-
-            }
-            onPositionChanged: {
-
-            }
+            onClicked: {}
+            onPositionChanged: {}
 
             Column {
                 anchors.fill: parent
@@ -108,6 +95,24 @@ Rectangle {
                     } 
                 }
 
+            }
+            Rectangle {
+                id: cursor
+                visible: true
+                color: 'black'
+                width: 1
+                height: tracksScrollView.height + 30 - tracksScrollView.__horizontalScrollBar.height
+                x: 250
+                y: 0
+            }
+
+            TimelinePlayhead {
+                id: playhead
+                visible: true
+                x: 245
+                y: 0
+                width: 11
+                height: 5
             }
         }
     }
