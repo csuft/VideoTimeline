@@ -46,8 +46,7 @@ Rectangle {
 
     Row {
         anchors.top: toolbar.bottom
-        width: parent.width
-        height: parent.height - toolbar.height
+
         MouseArea {
             id: tracksMouseArea
             anchors.fill: parent
@@ -109,7 +108,7 @@ Rectangle {
             TimelinePlayhead {
                 id: playhead
                 visible: true
-                x: 245
+                x: cursor.x - 5
                 y: 0
                 width: 11
                 height: 5
