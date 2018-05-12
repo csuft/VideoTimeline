@@ -1,18 +1,15 @@
 import QtQuick 2.2
 import QtQml.Models 2.1
 import QtQuick.Controls 1.0
-import Studio.Timeline 1.0
+//import Studio.Timeline 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import 'Timeline.js' as TimelineLogic
 
 Rectangle {
     // system attributes
-    id: root
-    width: 10
-    height: 10
-    color: "transparent"
-
+    id: root  
+    color: 'transparent'
     // custom properties
     property int  currentTrack: 0
     property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
@@ -60,10 +57,11 @@ Rectangle {
         anchors.top: toolbar.bottom
         MouseArea {
             id: tracksMouseArea
-            width: root.width
-            height: root.height - toolbar.height
+            anchors.fill: parent
             focus: true 
             hoverEnabled: true
+            width: parent.width
+            height: parent.height - toolbar.height
             onClicked: {
 
             }
@@ -75,12 +73,12 @@ Rectangle {
                 anchors.fill: parent
                 Flickable {
                     contentX: tracksScrollView.flickableItem.contentX
-                    width: root.width
+                    width: tracksBackground.width
                     height: ruler.height
                     interactive: false
                     Ruler {
                         id: ruler
-                        width: tracksContainer.width 
+                        width: parent.width 
                     }
                 } 
 
@@ -89,16 +87,38 @@ Rectangle {
                     width: root.width
                     height: root.height - ruler.heihgt - toolbar.height
 
-                    Item {
-                        id: tracksContainer
-                        width: tracksScrollView.width + 300
-                        height: tracksScrollView.height + 30 // padding
-
+                    Item { 
+                        width: tracksBackground.width
+                        height: tracksScrollView.height + 30
+                        
+                        // tracks background
+                        Column {
+                            id: tracksBackground 
+                            width: root.width + 100
+                            height: parent.height
+                            Repeater {
+                                model: 2
+                                delegate: Rectangle {
+                                    width: tracksBackground.width
+                                    color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
+                                    height: TimelineLogic.trackHeight(false)
+                                }
+                            } 
+                        }
                     } 
                 }
 
             }
         }
     }
+
+    // DelegateModel {
+    //     id: tracksDelegateModel
+    //     model: 2
+    //     Rectangle {
+    //         width: parent.width
+    //         color: 'transparent'
+    //     }
+    // }
 }
 

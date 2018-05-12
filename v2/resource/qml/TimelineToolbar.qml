@@ -57,8 +57,7 @@ ToolBar {
             id: snapButton
             implicitWidth: 28
             implicitHeight: 24
-            checkable: true
-            checked: true
+            checkable: true 
             iconName: 'snap'
             iconSource: 'qrc:///images/images/snap.png'
             tooltip: qsTr('Toggle snapping')

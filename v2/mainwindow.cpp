@@ -17,8 +17,7 @@ namespace timeline {
 		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
 		mTimelineModel(new TimelineTracksModel),
 		mAddClipBtn(new QPushButton("Add Clip", this)) {
-		setWindowIcon(QIcon(":/images/audiowave")); 
-		resize(810, 300);   
+		setWindowIcon(QIcon(":/images/audiowave"));    
 
 		QVBoxLayout* mainLayout = new QVBoxLayout;
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
@@ -34,12 +33,12 @@ namespace timeline {
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
 		
-		mainLayout->addWidget(mTimelineWidget, 1);
+		mainLayout->addWidget(mTimelineWidget);
 		mainLayout->addWidget(mAddClipBtn, 0, Qt::AlignRight);
 		QWidget* containerWidget = new QWidget(this);
 		containerWidget->setLayout(mainLayout);
 		setCentralWidget(containerWidget);
-
+		resize(810, 300);
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else
