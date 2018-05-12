@@ -198,30 +198,15 @@ namespace timeline {
 	bool TimelineTracksModel::moveClip(int clipIndex, int position) { 
 		bool result = false; 
 		  
-		// Clip relocated to end of playlist.
-		moveClipToEnd(clipIndex, position);
-		result = true;
-
-		if (result) {
-			emit modified(); 
-		}
 		return result;
-	}
+	} 
 
-	int TimelineTracksModel::overwriteClip(int trackIndex,int position, bool seek) {
+	int TimelineTracksModel::insertClip(int trackIndex, int position) {
 		return -1;
 	}
 
-	QString TimelineTracksModel::overwrite(int trackIndex, int position, bool seek) {
-		return "";
-	}
-
-	int TimelineTracksModel::insertClip(int trackIndex, int position) {
-		
-	}
-
 	int TimelineTracksModel::appendClip(int trackIndex) {
-	
+		return -1;
 	}
 
 	void TimelineTracksModel::removeClip(int trackIndex, int clipIndex) {
@@ -253,16 +238,7 @@ namespace timeline {
 	}
 
 	void TimelineTracksModel::consolidateBlanksAllTracks() {
-		/*if (!m_tractor) return;
-		int i = 0;
-		foreach(Track t, m_trackList) {
-			Mlt::Producer* track = m_tractor->track(t.mlt_index);
-			if (track) {
-				Mlt::Playlist playlist(*track);
-				consolidateBlanks(playlist, i);
-			}
-			++i;
-		}*/
+
 	}
 
 	void TimelineTracksModel::audioLevelsReady(const QModelIndex& index) {
@@ -276,31 +252,7 @@ namespace timeline {
 	} 
 
 	void TimelineTracksModel::adjustBackgroundDuration() {
-	/*	if (!m_tractor) return;
-		int n = 0;
-		foreach(Track t, m_trackList) {
-			Mlt::Producer* track = m_tractor->track(t.mlt_index);
-			if (track)
-				n = qMax(n, track->get_length());
-			delete track;
-		}
-		Mlt::Producer* track = m_tractor->track(0);
-		if (track) {
-			Mlt::Playlist playlist(*track);
-			Mlt::Producer* clip = playlist.get_clip(0);
-			if (clip) {
-				if (n != clip->parent().get_length()) {
-					clip->parent().set("length", n);
-					clip->parent().set_in_and_out(0, n - 1);
-					clip->set("length", n);
-					clip->set_in_and_out(0, n - 1);
-					playlist.resize_clip(0, 0, n - 1);
-					emit durationChanged();
-				}
-				delete clip;
-			}
-			delete track;
-		}*/
+	
 	} 
 
 	void TimelineTracksModel::insertOrAdjustBlankAt(QList<int> tracks, int position, int length) {

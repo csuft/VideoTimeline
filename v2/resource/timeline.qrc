@@ -14,6 +14,6 @@
         <file alias="zoomout">images/zoom-out.png</file>
     </qresource>
     <qresource prefix="/style">
-        <file alias="app">app.qss</file>
+        <file alias="application">app.qss</file>
     </qresource>
 </RCC>

@@ -17,8 +17,7 @@ namespace timeline {
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
 		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
 	public: 
-		enum {
-			/// clip only
+		enum { 
 			NameRole = Qt::UserRole + 1,
 			SourceRole,      
 			IsBlankRole,      

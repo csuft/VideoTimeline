@@ -79,6 +79,18 @@ namespace timeline {
 	void MainWindow::onAddClip() {
 
 	}
+
+	void MainWindow::setPosition(int position) {
+
+	}
+
+	void MainWindow::setCurrentTrack(int currentTrack) {
+
+	}
+	
+	int MainWindow::currentTrack() const {
+		return 0;
+	}
 }
 
 

@@ -6,7 +6,7 @@ namespace timeline {
 		: QQuickWidget(qmlEngine, parent) { 
 		setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	}
+	} 
 
 }
 
