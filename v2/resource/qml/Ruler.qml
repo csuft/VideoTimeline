@@ -14,8 +14,7 @@ Rectangle {
         Rectangle {
             anchors.bottom: rulerTop.bottom
             height: 18
-            width: 1
-            color: "steelblue"
+            width: 1 
             x: index * stepSize
             Label { 
                 anchors.leftMargin: 2
