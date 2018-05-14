@@ -14,6 +14,7 @@ Rectangle {
     property int  currentTrack: 0
     property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
     property color sutdioYellow: Qt.rgba(255/255, 215/255, 0/255, 1.0)  
+    readonly property int padding: 30
     
     // signals
     signal clipClicked()
@@ -22,6 +23,9 @@ Rectangle {
     onCurrentTrackChanged: timeline.selection = []
 
     // functions
+    function addClip() {
+        console.log("add clip");
+    }
 
     // components
     MouseArea {
@@ -75,7 +79,7 @@ Rectangle {
 
                     Item { 
                         width: tracksBackground.width
-                        height: tracksScrollView.height + 30
+                        height: tracksScrollView.height + padding
                         
                         // tracks background
                         Column {
@@ -97,6 +101,8 @@ Rectangle {
                                         y: 0
                                         MouseArea {
                                             anchors.fill: parent
+                                            acceptedButtons: Qt.RightButton | Qt.LeftButton
+                                            cursorShape: Qt.PointingHandCursor
                                             drag.target: clip
                                             drag.axis: Drag.XAxis
                                             drag.minimumX: 0
@@ -114,7 +120,7 @@ Rectangle {
                 visible: true
                 color: 'black'
                 width: 1
-                height: tracksScrollView.height + 30 - tracksScrollView.__horizontalScrollBar.height
+                height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
                 x: 250
                 y: 0
             }
@@ -128,15 +134,6 @@ Rectangle {
                 height: 5
             }
         }
-    }
-
-    // DelegateModel {
-    //     id: tracksDelegateModel
-    //     model: 2
-    //     Rectangle {
-    //         width: parent.width
-    //         color: 'transparent'
-    //     }
-    // }
+    } 
 }
 

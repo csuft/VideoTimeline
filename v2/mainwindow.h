@@ -33,9 +33,8 @@ namespace timeline {
 		void selectionChanged(); 
 
 	private slots:
-		void onVisibilityChanged(bool visible);
-		void clearSelectionIfInvalid();
-		void onAddClip(); 
+		void onVisibilityChanged(bool visible); 
+		Q_INVOKABLE void onAddClip();
 	
 	private:
 		Timeline* mTimelineWidget;

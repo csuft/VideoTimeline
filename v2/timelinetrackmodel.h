@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QList>
+#include <QUrl>
 #include <QString> 
 
 namespace timeline { 
@@ -12,6 +13,38 @@ namespace timeline {
 		VideoTrack
 	} TrackIndex; 
 
+	class ClipInfo{
+	public:
+		ClipInfo(TrackIndex index = VideoTrack);
+		~ClipInfo();
+
+		TrackIndex getTrackIndex() const { return mTrackIndex; }
+		int getModelIndex() const { return mModelIndex; }
+		void setModelIndex(int modelIndex) { mModelIndex = modelIndex; }
+		QString getName() const { return mName; }
+		void setName(const QString& name) { mName = name; }
+		QUrl getSourcePath() const { return mSourcePath; }
+		void setSourcePath(const QUrl& path) { mSourcePath = path; }
+		int getDuration() const { return mDuration; }
+		void setDuration(qreal duration) { mDuration = duration; }
+		int getInPoint() const { return mInPoint; }
+		void setInPoint(qreal in) { mInPoint = in; }
+		int getOutPoint() const { return mOutPoint; }
+		void setOutputPoint(qreal out) { mOutPoint = out; }
+		qreal getFrameRate() const { return mFrameRate; }
+		void setFrameRate(qreal fps) { mFrameRate = fps; }
+
+	private:
+		TrackIndex mTrackIndex;
+		int mModelIndex;
+		QString mName;
+		QUrl mSourcePath;
+		qreal mDuration;  
+		qreal mInPoint;  
+		qreal mOutPoint;  
+		qreal mFrameRate;
+	};
+
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
@@ -19,29 +52,27 @@ namespace timeline {
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
-			SourceRole,      
-			IsBlankRole,      
-			StartRole,      
+			SourceRole,       
 			DurationRole,
 			InPointRole,     
 			OutPointRole,      
 			IsAudioRole,
+			FrameRateRole,
 			AudioLevelsRole   
 		};
 
 		explicit TimelineTracksModel(QObject *parent = 0);
 		~TimelineTracksModel(); 
 
-		int rowCount(const QModelIndex &parent) const;
-		int columnCount(const QModelIndex &parent) const;
-		QVariant data(const QModelIndex &index, int role) const;
-		QModelIndex index(int row, int column = 0,
-			const QModelIndex &parent = QModelIndex()) const;
+		virtual int rowCount(const QModelIndex &parent) const override;
+		virtual int columnCount(const QModelIndex &parent) const override;
+		virtual QVariant data(const QModelIndex &index, int role) const override;
+		virtual QModelIndex index(int row, int column = 0, const QModelIndex &parent = QModelIndex()) const override;
+		virtual QModelIndex parent(const QModelIndex &index) const override;
+		virtual QHash<int, QByteArray> roleNames() const override;
+
 		QModelIndex makeIndex(int trackIndex, int clipIndex) const;
-		QModelIndex parent(const QModelIndex &index) const;
-		QHash<int, QByteArray> roleNames() const;
-		void audioLevelsReady(const QModelIndex &index);
-		bool createIfNeeded();
+		void audioLevelsReady(const QModelIndex &index); 
 		void load();
 		Q_INVOKABLE void reload();
 		void close();
@@ -51,46 +82,41 @@ namespace timeline {
 		int trackHeight() const;
 		void setTrackHeight(int height);
 		double scaleFactor() const;
-		void setScaleFactor(double scale);
-		void insertOrAdjustBlankAt(QList<int> tracks, int position, int length); 
+		void setScaleFactor(double scale); 
 
 	signals:
 		void created();
 		void loaded();
-		void closed();
+		void closed(); 
 		void modified();
 		void seeked(int position);
 		void trackHeightChanged();
-		void scaleFactorChanged();
-		void showStatusMessage(const QString& message);
+		void scaleFactorChanged(); 
 		void durationChanged(); 
 
-	public slots: 
-		void setTrackName(int row, const QString &value); 
+	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
 		void notifyClipIn(int trackIndex, int clipIndex);
 		int trimClipOut(int trackIndex, int clipIndex, int delta);
 		void notifyClipOut(int trackIndex, int clipIndex);
 		bool moveClipValid(int clipIndex, int position);
 		bool moveClip(int clipIndex, int position); 
-		int insertClip(int trackIndex, int position);
+		int insertClip(int trackIndex, const ClipInfo& clip, int position);
 		int appendClip(int trackIndex);
 		void removeClip(int trackIndex, int clipIndex); 
 		void splitClip(int trackIndex, int clipIndex, int position);
 		void joinClips(int trackIndex, int clipIndex);  
 
 	private:
-		void moveClipToEnd(int trackIndex, int clipIndex, int position);
-		void relocateClip(int trackIndex, int clipIndex, int position);
-		void moveClipInBlank(int trackIndex, int clipIndex, int position);
-		void consolidateBlanks(int trackIndex);
-		void consolidateBlanksAllTracks();
-		void getAudioLevels();
-		void removeBlankPlaceholder(int trackIndex);
+		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
+		void getAudioLevels(); 
 		int tracksCount() const { return 2; }
 
 	private slots:
 		void adjustBackgroundDuration();
+
+	private: 
+		QList<ClipInfo> mTracks[2];
 	}; 
 }
 

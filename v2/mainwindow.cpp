@@ -43,8 +43,7 @@ namespace timeline {
 		onVisibilityChanged(true);
 #else
 		connect(this, &QDockWidget::visibilityChanged, this, &MainWindow::load);
-#endif
-		connect(mTimelineModel, &TimelineTracksModel::modified, this, &MainWindow::clearSelectionIfInvalid);
+#endif 
 		connect(mAddClipBtn, &QAbstractButton::clicked, this, &MainWindow::onAddClip);
 	} 
 
@@ -71,14 +70,10 @@ namespace timeline {
 		else {
 			mTimelineModel->reload();
 		}
-	}
-
-	void MainWindow::clearSelectionIfInvalid() {
-
-	}
+	} 
 
 	void MainWindow::onAddClip() {
-
+		QMetaObject::invokeMethod((QObject*)mTimelineWidget->rootObject(), "addClip");
 	}
 
 	void MainWindow::setPosition(int position) {

@@ -43,16 +43,19 @@ ToolBar {
             implicitWidth: 28
             implicitHeight: 24
         }
+        
         ToolButton {
             action: overwriteAction
             implicitWidth: 28
             implicitHeight: 24
         }
+
         ToolButton {
             action: splitAction
             implicitWidth: 28
             implicitHeight: 24
         } 
+
         ToolButton {
             id: snapButton
             implicitWidth: 28
@@ -62,14 +65,17 @@ ToolBar {
             iconSource: 'qrc:///images/images/snap.png'
             tooltip: qsTr('Toggle snapping')
         }
+
         ToolButton {
             action: zoomOutAction
             implicitWidth: 28
             implicitHeight: 24
         }
+
         ZoomSlider {
             id: scaleSlider
         }
+
         ToolButton {
             action: zoomInAction
             implicitWidth: 28
@@ -102,7 +108,7 @@ ToolBar {
         onTriggered: timeline.removeSelection(true)
     }
 
-        Action {
+    Action {
         id: deleteAction
         tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'

@@ -4,7 +4,7 @@ import QtQuick.Controls 1.0
 Rectangle {
     property int index: 100
     property real timeScale: 1.0
-    property int stepSize: Math.round(135 * Math.max(1.0, timeScale)) 
+    property int stepSize: Math.round(100 * Math.max(1.0, timeScale)) 
 
     id: rulerTop 
     height: 30
@@ -19,8 +19,7 @@ Rectangle {
             Label { 
                 anchors.leftMargin: 2
                 anchors.bottom: parent.top
-                anchors.bottomMargin: 2
-                color: "steelblue"
+                anchors.bottomMargin: 2 
                 x: index * stepSize + 2
                 text: timeline.timecode(index * stepSize / timeScale)
                 font.pointSize: 7.5
