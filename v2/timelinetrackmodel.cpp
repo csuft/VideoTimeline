@@ -21,6 +21,19 @@ namespace timeline {
 
 	TimelineTracksModel::TimelineTracksModel(QObject *parent)
 		: QAbstractItemModel(parent) {
+		for (int j = 0; j < mTracks->count(); ++j) {
+			for (int i = 0; i < 2; ++i) {
+				ClipInfo info((TrackIndex)j);
+				info.setDuration(10 * i);
+				info.setInPoint(100 * i);
+				info.setOutputPoint(info.getInPoint() + info.getOutPoint());
+				info.setName("test");
+				info.setSourcePath(QUrl("test"));
+				info.setFrameRate(30);
+				info.setModelIndex(i);
+				mTracks[j].push_back(info);
+			}
+		} 
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
 	}
 

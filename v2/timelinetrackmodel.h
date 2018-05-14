@@ -26,11 +26,11 @@ namespace timeline {
 		QUrl getSourcePath() const { return mSourcePath; }
 		void setSourcePath(const QUrl& path) { mSourcePath = path; }
 		int getDuration() const { return mDuration; }
-		void setDuration(qreal duration) { mDuration = duration; }
+		void setDuration(int duration) { mDuration = duration; }
 		int getInPoint() const { return mInPoint; }
-		void setInPoint(qreal in) { mInPoint = in; }
+		void setInPoint(int in) { mInPoint = in; }
 		int getOutPoint() const { return mOutPoint; }
-		void setOutputPoint(qreal out) { mOutPoint = out; }
+		void setOutputPoint(int out) { mOutPoint = out; }
 		qreal getFrameRate() const { return mFrameRate; }
 		void setFrameRate(qreal fps) { mFrameRate = fps; }
 
@@ -39,9 +39,9 @@ namespace timeline {
 		int mModelIndex;
 		QString mName;
 		QUrl mSourcePath;
-		qreal mDuration;  
-		qreal mInPoint;  
-		qreal mOutPoint;  
+		int mDuration;   // frame index
+		int mInPoint;    // frame index
+		int mOutPoint;   // frame index
 		qreal mFrameRate;
 	};
 

@@ -53,6 +53,7 @@ Rectangle {
             audioLevels: model.audioLevels
             width: model.duration * timeScale
             height: trackRoot.height
+            originalX: index * 50
             trackIndex: trackRoot.DelegateModel.itemsIndex  
             selected: trackRoot.isCurrentTrack
 
@@ -74,3 +75,24 @@ Rectangle {
         Repeater { id: repeater; model: trackModel }
     }
 }
+        //delegate: Rectangle {
+        //     width: tracksBackground.width
+        //     color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
+        //     height: TimelineLogic.trackHeight(false)
+        //     Rectangle {
+        //         id: clip
+        //         color: (index == currentTrack) ? 'green' : 'black'
+        //         width: 50
+        //         height: parent.height
+        //         x: 50 * index
+        //         y: 0
+        //         MouseArea {
+        //             anchors.fill: parent
+        //             acceptedButtons: Qt.LeftButton 
+        //             drag.target: clip
+        //             drag.axis: Drag.XAxis
+        //             drag.minimumX: 0
+        //             drag.maximumX: tracksBackground.width - clip.width
+        //         }
+        //     }
+        // }

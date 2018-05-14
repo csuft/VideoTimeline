@@ -87,29 +87,8 @@ Rectangle {
                             width: root.width + 100
                             height: parent.height
                             Repeater {
-                                model: 2
-                                delegate: Rectangle {
-                                    width: tracksBackground.width
-                                    color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
-                                    height: TimelineLogic.trackHeight(false)
-                                    Rectangle {
-                                        id: clip
-                                        color: (index == currentTrack) ? 'green' : 'black'
-                                        width: 50
-                                        height: parent.height
-                                        x: 250
-                                        y: 0
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            acceptedButtons: Qt.RightButton | Qt.LeftButton
-                                            cursorShape: Qt.PointingHandCursor
-                                            drag.target: clip
-                                            drag.axis: Drag.XAxis
-                                            drag.minimumX: 0
-                                            drag.maximumX: tracksBackground.width - clip.width
-                                        }
-                                    }
-                                }
+                                id: tracksRepeater
+                                model: tracksModel 
                             } 
                         }
                     } 
@@ -135,5 +114,42 @@ Rectangle {
             }
         }
     } 
+
+    DelegateModel {
+        id: tracksModel
+        model: timelinetracks
+        Track {
+            model: timelinetracks
+            rootIndex: tracksModel.modelIndex(index)
+            color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
+            height: TimelineLogic.trackHeight(false)
+            timeScale: timelinetracks.scaleFactor
+            onClipClicked: {}
+            onClipDragged: {}
+            onClipDropped: {}
+            onCheckSnap: {}
+        }
+        // delegate: Rectangle {
+        //     width: tracksBackground.width
+        //     color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
+        //     height: TimelineLogic.trackHeight(false)
+        //     Rectangle {
+        //         id: clip
+        //         color: (index == currentTrack) ? 'green' : 'black'
+        //         width: 50
+        //         height: parent.height
+        //         x: 50 * index
+        //         y: 0
+        //         MouseArea {
+        //             anchors.fill: parent
+        //             acceptedButtons: Qt.LeftButton 
+        //             drag.target: clip
+        //             drag.axis: Drag.XAxis
+        //             drag.minimumX: 0
+        //             drag.maximumX: tracksBackground.width - clip.width
+        //         }
+        //     }
+        // }
+    }
 }
 
