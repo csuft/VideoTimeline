@@ -88,12 +88,26 @@ Rectangle {
                                     width: tracksBackground.width
                                     color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
                                     height: TimelineLogic.trackHeight(false)
+                                    Rectangle {
+                                        id: clip
+                                        color: (index == currentTrack) ? 'green' : 'black'
+                                        width: 50
+                                        height: parent.height
+                                        x: 250
+                                        y: 0
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            drag.target: clip
+                                            drag.axis: Drag.XAxis
+                                            drag.minimumX: 0
+                                            drag.maximumX: tracksBackground.width - clip.width
+                                        }
+                                    }
                                 }
                             } 
                         }
                     } 
-                }
-
+                } 
             }
             Rectangle {
                 id: cursor
