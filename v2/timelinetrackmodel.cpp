@@ -24,11 +24,11 @@ namespace timeline {
 		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 2; ++i) {
 				ClipInfo info((TrackIndex)j);
-				info.setDuration(10 * i);
+				info.setDuration(10 * i + 50);
 				info.setInPoint(100 * i);
 				info.setOutputPoint(info.getInPoint() + info.getOutPoint());
-				info.setName("test");
-				info.setSourcePath(QUrl("test"));
+				info.setName("Video Clip");
+				info.setSourcePath(QUrl("VID_20180801.mp4"));
 				info.setFrameRate(30);
 				info.setModelIndex(i);
 				mTracks[j].push_back(info);

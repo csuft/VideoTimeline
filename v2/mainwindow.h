@@ -37,7 +37,7 @@ namespace timeline {
 		Q_INVOKABLE void onAddClip();
 	
 	private:
-		QQuickWidget* mTimelineWidget;
+		Timeline* mTimelineWidget;
 		TimelineTracksModel* mTimelineModel; 
 		int mPosition;
 		struct Selection {

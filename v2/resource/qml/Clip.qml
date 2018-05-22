@@ -172,28 +172,13 @@ Rectangle {
         drag.axis: Drag.XAxis
         property int startX
         onPressed: {
-            root.stopScrolling = true
-            originalX = parent.x
-            originalTrackIndex = trackIndex
-            originalClipIndex = index
-            startX = parent.x
-            clipRoot.forceActiveFocus();
-            clipRoot.clicked(clipRoot)
+
         }
         onPositionChanged: {
             parent.dragged(clipRoot, mouse)
         }
         onReleased: {
-            root.stopScrolling = false
-            parent.y = 0
-            var delta = parent.x - startX
-            if (Math.abs(delta) >= 1.0 || trackIndex !== originalTrackIndex) {
-                parent.moved(clipRoot)
-                originalX = parent.x
-                originalTrackIndex = trackIndex
-            } else {
-                parent.dropped(clipRoot)
-            }
+            
         }
         onDoubleClicked: timeline.position = clipRoot.x / timelinetracks.scaleFactor
         onWheel: zoomByWheel(wheel)
@@ -229,28 +214,13 @@ Rectangle {
             property double startX
 
             onPressed: {
-                root.stopScrolling = true
-                startX = mapToItem(null, x, y).x
-                originalX = 0 // reusing originalX to accumulate delta for bubble help
-                parent.anchors.left = undefined
+
             }
             onReleased: {
-                root.stopScrolling = false
-                parent.anchors.left = clipRoot.left
-                clipRoot.trimmedIn(clipRoot)
-                parent.opacity = 0
+
             }
             onPositionChanged: {
-                if (mouse.buttons === Qt.LeftButton) {
-                    var newX = mapToItem(null, x, y).x
-                    var delta = Math.round((newX - startX) / timeScale)
-                    if (Math.abs(delta) > 0) {
-                        if (clipDuration + originalX + delta > 0)
-                            originalX += delta
-                        clipRoot.trimmingIn(clipRoot, delta, mouse)
-                        startX = newX
-                    }
-                }
+
             }
             onEntered: parent.opacity = 0.5
             onExited: parent.opacity = 0
@@ -278,25 +248,13 @@ Rectangle {
             property int duration
 
             onPressed: {
-                duration = clipDuration
-                originalX = 0 // reusing originalX to accumulate delta for bubble help
-                parent.anchors.right = undefined
+
             }
             onReleased: {
-                parent.anchors.right = clipRoot.right
-                clipRoot.trimmedOut(clipRoot)
+
             }
             onPositionChanged: {
-                if (mouse.buttons === Qt.LeftButton) {
-                    var newDuration = Math.round((parent.x + parent.width) / timeScale)
-                    var delta = duration - newDuration
-                    if (Math.abs(delta) > 0) {
-                        if (clipDuration - originalX - delta > 0)
-                            originalX += delta
-                        clipRoot.trimmingOut(clipRoot, delta, mouse)
-                        duration = newDuration
-                    }
-                }
+
             }
             onEntered: parent.opacity = 0.5
             onExited: parent.opacity = 0

@@ -14,11 +14,9 @@ namespace timeline {
 
 	MainWindow::MainWindow(QWidget* parent /* = Q_NULLPTR */)
 		: QMainWindow(parent),
-		mTimelineWidget(new QQuickWidget(QmlUtilities::sharedEngine(), this)),
+		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
 		mTimelineModel(new TimelineTracksModel) {
-		setWindowIcon(QIcon(":/images/audiowave"));    
-
-		QVBoxLayout* mainLayout = new QVBoxLayout;
+		setWindowIcon(QIcon(":/images/audiowave"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
 		mTimelineWidget->engine()->addImportPath(importPath.path());
@@ -31,10 +29,7 @@ namespace timeline {
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
-		mTimelineWidget->resize(800, 300);
-		//mainLayout->addWidget(mTimelineWidget); 
-		//QWidget* containerWidget = new QWidget(this);
-		//containerWidget->setLayout(mainLayout);
+		mTimelineWidget->resize(800, 300); 
 		setCentralWidget(mTimelineWidget);
 		resize(810, 300);
 #ifdef Q_OS_WIN 
