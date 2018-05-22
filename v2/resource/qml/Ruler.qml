@@ -16,6 +16,7 @@ Rectangle {
             height: 18
             width: 1 
             x: index * stepSize
+            color: 'black'
             Label { 
                 anchors.leftMargin: 2
                 anchors.bottom: parent.top

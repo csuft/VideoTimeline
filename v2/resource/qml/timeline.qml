@@ -9,7 +9,8 @@ import 'Timeline.js' as TimelineLogic
 Rectangle {
     // system attributes
     id: root  
-    color: 'transparent'
+    color: 'transparent' 
+
     // custom properties
     property int  currentTrack: 0
     property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
@@ -49,7 +50,7 @@ Rectangle {
     }
 
     Row {
-        anchors.top: toolbar.bottom
+        anchors.top: toolbar.bottom 
 
         MouseArea {
             id: tracksMouseArea
@@ -75,7 +76,7 @@ Rectangle {
                 ScrollView {
                     id: tracksScrollView
                     width: root.width
-                    height: root.height - ruler.heihgt - toolbar.height
+                    height: root.height - ruler.height - toolbar.height
 
                     Item { 
                         width: tracksBackground.width
@@ -128,28 +129,7 @@ Rectangle {
             onClipDragged: {}
             onClipDropped: {}
             onCheckSnap: {}
-        }
-        // delegate: Rectangle {
-        //     width: tracksBackground.width
-        //     color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
-        //     height: TimelineLogic.trackHeight(false)
-        //     Rectangle {
-        //         id: clip
-        //         color: (index == currentTrack) ? 'green' : 'black'
-        //         width: 50
-        //         height: parent.height
-        //         x: 50 * index
-        //         y: 0
-        //         MouseArea {
-        //             anchors.fill: parent
-        //             acceptedButtons: Qt.LeftButton 
-        //             drag.target: clip
-        //             drag.axis: Drag.XAxis
-        //             drag.minimumX: 0
-        //             drag.maximumX: tracksBackground.width - clip.width
-        //         }
-        //     }
-        // }
+        } 
     }
 }
 

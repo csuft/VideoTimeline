@@ -5,8 +5,7 @@ import 'Track.js' as TrackLogic
 Rectangle {
     id: trackRoot
     property alias model: trackModel.model
-    property alias rootIndex: trackModel.rootIndex
-    property bool isAudio
+    property alias rootIndex: trackModel.rootIndex 
     property real timeScale: 1.0 
     property bool isCurrentTrack: false 
     property var selection
@@ -48,8 +47,7 @@ Rectangle {
             clipSource: model.source
             clipDuration: model.duration 
             inPoint: model.in
-            outPoint: model.out 
-            isAudio: model.audio 
+            outPoint: model.out  
             audioLevels: model.audioLevels
             width: model.duration * timeScale
             height: trackRoot.height
@@ -74,25 +72,4 @@ Rectangle {
         id: clipRow
         Repeater { id: repeater; model: trackModel }
     }
-}
-        //delegate: Rectangle {
-        //     width: tracksBackground.width
-        //     color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
-        //     height: TimelineLogic.trackHeight(false)
-        //     Rectangle {
-        //         id: clip
-        //         color: (index == currentTrack) ? 'green' : 'black'
-        //         width: 50
-        //         height: parent.height
-        //         x: 50 * index
-        //         y: 0
-        //         MouseArea {
-        //             anchors.fill: parent
-        //             acceptedButtons: Qt.LeftButton 
-        //             drag.target: clip
-        //             drag.axis: Drag.XAxis
-        //             drag.minimumX: 0
-        //             drag.maximumX: tracksBackground.width - clip.width
-        //         }
-        //     }
-        // }
+} 

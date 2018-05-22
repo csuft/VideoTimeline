@@ -52,19 +52,8 @@ Rectangle {
     opacity: Drag.active? 0.5 : 1.0
 
     function getColor() {
-        return isAudio? 'darkseagreen' : root.studioYellow
-    } 
-
-    function generateWaveform() {
-        if (!waveform.visible) return
-        // This is needed to make the model have the correct count.
-        // Model as a property expression is not working in all cases.
-        waveformRepeater.model = Math.ceil(waveform.innerWidth / waveform.maxWidth)
-        for (var i = 0; i < waveformRepeater.count; i++)
-            waveformRepeater.itemAt(0).update()
-    }
-
-    onAudioLevelsChanged: generateWaveform()
+        return 'darkseagreen'
+    }  
 
     Image {
         id: outThumbnail
@@ -289,13 +278,11 @@ Rectangle {
             property int duration
 
             onPressed: {
-                root.stopScrolling = true
                 duration = clipDuration
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.right = undefined
             }
             onReleased: {
-                root.stopScrolling = false
                 parent.anchors.right = clipRoot.right
                 clipRoot.trimmedOut(clipRoot)
             }

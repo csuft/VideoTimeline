@@ -21,7 +21,7 @@ namespace timeline {
 
 	TimelineTracksModel::TimelineTracksModel(QObject *parent)
 		: QAbstractItemModel(parent) {
-		for (int j = 0; j < mTracks->count(); ++j) {
+		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 2; ++i) {
 				ClipInfo info((TrackIndex)j);
 				info.setDuration(10 * i);

@@ -19,7 +19,7 @@ namespace timeline {
 		MainWindow(QWidget* parent = Q_NULLPTR);
 		~MainWindow() = default;  
 		void load(bool force = false);
-		int position() const { return m_position; }
+		int position() const { return mPosition; }
 		void setPosition(int position);
 		void setCurrentTrack(int currentTrack);
 		int currentTrack() const; 
@@ -37,16 +37,15 @@ namespace timeline {
 		Q_INVOKABLE void onAddClip();
 	
 	private:
-		Timeline* mTimelineWidget;
-		TimelineTracksModel* mTimelineModel;
-		QPushButton* mAddClipBtn;
-		int m_position;
+		QQuickWidget* mTimelineWidget;
+		TimelineTracksModel* mTimelineModel; 
+		int mPosition;
 		struct Selection {
 			QList<int> selectedClips;
 			int selectedTrack;
 			bool isMultitrackSelected;
 		};
-		Selection m_selection;
+		Selection mSelection;
 	};
 }
 
