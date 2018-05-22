@@ -14,11 +14,9 @@ namespace timeline {
 
 	MainWindow::MainWindow(QWidget* parent /* = Q_NULLPTR */)
 		: QMainWindow(parent),
-		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
-		mTimelineModel(new TimelineTracksModel),
-		mAddClipBtn(new QPushButton("Add Clip", this)) {
-		setWindowIcon(QIcon(":/images/audiowave")); 
-		resize(800, 150);   
+		mTimelineWidget(new QQuickWidget(QmlUtilities::sharedEngine(), this)),
+		mTimelineModel(new TimelineTracksModel) {
+		setWindowIcon(QIcon(":/images/audiowave"));    
 
 		QVBoxLayout* mainLayout = new QVBoxLayout;
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
@@ -33,20 +31,17 @@ namespace timeline {
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
-		
-		mainLayout->addWidget(mTimelineWidget, 1);
-		mainLayout->addWidget(mAddClipBtn, 0, Qt::AlignRight);
-		QWidget* containerWidget = new QWidget(this);
-		containerWidget->setLayout(mainLayout);
-		setCentralWidget(containerWidget);
-
+		mTimelineWidget->resize(800, 300);
+		//mainLayout->addWidget(mTimelineWidget); 
+		//QWidget* containerWidget = new QWidget(this);
+		//containerWidget->setLayout(mainLayout);
+		setCentralWidget(mTimelineWidget);
+		resize(810, 300);
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else
 		connect(this, &QDockWidget::visibilityChanged, this, &MainWindow::load);
-#endif
-		connect(mTimelineModel, &TimelineTracksModel::modified, this, &MainWindow::clearSelectionIfInvalid);
-		connect(mAddClipBtn, &QAbstractButton::clicked, this, &MainWindow::onAddClip);
+#endif  
 	} 
 
 	void MainWindow::onVisibilityChanged(bool visible) {
@@ -72,14 +67,10 @@ namespace timeline {
 		else {
 			mTimelineModel->reload();
 		}
-	}
-
-	void MainWindow::clearSelectionIfInvalid() {
-
-	}
+	} 
 
 	void MainWindow::onAddClip() {
-
+		QMetaObject::invokeMethod((QObject*)mTimelineWidget->rootObject(), "addClip");
 	}
 
 	void MainWindow::setPosition(int position) {
@@ -102,6 +93,9 @@ namespace timeline {
 		return QList<int>();
 	}
 
+	QString MainWindow::timecode(int frames) {
+		return QString::number(frames);
+	}
 }
 
 

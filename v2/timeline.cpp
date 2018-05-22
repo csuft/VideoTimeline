@@ -3,9 +3,8 @@
 namespace timeline {
 
 	Timeline::Timeline(QQmlEngine* qmlEngine, QWidget* parent /* = Q_NULLPTR */)
-		: QQuickWidget(qmlEngine, parent) { 
+		: QQuickWidget(qmlEngine, parent) {  
 		setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
 	} 
 
 }

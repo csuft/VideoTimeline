@@ -10,8 +10,30 @@ static const quintptr NO_PARENT_ID = quintptr(-1);
 
 namespace timeline {
 
+	ClipInfo::ClipInfo(TrackIndex index) 
+		: mTrackIndex(index) {
+
+	}
+
+	ClipInfo::~ClipInfo() {
+
+	}
+
 	TimelineTracksModel::TimelineTracksModel(QObject *parent)
 		: QAbstractItemModel(parent) {
+		for (int j = 0; j < 2; ++j) {
+			for (int i = 0; i < 2; ++i) {
+				ClipInfo info((TrackIndex)j);
+				info.setDuration(10 * i);
+				info.setInPoint(100 * i);
+				info.setOutputPoint(info.getInPoint() + info.getOutPoint());
+				info.setName("test");
+				info.setSourcePath(QUrl("test"));
+				info.setFrameRate(30);
+				info.setModelIndex(i);
+				mTracks[j].push_back(info);
+			}
+		} 
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
 	}
 
@@ -22,11 +44,10 @@ namespace timeline {
 	// one video track and one audio track
 	int TimelineTracksModel::rowCount(const QModelIndex &parent) const {
 		Q_UNUSED(parent);
-		return tracksCount();
+		return mTracks->count();
 	}
 
-	int TimelineTracksModel::columnCount(const QModelIndex &parent) const
-	{
+	int TimelineTracksModel::columnCount(const QModelIndex &parent) const {
 		Q_UNUSED(parent);
 		return 1;
 	}
@@ -36,43 +57,47 @@ namespace timeline {
 		 	return QVariant();
 		// Get info for a clip
 		if (index.parent().isValid()) {
-			TrackIndex type = (TrackIndex)index.internalId();
+			TrackIndex trackIndex = (TrackIndex)index.internalId();
+			int clipIndex = index.row();
+			ClipInfo clipInfo = mTracks[trackIndex].at(clipIndex);
 			// get clip info
 			switch (role)
 			{
 			case NameRole:
-				break;
+				return clipInfo.getName(); 
 			case SourceRole:
-				break;
+				return clipInfo.getSourcePath(); 
 			case Qt::DisplayRole:
-				break;
-			case IsBlankRole:
-				break;
-			case StartRole:
-				break;
+				return clipInfo.getName(); 
 			case DurationRole:
-				break;
+				return clipInfo.getDuration(); 
 			case InPointRole:
-				break;
+				return clipInfo.getInPoint(); 
 			case OutPointRole:
-				break;
+				return clipInfo.getOutPoint();  
+			case FrameRateRole:
+				return clipInfo.getFrameRate();
 			case AudioLevelsRole:
-				break;
+				return QVariant();
 			default:
 				break;
 			} 
 		}
 		// Get info for a track
 		else {
-			TrackIndex trackType = (TrackIndex)index.row();
+			TrackIndex trackIndex = (TrackIndex)index.row();
 			switch (role)
 			{
 			case Qt::DisplayRole:
-
-			case NameRole:
-			case DurationRole:
+				return trackIndex == VideoTrack ? "Video Track" : "Audio Track"; 
+			case DurationRole: {
+				if (mTracks[trackIndex].size() > 0) {
+					return mTracks[trackIndex].back().getOutPoint();
+				}
+				return 0;
+			} 
 			case IsAudioRole:
-
+				return trackIndex == AudioTrack ? true : false; 
 			default:
 				break;
 			} 
@@ -85,11 +110,10 @@ namespace timeline {
 			return QModelIndex();
 
 		QModelIndex result;
-		if (parent.isValid()) {
-			TrackIndex trackType = (TrackIndex)parent.row();
+		if (parent.isValid()) { 
+			// the internal identifier is track index
 			result = createIndex(row, column, parent.row());
 		}
-		// get index of track
 		else if (row < tracksCount()) {
 			result = createIndex(row, column, NO_PARENT_ID);
 		}
@@ -111,35 +135,22 @@ namespace timeline {
 	QHash<int, QByteArray> TimelineTracksModel::roleNames() const {
 		QHash<int, QByteArray> roles;
 		roles[NameRole] = "name";
-		roles[SourceRole] = "source"; 
-		roles[IsBlankRole] = "blank";
-		roles[StartRole] = "start";
+		roles[SourceRole] = "source";  
 		roles[DurationRole] = "duration";
 		roles[InPointRole] = "in";
 		roles[OutPointRole] = "out"; 
 		roles[IsAudioRole] = "audio";
+		roles[FrameRateRole] = "fps";
 		roles[AudioLevelsRole] = "audioLevels";   
 		return roles;
-	}
-
-	void TimelineTracksModel::setTrackName(int row, const QString &value) {
-		if (row < tracksCount()) {  
-			QModelIndex modelIndex = index(row, 0);
-			QVector<int> roles;
-			roles << NameRole;
-			emit dataChanged(modelIndex, modelIndex, roles);
-			emit modified();
-		}
-	}  
+	} 
 
 	bool TimelineTracksModel::trimClipInValid(int trackIndex, int clipIndex, int delta) {
-		bool result = true; 
-		return result;
+		return true;
 	}
 
-	int TimelineTracksModel::trimClipIn(int trackIndex, int clipIndex, int delta) {
-		int result = clipIndex; 
-		return result;
+	int TimelineTracksModel::trimClipIn(int trackIndex, int clipIndex, int delta) { 
+		return true;
 	}
 
 	void TimelineTracksModel::notifyClipIn(int trackIndex, int clipIndex) {
@@ -152,34 +163,27 @@ namespace timeline {
 	}
 
 	bool TimelineTracksModel::trimClipOutValid(int trackIndex, int clipIndex, int delta) {
-		bool result = true;
-		return result;
+		return true;
 	}
 
 	int TimelineTracksModel::trackHeight() const {
-		int result = 50;
-		return result;
+		return 50;
 	}
 
-	void TimelineTracksModel::setTrackHeight(int height) {
+	void TimelineTracksModel::setTrackHeight(int height) { 
 		emit trackHeightChanged();
 	}
 
 	double TimelineTracksModel::scaleFactor() const {
-		double result = 0;
-		return (result > 0) ? result : (qPow(1.0, 3.0) + 0.01);
+		return 1.0;
 	}
 
-	void TimelineTracksModel::setScaleFactor(double scale) { 
+	void TimelineTracksModel::setScaleFactor(double scale) {  
 		emit scaleFactorChanged();
 	}
 
 	int TimelineTracksModel::trimClipOut(int trackIndex, int clipIndex, int delta) {
-		QList<int> tracksToRemoveRegionFrom;
-		int result = clipIndex;
-		int whereToRemoveRegion = -1;
-
-		return result;
+		return 0;
 	}
 
 	void TimelineTracksModel::notifyClipOut(int trackIndex, int clipIndex) {
@@ -196,12 +200,11 @@ namespace timeline {
 	}
 
 	bool TimelineTracksModel::moveClip(int clipIndex, int position) { 
-		bool result = false; 
-		  
-		return result;
+		return true;
 	} 
 
-	int TimelineTracksModel::insertClip(int trackIndex, int position) {
+	int TimelineTracksModel::insertClip(int trackIndex, const ClipInfo& clip, int position) {
+		// 
 		return -1;
 	}
 
@@ -223,23 +226,7 @@ namespace timeline {
 	
 	void TimelineTracksModel::moveClipToEnd(int trackIndex, int clipIndex, int position) {
 		
-	}
-
-	void TimelineTracksModel::relocateClip(int trackIndex, int clipIndex, int position) {
-		
-	}
-
-	void TimelineTracksModel::moveClipInBlank(int trackIndex, int clipIndex, int position) {
-		
-	}
-
-	void TimelineTracksModel::consolidateBlanks(int trackIndex) {
-		
-	}
-
-	void TimelineTracksModel::consolidateBlanksAllTracks() {
-
-	}
+	} 
 
 	void TimelineTracksModel::audioLevelsReady(const QModelIndex& index) {
 		QVector<int> roles;
@@ -247,17 +234,9 @@ namespace timeline {
 		emit dataChanged(index, index, roles);
 	}
 
-	bool TimelineTracksModel::createIfNeeded() { 
-		return true;
-	} 
-
 	void TimelineTracksModel::adjustBackgroundDuration() {
 	
-	} 
-
-	void TimelineTracksModel::insertOrAdjustBlankAt(QList<int> tracks, int position, int length) {
-		
-	} 
+	}  
 
 	void TimelineTracksModel::load() { 
 
@@ -280,11 +259,7 @@ namespace timeline {
 
 	void TimelineTracksModel::getAudioLevels() {
 		
-	}
-
-	void TimelineTracksModel::removeBlankPlaceholder(int trackIndex) { 
-
-	}
+	} 
 
 }
 

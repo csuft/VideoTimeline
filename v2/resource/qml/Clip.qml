@@ -12,8 +12,7 @@ Rectangle {
     property string clipSource: '' 
     property int inPoint: 0
     property int outPoint: 0
-    property int clipDuration: 0
-    property bool isBlank: false
+    property int clipDuration: 0 
     property bool isAudio: false 
     property var audioLevels 
     property int trackIndex
@@ -44,7 +43,7 @@ Rectangle {
     }
 
     border.color: selected? 'yellow' : 'black'
-    border.width: isBlank? 0 : 1
+    border.width: 1
     // If clipping is enabled, an item will clip its own painting, 
     // as well as the painting of its children, to its bounding rectangle.
     clip: true 
@@ -53,19 +52,8 @@ Rectangle {
     opacity: Drag.active? 0.5 : 1.0
 
     function getColor() {
-        return isBlank? 'transparent' : isAudio? 'darkseagreen' : root.studioYellow
-    } 
-
-    function generateWaveform() {
-        if (!waveform.visible) return
-        // This is needed to make the model have the correct count.
-        // Model as a property expression is not working in all cases.
-        waveformRepeater.model = Math.ceil(waveform.innerWidth / waveform.maxWidth)
-        for (var i = 0; i < waveformRepeater.count; i++)
-            waveformRepeater.itemAt(0).update()
-    }
-
-    onAudioLevelsChanged: generateWaveform()
+        return 'darkseagreen'
+    }  
 
     Image {
         id: outThumbnail
@@ -76,7 +64,7 @@ Rectangle {
         anchors.rightMargin: parent.border.width + 1
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height / 2
-        width: height * 16.0/9.0
+        width: height * 2.0
         fillMode: Image.PreserveAspectFit
     }
 
@@ -88,13 +76,13 @@ Rectangle {
         anchors.topMargin: parent.border.width
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height / 2
-        width: height * 16.0/9.0
+        width: height * 2.0
         fillMode: Image.PreserveAspectFit 
     } 
 
     Row {
         id: waveform
-        visible: !isBlank
+        visible: true
         height: isAudio? parent.height : parent.height / 2
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -103,24 +91,11 @@ Rectangle {
         property int maxWidth: 10000
         property int innerWidth: clipRoot.width - clipRoot.border.width * 2
 
-        Repeater {
-            id: waveformRepeater
-            TimelineWaveform {
-                width: Math.min(waveform.innerWidth, waveform.maxWidth)
-                height: waveform.height
-                fillColor: getColor()
-                property int channels: 2
-                inPoint: Math.round((clipRoot.inPoint + index * waveform.maxWidth / timeScale)) * channels
-                outPoint: inPoint + Math.round(width / timeScale) * channels
-                levels: audioLevels
-            }
-        }
     }
 
-    Rectangle {
-        // audio peak line
+    Rectangle { 
         width: parent.width - parent.border.width * 2
-        visible: !isBlank
+        visible: true
         height: 1
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -133,7 +108,7 @@ Rectangle {
     Rectangle {
         // text background
         color: 'lightgray'
-        visible: !isBlank 
+        visible: true 
         opacity: 0.5
         anchors.top: parent.top
         anchors.left: parent.left
@@ -147,7 +122,7 @@ Rectangle {
     Text {
         id: label
         text: clipName
-        visible: !isBlank 
+        visible: true 
         font.pointSize: 8
         anchors {
             top: parent.top
@@ -167,19 +142,7 @@ Rectangle {
                 target: clipRoot
                 z: 0
             }
-        },
-        State {
-            name: 'selectedBlank'
-            when: clipRoot.selected && clipRoot.isBlank
-            PropertyChanges {
-                target: gradientStop2
-                color: Qt.lighter(selectedTrackColor)
-            }
-            PropertyChanges {
-                target: gradientStop
-                color: Qt.darker(selectedTrackColor)
-            }
-        },
+        }, 
         State {
             name: 'selected'
             when: clipRoot.selected
@@ -196,15 +159,14 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        enabled: isBlank
+        enabled: true
         acceptedButtons: Qt.RightButton
         onClicked: menu.show()
     }
 
     MouseArea {
         id: mouseArea
-        anchors.fill: parent
-        enabled: !isBlank
+        anchors.fill: parent 
         acceptedButtons: Qt.LeftButton
         drag.target: parent
         drag.axis: Drag.XAxis
@@ -247,7 +209,7 @@ Rectangle {
 
     Rectangle {
         id: trimIn
-        enabled: !isBlank
+        enabled: true
         anchors.left: parent.left
         anchors.leftMargin: 0
         height: parent.height
@@ -296,7 +258,7 @@ Rectangle {
     }
     Rectangle {
         id: trimOut
-        enabled: !isBlank 
+        enabled: true 
         anchors.right: parent.right
         anchors.rightMargin: 0
         height: parent.height
@@ -316,13 +278,11 @@ Rectangle {
             property int duration
 
             onPressed: {
-                root.stopScrolling = true
                 duration = clipDuration
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.right = undefined
             }
             onReleased: {
-                root.stopScrolling = false
                 parent.anchors.right = clipRoot.right
                 clipRoot.trimmedOut(clipRoot)
             }
@@ -345,41 +305,32 @@ Rectangle {
     Menu {
         id: menu
         function show() {
-            mergeItem.visible = timeline.mergeClipWithNext(trackIndex, index, true)
             popup()
         }
         MenuItem {
-            visible: !isBlank 
-            text: qsTr('Cut')
-            onTriggered: { 
-                timeline.copyClip(trackIndex, index)
-                timeline.remove(trackIndex, index) 
-            }
+            visible: true
+            text: qsTr('Cut') 
         }
         MenuItem {
-            visible: !isBlank 
-            text: qsTr('Copy')
-            onTriggered: timeline.copyClip(trackIndex, index)
+            visible: true 
+            text: qsTr('Copy') 
         }
         MenuSeparator {
-            visible: !isBlank 
+            visible: true 
         }
         MenuItem {
-            text: qsTr('Remove')
-            onTriggered: timeline.remove(trackIndex, index)
+            text: qsTr('Remove') 
         }
         MenuSeparator {
-            visible: !isBlank 
+            visible: true 
         }
         MenuItem {
-            visible: !isBlank 
-            text: qsTr('Split At Playhead')
-            onTriggered: timeline.splitClip(trackIndex, index)
+            visible: true 
+            text: qsTr('Split At Playhead') 
         }
         MenuItem {
-            visible: !isBlank
-            text: qsTr('Rebuild Audio Waveform')
-            onTriggered: timeline.remakeAudioLevels(trackIndex, index)
+            visible: true
+            text: qsTr('Rebuild Audio Waveform') 
         }
         onPopupVisibleChanged: {
             if (visible && application.OS !== 'OS X' && __popupGeometry.height > 0) {
