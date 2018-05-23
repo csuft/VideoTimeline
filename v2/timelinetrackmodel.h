@@ -83,6 +83,7 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
+		int tracksLength();
 
 	signals:
 		void created();
@@ -117,6 +118,8 @@ namespace timeline {
 
 	private: 
 		QList<ClipInfo> mTracks[2];
+		double mScaleFactor;
+		int mTrackHeight;
 	}; 
 }
 

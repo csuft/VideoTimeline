@@ -23,16 +23,15 @@ Rectangle {
     // signal handlers
     onCurrentTrackChanged: timeline.selection = []
 
-    // functions
-    function addClip() {
-        console.log("add clip");
-    }
-
-    // components
+    // components  
     MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.RightButton
-    }
+        id: tracksMouseArea
+        anchors.fill: parent 
+        acceptedButtons: Qt.LeftButton
+        onClicked: {
+            timeline.position = (tracksScrollView.flickableItem.contentX + mouse.x) / timelinetracks.scaleFactor 
+        } 
+    }   
 
     DropArea {
         anchors.fill: parent
@@ -50,71 +49,61 @@ Rectangle {
     }
 
     Row {
-        anchors.top: toolbar.bottom 
+        anchors.top: toolbar.bottom  
+        Column { 
+            Flickable {
+                contentX: tracksScrollView.flickableItem.contentX
+                width: tracksBackground.width
+                height: ruler.height
+                interactive: false
+                Ruler {
+                    id: ruler
+                    width: parent.width 
+                }
+            } 
 
-        MouseArea {
-            id: tracksMouseArea
-            anchors.fill: parent
-            focus: true 
-            hoverEnabled: true
-            onClicked: {}
-            onPositionChanged: {}
+            ScrollView {
+                id: tracksScrollView
+                width: root.width
+                height: root.height - ruler.height - toolbar.height
 
-            Column {
-                anchors.fill: parent
-                Flickable {
-                    contentX: tracksScrollView.flickableItem.contentX
+                Item { 
                     width: tracksBackground.width
-                    height: ruler.height
-                    interactive: false
-                    Ruler {
-                        id: ruler
-                        width: parent.width 
+                    height: tracksScrollView.height + padding
+                    
+                    // tracks background
+                    Column {
+                        id: tracksBackground 
+                        width: root.width + 100
+                        height: parent.height
+                        Repeater {
+                            id: tracksRepeater
+                            model: tracksModel 
+                        } 
                     }
                 } 
-
-                ScrollView {
-                    id: tracksScrollView
-                    width: root.width
-                    height: root.height - ruler.height - toolbar.height
-
-                    Item { 
-                        width: tracksBackground.width
-                        height: tracksScrollView.height + padding
-                        
-                        // tracks background
-                        Column {
-                            id: tracksBackground 
-                            width: root.width + 100
-                            height: parent.height
-                            Repeater {
-                                id: tracksRepeater
-                                model: tracksModel 
-                            } 
-                        }
-                    } 
-                } 
-            }
-            Rectangle {
-                id: cursor
-                visible: true
-                color: 'black'
-                width: 1
-                height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
-                x: 250
-                y: 0
-            }
-
-            TimelinePlayhead {
-                id: playhead
-                visible: true
-                x: cursor.x - 5
-                y: 0
-                width: 11
-                height: 5
-            }
+            } 
         }
-    } 
+        Rectangle {
+            id: cursor
+            visible: true
+            color: 'black'
+            width: 1
+            height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
+            x: timeline.position * timelinetracks.scaleFactor - tracksScrollView.flickableItem.contentX
+            y: 0
+        }
+
+        TimelinePlayhead {
+            id: playhead
+            visible: true
+            x: cursor.x - 5
+            y: 0
+            width: 11
+            height: 5
+        }
+    }
+    
 
     DelegateModel {
         id: tracksModel

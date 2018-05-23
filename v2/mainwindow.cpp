@@ -15,7 +15,9 @@ namespace timeline {
 	MainWindow::MainWindow(QWidget* parent /* = Q_NULLPTR */)
 		: QMainWindow(parent),
 		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
-		mTimelineModel(new TimelineTracksModel) {
+		mTimelineModel(new TimelineTracksModel),
+		mPosition(0) { 
+
 		setWindowIcon(QIcon(":/images/audiowave"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
@@ -69,7 +71,13 @@ namespace timeline {
 	}
 
 	void MainWindow::setPosition(int position) {
-
+		if (position <= mTimelineModel->tracksLength()) {
+			mPosition = position;
+		}
+		else {
+			mPosition = mTimelineModel->tracksLength();
+		}
+		emit positionChanged();
 	}
 
 	void MainWindow::setCurrentTrack(int currentTrack) {

@@ -1,8 +1,8 @@
 #ifndef _MAIN_WINDOW_H
 #define _MAIN_WINDOW_H 
 
-#include <QMainWindow>
-#include <QPushButton>
+#include <QMainWindow> 
+#include <QDebug>
 
 #include "timeline.h"
 #include "timelinetrackmodel.h"
@@ -19,7 +19,7 @@ namespace timeline {
 		MainWindow(QWidget* parent = Q_NULLPTR);
 		~MainWindow() = default;  
 		void load(bool force = false);
-		int position() const { return mPosition; }
+		int position() const { qDebug() << "get pos: " << mPosition; return mPosition; }
 		void setPosition(int position);
 		void setCurrentTrack(int currentTrack);
 		int currentTrack() const; 

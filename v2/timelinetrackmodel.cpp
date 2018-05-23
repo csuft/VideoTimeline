@@ -20,13 +20,15 @@ namespace timeline {
 	}
 
 	TimelineTracksModel::TimelineTracksModel(QObject *parent)
-		: QAbstractItemModel(parent) {
+		: QAbstractItemModel(parent),
+		mScaleFactor(1.0),
+		mTrackHeight(50) {
 		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 2; ++i) {
 				ClipInfo info((TrackIndex)j);
 				info.setDuration(10 * i + 50);
 				info.setInPoint(100 * i);
-				info.setOutputPoint(info.getInPoint() + info.getOutPoint());
+				info.setOutputPoint(info.getInPoint() + info.getDuration());
 				info.setName("Video Clip");
 				info.setSourcePath(QUrl("VID_20180801.mp4"));
 				info.setFrameRate(30);
@@ -167,18 +169,20 @@ namespace timeline {
 	}
 
 	int TimelineTracksModel::trackHeight() const {
-		return 50;
+		return mTrackHeight;
 	}
 
 	void TimelineTracksModel::setTrackHeight(int height) { 
+		mTrackHeight = height;
 		emit trackHeightChanged();
 	}
 
 	double TimelineTracksModel::scaleFactor() const {
-		return 1.0;
+		return mScaleFactor;
 	}
 
 	void TimelineTracksModel::setScaleFactor(double scale) {  
+		mScaleFactor = scale;
 		emit scaleFactorChanged();
 	}
 
@@ -260,6 +264,18 @@ namespace timeline {
 	void TimelineTracksModel::getAudioLevels() {
 		
 	} 
+
+	int TimelineTracksModel::tracksLength() {
+		int length = 0;
+		for (size_t i = 0; i < mTracks->count(); i++) {
+			for (size_t j = 0; j < mTracks[i].count(); j++) {
+				if (length < mTracks[i].at(j).getOutPoint()) {
+					length = mTracks[i].at(j).getOutPoint();
+				}
+			}
+		}
+		return length;
+	}
 
 }
 

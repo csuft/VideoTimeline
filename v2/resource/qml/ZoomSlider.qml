@@ -24,18 +24,13 @@ Rectangle {
         maximumValue: 3.0
         value: 1
         function setScaleFactor() {
-            timelinetracks.scaleFactor = Math.pow(value, 3) + 0.01
+            
         }
         onValueChanged: {
             if (!pressed && typeof timelinetracks.scaleFactor != 'undefined')
                 setScaleFactor()
         }
-        onPressedChanged: {
-            if (!pressed) {
-                setScaleFactor()
-                for (var i = 0; i < tracksRepeater.count; i++)
-                    tracksRepeater.itemAt(i).redrawWaveforms()
-            }
+        onPressedChanged: { 
         }
     }
 }
