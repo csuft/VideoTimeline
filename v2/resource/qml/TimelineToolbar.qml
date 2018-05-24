@@ -104,8 +104,8 @@ ToolBar {
         tooltip: qsTr('Cut - Copy the current clip to the Source')
         iconName: 'edit-cut'
         iconSource: 'qrc:///images/images/audio-meter.png'
-        enabled: timeline.selection
-        onTriggered: timeline.removeSelection(true)
+        enabled: TimelineWidget.selection
+        onTriggered: TimelineWidget.removeSelection(true)
     }
 
     Action {
@@ -113,7 +113,7 @@ ToolBar {
         tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'
         iconSource: 'qrc:/list-remove.png'
-        onTriggered: timeline.remove(currentTrack, timeline.selection[0])
+        onTriggered: TimelineWidget.remove(currentTrack, TimelineWidget.selection[0])
    }
 
     Action {
@@ -121,8 +121,8 @@ ToolBar {
         tooltip: qsTr('Copy - Copy the current clip')
         iconName: 'edit-copy'
         iconSource: 'qrc::///images/images/audio-volume-muted.png'
-        enabled: timeline.selection.length
-        onTriggered: timeline.copyClip(currentTrack, timeline.selection[0])
+        enabled: TimelineWidget.selection.length
+        onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection[0])
     }
 
     Action {
@@ -130,7 +130,7 @@ ToolBar {
         tooltip: qsTr('Paste - Insert clip into the current track')
         iconName: 'edit-paste'
         iconSource: 'qrc:///images/images/audio-volume-high.png'
-        onTriggered: timeline.insert(currentTrack)
+        onTriggered: TimelineWidget.insert(currentTrack)
     } 
 
     Action {
@@ -138,7 +138,7 @@ ToolBar {
         tooltip: qsTr('Overwrite clip onto the current track')
         iconName: 'overwrite'
         iconSource: 'qrc:///images/images/object-locked.png'
-        onTriggered: timeline.overwrite(currentTrack)
+        onTriggered: TimelineWidget.overwrite(currentTrack)
     }
 
     Action {
@@ -146,7 +146,7 @@ ToolBar {
         tooltip: qsTr('Split At Playhead')
         iconName: 'slice'
         iconSource: 'qrc:///images/images/slice.png'
-        onTriggered: timeline.splitClip(currentTrack)
+        onTriggered: TimelineWidget.splitClip(currentTrack)
     }
 
     Action {

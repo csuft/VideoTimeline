@@ -26,10 +26,11 @@ Rectangle {
             
         }
         onValueChanged: {
-            if (!pressed && typeof timelinetracks.scaleFactor != 'undefined')
+            if (!pressed && typeof TimelineModel.scaleFactor != 'undefined')
                 setScaleFactor()
         }
         onPressedChanged: { 
+            
         }
     }
 }

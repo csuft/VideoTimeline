@@ -1,5 +1,5 @@
 function scrollIfNeeded() {
-    var x = timeline.position * timelinetracks.scaleFactor;
+    var x = TimelineWidget.position * TimelineModel.scaleFactor;
     if (!scrollView) return;
     if (x > scrollView.flickableItem.contentX + scrollView.width - 50)
         scrollView.flickableItem.contentX = x - scrollView.width + 50;
@@ -13,7 +13,7 @@ function dragging(pos, duration) {
     if (tracksRepeater.count > 0) {
         var headerHeight = ruler.height + toolbar.height
         dropTarget.x = pos.x
-        dropTarget.width = duration * timelinetracks.scaleFactor
+        dropTarget.width = duration * TimelineModel.scaleFactor
 
         for (var i = 0; i < tracksRepeater.count; i++) {
             var trackY = tracksRepeater.itemAt(i).y + headerHeight - scrollView.flickableItem.contentY
@@ -66,10 +66,10 @@ function dropped() {
 }
 
 function acceptDrop(xml) {
-    var position = Math.round((dropTarget.x + scrollView.flickableItem.contentX - headerWidth) / timelinetracks.scaleFactor)
-    timeline.overwrite(currentTrack, position, xml)
+    var position = Math.round((dropTarget.x + scrollView.flickableItem.contentX - headerWidth) / TimelineModel.scaleFactor)
+    TimelineWidget.overwrite(currentTrack, position, xml)
 }
 
 function trackHeight(isAudio) {
-    return isAudio? Math.max(40, timelinetracks.trackHeight) : timelinetracks.trackHeight * 2
+    return isAudio? Math.max(40, TimelineModel.trackHeight) : TimelineModel.trackHeight * 2
 }

@@ -15,9 +15,10 @@ Rectangle {
     property int clipDuration: 0 
     property bool isAudio: false 
     property var audioLevels 
-    property int trackIndex
-    property int originalX: x
+    property int trackIndex 
     property bool selected: false  
+
+    x: inPoint
 
     signal clicked(var clip)
     signal moved(var clip)
@@ -180,7 +181,7 @@ Rectangle {
         onReleased: {
             parent.dropped(clipRoot)
         }
-        onDoubleClicked: timeline.position = clipRoot.x / timelinetracks.scaleFactor
+        onDoubleClicked: TimelineWidget.position = clipRoot.x / TimelineModel.scaleFactor
         onWheel: zoomByWheel(wheel)
 
         MouseArea {

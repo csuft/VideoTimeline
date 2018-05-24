@@ -26,8 +26,8 @@ namespace timeline {
 		QmlUtilities::registerCommonTypes();
 		QmlUtilities::setCommonProperties(mTimelineWidget->rootContext());
 		mTimelineWidget->rootContext()->setContextProperty("view", new QmlView(mTimelineWidget));
-		mTimelineWidget->rootContext()->setContextProperty("timeline", this);
-		mTimelineWidget->rootContext()->setContextProperty("timelinetracks", mTimelineModel);
+		mTimelineWidget->rootContext()->setContextProperty("TimelineWidget", this);
+		mTimelineWidget->rootContext()->setContextProperty("TimelineModel", mTimelineModel);
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
@@ -71,11 +71,11 @@ namespace timeline {
 	}
 
 	void MainWindow::setPosition(int position) {
-		if (position <= mTimelineModel->tracksLength()) {
+		if (position <= mTimelineModel->tracksMaxLength()) {
 			mPosition = position;
 		}
 		else {
-			mPosition = mTimelineModel->tracksLength();
+			mPosition = mTimelineModel->tracksMaxLength();
 		}
 		emit positionChanged();
 	}

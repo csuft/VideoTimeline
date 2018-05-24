@@ -21,7 +21,7 @@ Rectangle {
     signal clipClicked()
 
     // signal handlers
-    onCurrentTrackChanged: timeline.selection = []
+    onCurrentTrackChanged: TimelineWidget.selection = []
 
     // components  
     MouseArea {
@@ -29,7 +29,7 @@ Rectangle {
         anchors.fill: parent 
         acceptedButtons: Qt.LeftButton
         onClicked: {
-            timeline.position = (tracksScrollView.flickableItem.contentX + mouse.x) / timelinetracks.scaleFactor 
+            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x) / TimelineModel.scaleFactor 
         } 
     }   
 
@@ -90,7 +90,7 @@ Rectangle {
             color: 'black'
             width: 1
             height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
-            x: timeline.position * timelinetracks.scaleFactor - tracksScrollView.flickableItem.contentX
+            x: TimelineWidget.position * TimelineModel.scaleFactor - tracksScrollView.flickableItem.contentX
             y: 0
         }
 
@@ -107,13 +107,14 @@ Rectangle {
 
     DelegateModel {
         id: tracksModel
-        model: timelinetracks
+        model: TimelineModel
         Track {
-            model: timelinetracks
+            model: TimelineModel
             rootIndex: tracksModel.modelIndex(index)
             color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
             height: TimelineLogic.trackHeight(false)
-            timeScale: timelinetracks.scaleFactor
+            
+            timeScale: TimelineModel.scaleFactor
             onClipClicked: { 
                 currentTrack = track.DelegateModel.itemsIndex 
             }

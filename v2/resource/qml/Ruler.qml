@@ -22,7 +22,7 @@ Rectangle {
                 anchors.bottom: parent.top
                 anchors.bottomMargin: 2 
                 x: index * stepSize + 2
-                text: timeline.timecode(index * stepSize / timeScale)
+                text: TimelineWidget.timecode(index * stepSize / timeScale)
                 font.pointSize: 7.5
             }
         }

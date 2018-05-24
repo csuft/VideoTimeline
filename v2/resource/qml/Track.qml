@@ -22,7 +22,7 @@ Rectangle {
 
     function remakeWaveforms(force) {
         for (var i = 0; i < repeater.count; i++)
-            timeline.remakeAudioLevels(trackRoot.DelegateModel.itemsIndex, i, force)
+            TimelineWidget.remakeAudioLevels(trackRoot.DelegateModel.itemsIndex, i, force)
     }
 
     function snapClip(clip) {
@@ -50,8 +50,7 @@ Rectangle {
             outPoint: model.out  
             audioLevels: model.audioLevels
             width: model.duration * timeScale
-            height: trackRoot.height
-            originalX: index * 50
+            height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
             selected: trackRoot.isCurrentTrack
 
@@ -60,8 +59,7 @@ Rectangle {
                 
             }
             onDragged: { 
-                console.log("clip dragged: ", clip)
-                
+                console.log("clip dragged: ", clip.x) 
             }
             onTrimmingIn: {
 
@@ -76,7 +74,7 @@ Rectangle {
 
             } 
             onDropped: {
-                console.log("clip dropped： ", clip)
+                console.log("clip dropped： ", clip.x)
                 trackRoot.clipDropped(clip)
             }
             Component.onCompleted: {

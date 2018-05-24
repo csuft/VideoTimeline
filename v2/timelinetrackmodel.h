@@ -83,7 +83,7 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
-		int tracksLength();
+		int tracksMaxLength();
 
 	signals:
 		void created();

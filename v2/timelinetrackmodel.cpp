@@ -265,7 +265,7 @@ namespace timeline {
 		
 	} 
 
-	int TimelineTracksModel::tracksLength() {
+	int TimelineTracksModel::tracksMaxLength() {
 		int length = 0;
 		for (size_t i = 0; i < mTracks->count(); i++) {
 			for (size_t j = 0; j < mTracks[i].count(); j++) {
