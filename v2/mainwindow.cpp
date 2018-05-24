@@ -18,7 +18,7 @@ namespace timeline {
 		mTimelineModel(new TimelineTracksModel),
 		mPosition(0) { 
 
-		setWindowIcon(QIcon(":/images/audiowave"));     
+		setWindowIcon(QIcon(":/images/images/audio-meter.png"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
 		mTimelineWidget->engine()->addImportPath(importPath.path());

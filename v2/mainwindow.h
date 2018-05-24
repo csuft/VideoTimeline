@@ -19,7 +19,7 @@ namespace timeline {
 		MainWindow(QWidget* parent = Q_NULLPTR);
 		~MainWindow() = default;  
 		void load(bool force = false);
-		int position() const { qDebug() << "get pos: " << mPosition; return mPosition; }
+		int position() const { return mPosition; }
 		void setPosition(int position);
 		void setCurrentTrack(int currentTrack);
 		int currentTrack() const; 

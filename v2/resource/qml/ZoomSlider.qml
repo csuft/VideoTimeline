@@ -3,7 +3,6 @@ import QtQuick.Controls 1.0
 
 Rectangle {
     property alias value: slider.value
-
     SystemPalette { id: activePalette }
 
     color: activePalette.window

@@ -56,15 +56,32 @@ Rectangle {
             selected: trackRoot.isCurrentTrack
 
             onClicked: trackRoot.clipClicked(clip, trackRoot);
-            onMoved: {}
-            onDragged: {  }
-            onTrimmingIn: { }
-            onTrimmedIn: {}
-            onTrimmingOut: {}
-            onTrimmedOut: {} 
-            onDropped: placeHolderAdded = false
+            onMoved: {
+                
+            }
+            onDragged: { 
+                console.log("clip dragged: ", clip)
+                
+            }
+            onTrimmingIn: {
 
-            Component.onCompleted: {}
+            }
+            onTrimmedIn: {
+
+            }
+            onTrimmingOut: {
+
+            }
+            onTrimmedOut: {
+
+            } 
+            onDropped: {
+                console.log("clip dropped： ", clip)
+                trackRoot.clipDropped(clip)
+            }
+            Component.onCompleted: {
+
+            }
         }
     }
 

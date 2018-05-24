@@ -172,13 +172,13 @@ Rectangle {
         drag.axis: Drag.XAxis
         property int startX
         onPressed: {
-
+            parent.clicked(clipRoot)
         }
         onPositionChanged: {
             parent.dragged(clipRoot, mouse)
         }
         onReleased: {
-            
+            parent.dropped(clipRoot)
         }
         onDoubleClicked: timeline.position = clipRoot.x / timelinetracks.scaleFactor
         onWheel: zoomByWheel(wheel)
@@ -291,7 +291,7 @@ Rectangle {
             text: qsTr('Rebuild Audio Waveform') 
         }
         onPopupVisibleChanged: {
-            if (visible && application.OS !== 'OS X' && __popupGeometry.height > 0) {
+            if (visible && Qt.application.OS !== 'OS X' && __popupGeometry.height > 0) {
                 // Try to fix menu running off screen. This only works intermittently.
                 menu.__yOffset = Math.min(0, Screen.height - (__popupGeometry.y + __popupGeometry.height + 40))
                 menu.__xOffset = Math.min(0, Screen.width - (__popupGeometry.x + __popupGeometry.width))

@@ -114,10 +114,18 @@ Rectangle {
             color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
             height: TimelineLogic.trackHeight(false)
             timeScale: timelinetracks.scaleFactor
-            onClipClicked: {}
-            onClipDragged: {}
-            onClipDropped: {}
-            onCheckSnap: {}
+            onClipClicked: { 
+                currentTrack = track.DelegateModel.itemsIndex 
+            }
+            onClipDragged: {
+                
+            }
+            onClipDropped: {
+                
+            }
+            onCheckSnap: {
+                
+            }
         } 
     }
 }
