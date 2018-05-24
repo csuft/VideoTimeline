@@ -9,6 +9,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QDockWidget>
+#include <QQuickItem>
 
 namespace timeline {
 
@@ -16,7 +17,8 @@ namespace timeline {
 		: QMainWindow(parent),
 		mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
 		mTimelineModel(new TimelineTracksModel),
-		mPosition(0) { 
+		mPosition(0),
+		mSelection(0) { 
 
 		setWindowIcon(QIcon(":/images/images/audio-meter.png"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
@@ -50,12 +52,7 @@ namespace timeline {
 	void MainWindow::load(bool force /* = false */) {
 		if (mTimelineWidget->source().isEmpty() || force) {
 			QDir sourcePath = QmlUtilities::qmlDir();
-			mTimelineWidget->setSource(QUrl("qrc:/script/qml/timeline.qml"));
-			//disconnect(this, &QDockWidget::visibilityChanged, this, &MainWindow::onVisibilityChanged);
-			//connect(mTimelineWidget->rootObject(), SIGNAL(currentTrackChanged), 
-			//	this, SIGNAL(currentTrackChanged));
-			//connect(mTimelineWidget->rootObject(), SIGNAL(clipClicked),
-			//	this, SIGNAL(clipClicked));
+			mTimelineWidget->setSource(QUrl("qrc:/script/qml/timeline.qml")); 
 			if (force) {
 				// load audio wave data
 				mTimelineModel->reload();
@@ -71,29 +68,31 @@ namespace timeline {
 	}
 
 	void MainWindow::setPosition(int position) {
-		if (position <= mTimelineModel->tracksMaxLength()) {
+		if (position <= mTimelineModel->maxTrackLength()) {
 			mPosition = position;
 		}
 		else {
-			mPosition = mTimelineModel->tracksMaxLength();
+			mPosition = mTimelineModel->maxTrackLength();
 		}
 		emit positionChanged();
 	}
 
 	void MainWindow::setCurrentTrack(int currentTrack) {
-
+		if (currentTrack < 0 || currentTrack >=2) {
+			mCurrentTrack = currentTrack;
+		} 
 	}
 	
 	int MainWindow::currentTrack() const {
-		return 0;
+		return mCurrentTrack;
 	}
 
-	void MainWindow::setSelection(QList<int> selection, int trackIndex) {
-
+	void MainWindow::setSelection(int selection) {
+		mSelection = selection; 
 	}
 
-	QList<int> MainWindow::selection() const {
-		return QList<int>();
+	int MainWindow::selection() const {
+		return mSelection;
 	}
 
 	QString MainWindow::timecode(int frames) {

@@ -21,7 +21,7 @@ Rectangle {
     signal clipClicked()
 
     // signal handlers
-    onCurrentTrackChanged: TimelineWidget.selection = []
+    onCurrentTrackChanged: TimelineWidget.selection
 
     // components  
     MouseArea {
@@ -111,12 +111,16 @@ Rectangle {
         Track {
             model: TimelineModel
             rootIndex: tracksModel.modelIndex(index)
-            color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
+            color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
             height: TimelineLogic.trackHeight(false)
-            
+            width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor
+            isCurrentTrack: currentTrack === index
+            selection: TimelineWidget.selection
             onClipClicked: { 
                 currentTrack = track.DelegateModel.itemsIndex 
+                TimelineWidget.selection = clip.DelegateModel.itemsIndex 
+                root.clipClicked() 
             }
             onClipDragged: {
                 

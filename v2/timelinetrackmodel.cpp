@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <qmath.h>
 #include <QTimer> 
+#include <QTime>
 
 static const quintptr NO_PARENT_ID = quintptr(-1); 
 
@@ -23,13 +24,20 @@ namespace timeline {
 		: QAbstractItemModel(parent),
 		mScaleFactor(1.0),
 		mTrackHeight(50) {
+		QTime time = QTime::currentTime();
+		qsrand((uint)time.msec());
 		for (int j = 0; j < 2; ++j) {
-			for (int i = 0; i < 2; ++i) {
+			for (int i = 0; i < 2; ++i) { 
 				ClipInfo info((TrackIndex)j);
-				info.setDuration(10 * i + 50);
-				info.setInPoint(100 * i);
-				info.setOutputPoint(info.getInPoint() + info.getDuration());
-				info.setName("Video Clip");
+				info.setInPoint(100 * i + randNumber(100, 200) );
+				info.setDuration(10 * i + randNumber(100, 300));
+				info.setOutPoint(info.getInPoint() + info.getDuration()); 
+				if (j == 0) {
+					info.setName("VID_20180801.mp4");
+				}
+				else {
+					info.setName("VID_20180801.mp3");
+				}
 				info.setSourcePath(QUrl("VID_20180801.mp4"));
 				info.setFrameRate(30);
 				info.setModelIndex(i);
@@ -41,6 +49,11 @@ namespace timeline {
 
 	TimelineTracksModel::~TimelineTracksModel() {
 
+	}
+
+	int TimelineTracksModel::randNumber(int low, int high) {
+		// Random number between low and high
+		return qrand() % ((high + 1) - low) + low;
 	}
 
 	// one video track and one audio track
@@ -265,7 +278,7 @@ namespace timeline {
 		
 	} 
 
-	int TimelineTracksModel::tracksMaxLength() {
+	int TimelineTracksModel::maxTrackLength() {
 		int length = 0;
 		for (size_t i = 0; i < mTracks->count(); i++) {
 			for (size_t j = 0; j < mTracks[i].count(); j++) {
@@ -275,7 +288,7 @@ namespace timeline {
 			}
 		}
 		return length;
-	}
+	} 
 
 }
 

@@ -30,7 +30,7 @@ namespace timeline {
 		int getInPoint() const { return mInPoint; }
 		void setInPoint(int in) { mInPoint = in; }
 		int getOutPoint() const { return mOutPoint; }
-		void setOutputPoint(int out) { mOutPoint = out; }
+		void setOutPoint(int out) { mOutPoint = out; }
 		qreal getFrameRate() const { return mFrameRate; }
 		void setFrameRate(qreal fps) { mFrameRate = fps; }
 
@@ -49,6 +49,7 @@ namespace timeline {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
 		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
+		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -83,7 +84,7 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
-		int tracksMaxLength();
+		int maxTrackLength(); 
 
 	signals:
 		void created();
@@ -93,7 +94,8 @@ namespace timeline {
 		void seeked(int position);
 		void trackHeightChanged();
 		void scaleFactorChanged(); 
-		void durationChanged(); 
+		void durationChanged();
+		void maxTrackLengthChanged();
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -112,6 +114,7 @@ namespace timeline {
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
 		int tracksCount() const { return 2; }
+		int randNumber(int low, int high);
 
 	private slots:
 		void adjustBackgroundDuration();

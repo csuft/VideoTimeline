@@ -8,22 +8,12 @@ Rectangle {
     property alias rootIndex: trackModel.rootIndex 
     property real timeScale: 1.0 
     property bool isCurrentTrack: false 
-    property var selection
+    property int selection
 
     signal clipClicked(var clip, var track)
     signal clipDragged(var clip, int x, int y)
     signal clipDropped(var clip) 
-    signal checkSnap(var clip)
-
-    function redrawWaveforms() {
-        for (var i = 0; i < repeater.count; i++)
-            repeater.itemAt(i).generateWaveform()
-    }
-
-    function remakeWaveforms(force) {
-        for (var i = 0; i < repeater.count; i++)
-            TimelineWidget.remakeAudioLevels(trackRoot.DelegateModel.itemsIndex, i, force)
-    }
+    signal checkSnap(var clip) 
 
     function snapClip(clip) {
         TrackLogic.snapClip(clip, repeater)
@@ -47,19 +37,25 @@ Rectangle {
             clipSource: model.source
             clipDuration: model.duration 
             inPoint: model.in
-            outPoint: model.out  
+            outPoint: model.out 
             audioLevels: model.audioLevels
             width: model.duration * timeScale
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
-            selected: trackRoot.isCurrentTrack
+            //selected: trackRoot.isCurrentTrack && TimelineWidget.selection == index
+            onClicked: {
+                clip.selected = true;
+                console.log("index", index)
+                console.log("is Current track", isCurrentTrack);
+                console.log("TimelineWidget.selection", TimelineWidget.selection)
+                console.log("selected", trackRoot.isCurrentTrack && TimelineWidget.selection == index)
+                trackRoot.clipClicked(clip, trackRoot);
+            }
+            onMoved: {  
 
-            onClicked: trackRoot.clipClicked(clip, trackRoot);
-            onMoved: {
-                
             }
             onDragged: { 
-                console.log("clip dragged: ", clip.x) 
+                
             }
             onTrimmingIn: {
 
@@ -74,11 +70,7 @@ Rectangle {
 
             } 
             onDropped: {
-                console.log("clip dropped： ", clip.x)
                 trackRoot.clipDropped(clip)
-            }
-            Component.onCompleted: {
-
             }
         }
     }

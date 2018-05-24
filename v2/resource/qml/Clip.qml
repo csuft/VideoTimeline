@@ -16,9 +16,7 @@ Rectangle {
     property bool isAudio: false 
     property var audioLevels 
     property int trackIndex 
-    property bool selected: false  
-
-    x: inPoint
+    property bool selected: false   
 
     signal clicked(var clip)
     signal moved(var clip)
@@ -43,7 +41,7 @@ Rectangle {
         }
     }
 
-    border.color: selected? 'yellow' : 'black'
+    border.color: selected? 'red' : 'black'
     border.width: 1
     // If clipping is enabled, an item will clip its own painting, 
     // as well as the painting of its children, to its bounding rectangle.
@@ -173,7 +171,7 @@ Rectangle {
         drag.axis: Drag.XAxis
         property int startX
         onPressed: {
-            parent.clicked(clipRoot)
+            parent.clicked(clipRoot) 
         }
         onPositionChanged: {
             parent.dragged(clipRoot, mouse)

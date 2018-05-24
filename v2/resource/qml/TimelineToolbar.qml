@@ -113,16 +113,15 @@ ToolBar {
         tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'
         iconSource: 'qrc:/list-remove.png'
-        onTriggered: TimelineWidget.remove(currentTrack, TimelineWidget.selection[0])
+        onTriggered: TimelineWidget.remove(currentTrack, TimelineWidget.selection)
    }
 
     Action {
         id: copyAction
         tooltip: qsTr('Copy - Copy the current clip')
         iconName: 'edit-copy'
-        iconSource: 'qrc::///images/images/audio-volume-muted.png'
-        enabled: TimelineWidget.selection.length
-        onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection[0])
+        iconSource: 'qrc::///images/images/audio-volume-muted.png' 
+        onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection)
     }
 
     Action {
