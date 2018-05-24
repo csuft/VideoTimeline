@@ -8,7 +8,7 @@ Rectangle {
     property alias rootIndex: trackModel.rootIndex 
     property real timeScale: 1.0 
     property bool isCurrentTrack: false 
-    property int selection
+    property int selection: 0
 
     signal clipClicked(var clip, var track)
     signal clipDragged(var clip, int x, int y)
@@ -42,14 +42,9 @@ Rectangle {
             width: model.duration * timeScale
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
-            //selected: trackRoot.isCurrentTrack && TimelineWidget.selection == index
-            onClicked: {
-                clip.selected = true;
-                console.log("index", index)
-                console.log("is Current track", isCurrentTrack);
-                console.log("TimelineWidget.selection", TimelineWidget.selection)
-                console.log("selected", trackRoot.isCurrentTrack && TimelineWidget.selection == index)
-                trackRoot.clipClicked(clip, trackRoot);
+            selected: trackRoot.isCurrentTrack && trackRoot.selection == index
+            onClicked: { 
+                trackRoot.clipClicked(clip, trackRoot)  
             }
             onMoved: {  
 

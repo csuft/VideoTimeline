@@ -115,11 +115,11 @@ Rectangle {
             height: TimelineLogic.trackHeight(false)
             width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor
-            isCurrentTrack: currentTrack === index
-            selection: TimelineWidget.selection
+            isCurrentTrack: currentTrack == index 
             onClipClicked: { 
-                currentTrack = track.DelegateModel.itemsIndex 
+                currentTrack = track.DelegateModel.itemsIndex  
                 TimelineWidget.selection = clip.DelegateModel.itemsIndex 
+                track.selection = clip.DelegateModel.itemsIndex
                 root.clipClicked() 
             }
             onClipDragged: {
