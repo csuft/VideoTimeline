@@ -54,7 +54,6 @@ namespace timeline {
 			QDir sourcePath = QmlUtilities::qmlDir();
 			mTimelineWidget->setSource(QUrl("qrc:/script/qml/timeline.qml")); 
 			if (force) {
-				// load audio wave data
 				mTimelineModel->reload();
 			}
 		}

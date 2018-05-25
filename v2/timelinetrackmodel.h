@@ -9,8 +9,8 @@
 namespace timeline { 
 
 	typedef enum {
-		AudioTrack = 0,
-		VideoTrack
+		VideoTrack = 0,
+		AudioTrack 
 	} TrackIndex; 
 
 	class ClipInfo{
@@ -33,6 +33,8 @@ namespace timeline {
 		void setOutPoint(int out) { mOutPoint = out; }
 		qreal getFrameRate() const { return mFrameRate; }
 		void setFrameRate(qreal fps) { mFrameRate = fps; }
+		bool isBlank() const { return mIsBlank; }
+		void setBlank(bool blank) { mIsBlank = blank; }
 
 	private:
 		TrackIndex mTrackIndex;
@@ -43,6 +45,7 @@ namespace timeline {
 		int mInPoint;    // frame index
 		int mOutPoint;   // frame index
 		qreal mFrameRate;
+		bool mIsBlank;
 	};
 
 	class TimelineTracksModel : public QAbstractItemModel {
@@ -58,6 +61,7 @@ namespace timeline {
 			InPointRole,     
 			OutPointRole,      
 			IsAudioRole,
+			IsBlankRole,
 			FrameRateRole,
 			AudioLevelsRole   
 		};
@@ -84,7 +88,7 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
-		int maxTrackLength(); 
+		int maxTrackLength() const; 
 
 	signals:
 		void created();

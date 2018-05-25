@@ -12,7 +12,8 @@ static const quintptr NO_PARENT_ID = quintptr(-1);
 namespace timeline {
 
 	ClipInfo::ClipInfo(TrackIndex index) 
-		: mTrackIndex(index) {
+		: mTrackIndex(index),
+		mIsBlank(false){
 
 	}
 
@@ -24,26 +25,7 @@ namespace timeline {
 		: QAbstractItemModel(parent),
 		mScaleFactor(1.0),
 		mTrackHeight(50) {
-		QTime time = QTime::currentTime();
-		qsrand((uint)time.msec());
-		for (int j = 0; j < 2; ++j) {
-			for (int i = 0; i < 2; ++i) { 
-				ClipInfo info((TrackIndex)j);
-				info.setInPoint(100 * i + randNumber(100, 200) );
-				info.setDuration(10 * i + randNumber(100, 300));
-				info.setOutPoint(info.getInPoint() + info.getDuration()); 
-				if (j == 0) {
-					info.setName("VID_20180801.mp4");
-				}
-				else {
-					info.setName("VID_20180801.mp3");
-				}
-				info.setSourcePath(QUrl("VID_20180801.mp4"));
-				info.setFrameRate(30);
-				info.setModelIndex(i);
-				mTracks[j].push_back(info);
-			}
-		} 
+		load();
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
 	}
 
@@ -58,8 +40,15 @@ namespace timeline {
 
 	// one video track and one audio track
 	int TimelineTracksModel::rowCount(const QModelIndex &parent) const {
-		Q_UNUSED(parent);
-		return mTracks->count();
+		// get clips count per row
+		if (parent.isValid()) {
+			if (parent.internalId() != NO_PARENT_ID) {
+				return 0;
+			}  
+			return mTracks[parent.row()].count();
+		}
+		// get tracks count
+		return 2;
 	}
 
 	int TimelineTracksModel::columnCount(const QModelIndex &parent) const {
@@ -76,8 +65,7 @@ namespace timeline {
 			int clipIndex = index.row();
 			ClipInfo clipInfo = mTracks[trackIndex].at(clipIndex);
 			// get clip info
-			switch (role)
-			{
+			switch (role) {
 			case NameRole:
 				return clipInfo.getName(); 
 			case SourceRole:
@@ -94,6 +82,10 @@ namespace timeline {
 				return clipInfo.getFrameRate();
 			case AudioLevelsRole:
 				return QVariant();
+			case IsBlankRole:
+				return clipInfo.isBlank();
+			case IsAudioRole:
+				return trackIndex == AudioTrack;
 			default:
 				break;
 			} 
@@ -101,18 +93,14 @@ namespace timeline {
 		// Get info for a track
 		else {
 			TrackIndex trackIndex = (TrackIndex)index.row();
-			switch (role)
-			{
+			switch (role) {
 			case Qt::DisplayRole:
 				return trackIndex == VideoTrack ? "Video Track" : "Audio Track"; 
-			case DurationRole: {
-				if (mTracks[trackIndex].size() > 0) {
-					return mTracks[trackIndex].back().getOutPoint();
-				}
-				return 0;
+			case DurationRole: { 
+				return maxTrackLength();
 			} 
 			case IsAudioRole:
-				return trackIndex == AudioTrack ? true : false; 
+				return trackIndex == AudioTrack; 
 			default:
 				break;
 			} 
@@ -155,6 +143,7 @@ namespace timeline {
 		roles[InPointRole] = "in";
 		roles[OutPointRole] = "out"; 
 		roles[IsAudioRole] = "audio";
+		roles[IsBlankRole] = "blank";
 		roles[FrameRateRole] = "fps";
 		roles[AudioLevelsRole] = "audioLevels";   
 		return roles;
@@ -256,7 +245,58 @@ namespace timeline {
 	}  
 
 	void TimelineTracksModel::load() { 
+		// load from XML file
+		for (int j = 0; j < 2; ++j) { 
+			ClipInfo info((TrackIndex)j);
+			info.setInPoint(0);
+			info.setDuration(randNumber(100, 300));
+			info.setOutPoint(info.getInPoint() + info.getDuration());
+			if (j == 0) {
+				info.setName("VID_20180801.mp4");
+			}
+			else {
+				info.setName("VID_20180801.mp3");
+			}
+			info.setSourcePath(QUrl("VID_20180801.mp4"));
+			info.setFrameRate(30);
+			info.setModelIndex(0);
+			mTracks[j].push_back(info);
+			
+			ClipInfo info1((TrackIndex)j);
+			info1.setInPoint(info.getOutPoint());
+			info1.setDuration(randNumber(100, 300));
+			info1.setOutPoint(info1.getInPoint() + info1.getDuration());
+			info1.setFrameRate(30); 
+			info1.setModelIndex(1);
+			info1.setBlank(true);
+			mTracks[j].push_back(info1);
 
+			ClipInfo info2((TrackIndex)j);
+			info2.setInPoint(info1.getOutPoint());
+			info2.setDuration(randNumber(100, 300));
+			info2.setOutPoint(info2.getInPoint() + info2.getDuration());
+			if (j == 0) {
+				info2.setName("VID_20180801.mp4");
+			}
+			else {
+				info2.setName("VID_20180801.mp3");
+			} 
+			info2.setModelIndex(2);
+			mTracks[j].push_back(info2);
+
+			ClipInfo info3((TrackIndex)j);
+			info3.setInPoint(info2.getOutPoint());
+			info3.setDuration(randNumber(100, 300));
+			info3.setOutPoint(info3.getInPoint() + info3.getDuration());
+			if (j == 0) {
+				info3.setName("VID_20180801.mp4");
+			}
+			else {
+				info3.setName("VID_20180801.mp3");
+			}
+			info3.setModelIndex(3);
+			mTracks[j].push_back(info3);
+		}
 	}
 
 	void TimelineTracksModel::reload() { 
@@ -270,7 +310,6 @@ namespace timeline {
 	}
 
 	int TimelineTracksModel::clipIndex(int trackIndex, int position) {
-		
 		return -1;
 	}
 
@@ -278,9 +317,9 @@ namespace timeline {
 		
 	} 
 
-	int TimelineTracksModel::maxTrackLength() {
+	int TimelineTracksModel::maxTrackLength() const {
 		int length = 0;
-		for (size_t i = 0; i < mTracks->count(); i++) {
+		for (size_t i = 0; i < 2; i++) {
 			for (size_t j = 0; j < mTracks[i].count(); j++) {
 				if (length < mTracks[i].at(j).getOutPoint()) {
 					length = mTracks[i].at(j).getOutPoint();

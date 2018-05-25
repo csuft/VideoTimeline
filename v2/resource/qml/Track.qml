@@ -39,6 +39,8 @@ Rectangle {
             inPoint: model.in
             outPoint: model.out 
             audioLevels: model.audioLevels
+            isAudio: model.audio
+            isBlank: model.blank
             width: model.duration * timeScale
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
