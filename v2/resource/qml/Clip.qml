@@ -47,6 +47,7 @@ Rectangle {
         console.log("is audio: ", isAudio)
     }
 
+    radius: 5
     border.color: selected? 'red' : 'black'
     border.width: isBlank? 0 : 1
     // If clipping is enabled, an item will clip its own painting, 

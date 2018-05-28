@@ -15,13 +15,7 @@ ToolBar {
 
     RowLayout {
         ToolButton {
-            action: menuAction
-            implicitWidth: 28
-            implicitHeight: 24
-        }
-        
-        ToolButton {
-            action: cutAction
+            action: pasteAction
             implicitWidth: 28
             implicitHeight: 24
         }
@@ -30,25 +24,13 @@ ToolBar {
             action: copyAction
             implicitWidth: 28
             implicitHeight: 24
-        }
+        } 
 
         ToolButton {
-            action: insertAction
+            action: removeAction
             implicitWidth: 28
             implicitHeight: 24
-        }
-
-        ToolButton {
-            action: deleteAction
-            implicitWidth: 28
-            implicitHeight: 24
-        }
-        
-        ToolButton {
-            action: overwriteAction
-            implicitWidth: 28
-            implicitHeight: 24
-        }
+        } 
 
         ToolButton {
             action: splitAction
@@ -91,25 +73,18 @@ ToolBar {
             cached: true
         }
     } 
-    Action {
-        id: menuAction
-        tooltip: qsTr('Display a menu of additional actions')
-        iconName: 'format-justify-fill'
-        iconSource: 'qrc:///images/images/sliderDrag.png'
-        onTriggered: menu.popup()
-    }
     
     Action {
-        id: cutAction
-        tooltip: qsTr('Cut - Copy the current clip to the Source')
-        iconName: 'edit-cut'
+        id: pasteAction
+        tooltip: qsTr('Paste - Paste the current clip to the end of track')
+        iconName: 'edit-paste'
         iconSource: 'qrc:///images/images/audio-meter.png'
         enabled: TimelineWidget.selection
         onTriggered: TimelineWidget.removeSelection(true)
     }
 
     Action {
-        id: deleteAction
+        id: removeAction
         tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'
         iconSource: 'qrc:/list-remove.png'
@@ -122,22 +97,6 @@ ToolBar {
         iconName: 'edit-copy'
         iconSource: 'qrc::///images/images/audio-volume-muted.png' 
         onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection)
-    }
-
-    Action {
-        id: insertAction
-        tooltip: qsTr('Paste - Insert clip into the current track')
-        iconName: 'edit-paste'
-        iconSource: 'qrc:///images/images/audio-volume-high.png'
-        onTriggered: TimelineWidget.insert(currentTrack)
-    } 
-
-    Action {
-        id: overwriteAction
-        tooltip: qsTr('Overwrite clip onto the current track')
-        iconName: 'overwrite'
-        iconSource: 'qrc:///images/images/object-locked.png'
-        onTriggered: TimelineWidget.overwrite(currentTrack)
     }
 
     Action {
