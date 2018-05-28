@@ -33,10 +33,15 @@ namespace timeline {
 		void selectionChanged(); 
 		void clipClicked();
 
-	private slots:
-		void onVisibilityChanged(bool visible); 
-		Q_INVOKABLE void onAddClip();
-	
+	public slots:
+		void onVisibilityChanged(bool visible);  
+		void addClip(int trackIndex);
+		void pasteClip(int trackIndex = -1, int clipIndex = -1);
+		void copyClip(int trackIndex = -1, int clipIndex = -1);
+		void cutClip(int trackIndex = -1, int clipIndex = -1);
+		void splitClip(int trackIndex = -1);
+		void removeClip(int trackIndex = -1, int clipIndex = -1);
+
 	private:
 		Timeline* mTimelineWidget;
 		TimelineTracksModel* mTimelineModel; 

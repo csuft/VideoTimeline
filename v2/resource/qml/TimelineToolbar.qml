@@ -15,6 +15,12 @@ ToolBar {
 
     RowLayout {
         ToolButton {
+            action: addAction
+            implicitWidth: 28
+            implicitHeight: 24
+        }
+
+        ToolButton {
             action: pasteAction
             implicitWidth: 28
             implicitHeight: 24
@@ -25,6 +31,12 @@ ToolBar {
             implicitWidth: 28
             implicitHeight: 24
         } 
+
+        ToolButton {
+            action: cutAction
+            implicitWidth: 28
+            implicitHeight: 24
+        }
 
         ToolButton {
             action: removeAction
@@ -73,23 +85,28 @@ ToolBar {
             cached: true
         }
     } 
-    
-    Action {
-        id: pasteAction
-        tooltip: qsTr('Paste - Paste the current clip to the end of track')
-        iconName: 'edit-paste'
-        iconSource: 'qrc:///images/images/audio-meter.png'
-        enabled: TimelineWidget.selection
-        onTriggered: TimelineWidget.removeSelection(true)
-    }
 
+    Action {
+        id: addAction 
+        tooltip: qsTr('Add a new clip video track')
+        iconSource: 'qrc:/test.png'
+        onTriggered: TimelineWidget.addClip(currentTrack)
+    }
+     
     Action {
         id: removeAction
         tooltip: qsTr('Remove current clip')
         iconName: 'list-remove'
         iconSource: 'qrc:/list-remove.png'
-        onTriggered: TimelineWidget.remove(currentTrack, TimelineWidget.selection)
-   }
+        onTriggered: TimelineWidget.removeClip(currentTrack, TimelineWidget.selection)
+    }
+
+    Action {
+        id: cutAction
+        tooltip: qsTr('Cut current clip')
+        iconSource: 'qrc:/test.png'
+        onTriggered: TimelineWidget.cutClip(currentTrack, TimelineWidget.selection)
+    }
 
     Action {
         id: copyAction
@@ -97,6 +114,15 @@ ToolBar {
         iconName: 'edit-copy'
         iconSource: 'qrc::///images/images/audio-volume-muted.png' 
         onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection)
+    }
+
+    Action {
+        id: pasteAction
+        tooltip: qsTr('Paste - Paste the current clip to the end of track')
+        iconName: 'edit-paste'
+        iconSource: 'qrc:///images/images/audio-meter.png'
+        enabled: TimelineWidget.selection
+        onTriggered: TimelineWidget.removeSelection(true)
     }
 
     Action {

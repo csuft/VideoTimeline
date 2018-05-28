@@ -60,6 +60,8 @@ ENDIF()
 # https://www.kdab.com/using-cmake-with-qt-5/ 
 qt5_use_modules(${PROJECT_NAME} Core Widgets Gui Quick Qml QuickWidgets) 
 
+include(FeatureSummary)
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 ################################################################################
 # copy resources 
 IF(APPLE)

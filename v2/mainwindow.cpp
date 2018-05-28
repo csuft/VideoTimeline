@@ -60,11 +60,7 @@ namespace timeline {
 		else {
 			mTimelineModel->reload();
 		}
-	} 
-
-	void MainWindow::onAddClip() {
-		QMetaObject::invokeMethod((QObject*)mTimelineWidget->rootObject(), "addClip");
-	}
+	}  
 
 	void MainWindow::setPosition(int position) {
 		if (position <= mTimelineModel->maxTrackLength()) {
@@ -96,6 +92,30 @@ namespace timeline {
 
 	QString MainWindow::timecode(int frames) {
 		return QString::number(frames);
+	}
+
+	void MainWindow::addClip(int trackIndex) {
+		qDebug() << "add clip " << trackIndex;
+	}
+
+	void MainWindow::pasteClip(int trackIndex, int clipIndex) {
+		qDebug() << "paste clip " << trackIndex;
+	}
+
+	void MainWindow::copyClip(int trackIndex, int clipIndex) {
+		qDebug() << "copy clip " << trackIndex;
+	}
+
+	void MainWindow::cutClip(int trackIndex, int clipIndex) {
+		qDebug() << "cut clip " << trackIndex;
+	}
+	
+	void MainWindow::splitClip(int trackIndex) {
+		qDebug() << "split clip " << trackIndex;
+	}
+
+	void MainWindow::removeClip(int trackIndex, int clipIndex) {
+		qDebug() << "remove clip " << trackIndex;
 	}
 }
 
