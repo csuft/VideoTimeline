@@ -99,15 +99,15 @@ namespace timeline {
 	}
 
 	void MainWindow::pasteClip(int trackIndex, int clipIndex) {
-		qDebug() << "paste clip " << trackIndex;
+		qDebug() << "paste clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
 
 	void MainWindow::copyClip(int trackIndex, int clipIndex) {
-		qDebug() << "copy clip " << trackIndex;
+		qDebug() << "copy clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
 
 	void MainWindow::cutClip(int trackIndex, int clipIndex) {
-		qDebug() << "cut clip " << trackIndex;
+		qDebug() << "cut clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
 	
 	void MainWindow::splitClip(int trackIndex) {
@@ -115,7 +115,7 @@ namespace timeline {
 	}
 
 	void MainWindow::removeClip(int trackIndex, int clipIndex) {
-		qDebug() << "remove clip " << trackIndex;
+		qDebug() << "remove clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
 }
 
