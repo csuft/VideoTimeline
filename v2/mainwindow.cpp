@@ -4,6 +4,7 @@
 #include "thumbnailprovider.h"
 #include "qmlview.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QQmlEngine>
@@ -20,6 +21,16 @@ namespace timeline {
 		mPosition(0),
 		mSelection(0) { 
 
+		mUndoStack = new QUndoStack(this);
+		QAction* undoAction = mUndoStack->createUndoAction(this);
+		QAction* redoAction = mUndoStack->createRedoAction(this);
+		undoAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0));
+		redoAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Z", 0));
+
+		mMenuBar = new QMenuBar(this);
+		mMenuBar->addAction(undoAction);
+		mMenuBar->addAction(redoAction); 
+
 		setWindowIcon(QIcon(":/images/images/audio-meter.png"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
 		QDir importPath = QmlUtilities::qmlDir();
@@ -35,6 +46,7 @@ namespace timeline {
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus);
 		mTimelineWidget->resize(800, 300); 
 		setCentralWidget(mTimelineWidget);
+		setMenuBar(mMenuBar);
 		resize(810, 300);
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
@@ -110,13 +122,81 @@ namespace timeline {
 		qDebug() << "cut clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
 	
-	void MainWindow::splitClip(int trackIndex) {
-		qDebug() << "split clip " << trackIndex;
+	void MainWindow::splitClip(int trackIndex, int clipIndex) {
+		qDebug() << "split clip " << trackIndex << " position: " << mPosition;
+		if (trackIndex < 0 || clipIndex < 0) {
+			chooseClipAtPosition(mPosition, trackIndex, clipIndex);
+		}
+		if (trackIndex < 0 || clipIndex < 0) {
+			return;
+		}
+		setCurrentTrack(trackIndex);
+		if (trackIndex >= 0 && clipIndex >= 0) {
+			mTimelineModel->splitClip(trackIndex, clipIndex, mPosition);
+		}
 	}
 
 	void MainWindow::removeClip(int trackIndex, int clipIndex) {
 		qDebug() << "remove clip: track->" << trackIndex << " clip->" << clipIndex;
 	}
-}
 
+	void MainWindow::chooseClipAtPosition(int position, int& trackIndex, int& clipIndex) {
+		if (trackIndex != -1) {
+			clipIndex = clipIndexAtPosition(trackIndex, position);
+			if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+				return;
+			}
+		}
+		
+		trackIndex = currentTrack();
+		clipIndex = clipIndexAtPosition(trackIndex, position);
+		if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+			return;
+		}
+
+		for (trackIndex = 0; trackIndex < mTimelineModel->tracksCount(); trackIndex++) {
+			if (trackIndex == currentTrack()) {
+				continue;
+			}
+			clipIndex = clipIndexAtPosition(trackIndex, clipIndex);
+			if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+				return;
+			}
+		}
+
+		trackIndex = -1;
+		clipIndex = -1;
+	}
+
+	bool MainWindow::isBlankClip(int trackIndex, int clipIndex) {
+		Q_ASSERT(trackIndex >= 0 && clipIndex >= 0);
+		return mTimelineModel->index(clipIndex, 0, mTimelineModel->index(trackIndex))
+			.data(TimelineTracksModel::IsBlankRole).toBool();
+	}
+
+	int MainWindow::clipIndexAtPosition(int trackIndex, int position) {
+		int clipIndex = -1;
+		if (trackIndex < 0) {
+			trackIndex = currentTrack();
+		}
+		if (trackIndex >= 0 && trackIndex < mTimelineModel->tracksCount()) {
+
+		}
+
+		return clipIndex;
+	}
+
+	int MainWindow::clipIndexAtPlayhead(int trackIndex) {
+		return clipIndexAtPosition(trackIndex, mPosition);
+	}
+
+	bool MainWindow::getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo) {
+		if (trackIndex < 0 || trackIndex > mTimelineModel->tracksCount() 
+			|| clipIndex < 0) {
+			return false;
+		}
+		return mTimelineModel->getClipInfo(trackIndex, clipIndex, clipInfo);
+	}
+}
+	
 
