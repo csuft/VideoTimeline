@@ -9,8 +9,8 @@
 namespace timeline { 
 
 	typedef enum {
-		AudioTrack = 0,
-		VideoTrack
+		VideoTrack = 0,
+		AudioTrack 
 	} TrackIndex; 
 
 	class ClipInfo{
@@ -30,9 +30,11 @@ namespace timeline {
 		int getInPoint() const { return mInPoint; }
 		void setInPoint(int in) { mInPoint = in; }
 		int getOutPoint() const { return mOutPoint; }
-		void setOutputPoint(int out) { mOutPoint = out; }
+		void setOutPoint(int out) { mOutPoint = out; }
 		qreal getFrameRate() const { return mFrameRate; }
 		void setFrameRate(qreal fps) { mFrameRate = fps; }
+		bool isBlank() const { return mIsBlank; }
+		void setBlank(bool blank) { mIsBlank = blank; }
 
 	private:
 		TrackIndex mTrackIndex;
@@ -43,12 +45,14 @@ namespace timeline {
 		int mInPoint;    // frame index
 		int mOutPoint;   // frame index
 		qreal mFrameRate;
+		bool mIsBlank;
 	};
 
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
 		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
+		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -57,6 +61,7 @@ namespace timeline {
 			InPointRole,     
 			OutPointRole,      
 			IsAudioRole,
+			IsBlankRole,
 			FrameRateRole,
 			AudioLevelsRole   
 		};
@@ -83,7 +88,7 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
-		int tracksMaxLength();
+		int maxTrackLength() const; 
 
 	signals:
 		void created();
@@ -93,7 +98,8 @@ namespace timeline {
 		void seeked(int position);
 		void trackHeightChanged();
 		void scaleFactorChanged(); 
-		void durationChanged(); 
+		void durationChanged();
+		void maxTrackLengthChanged();
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -112,6 +118,7 @@ namespace timeline {
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
 		int tracksCount() const { return 2; }
+		int randNumber(int low, int high);
 
 	private slots:
 		void adjustBackgroundDuration();

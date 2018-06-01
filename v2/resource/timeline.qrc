@@ -26,5 +26,6 @@
         <file>qml/Track.js</file>
         <file>qml/Track.qml</file>
         <file>qml/ZoomSlider.qml</file>
+        <file>qml/Theme.js</file>
     </qresource>
 </RCC>

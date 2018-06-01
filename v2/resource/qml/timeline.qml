@@ -12,16 +12,18 @@ Rectangle {
     color: 'transparent' 
 
     // custom properties
-    property int  currentTrack: 0
-    property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
-    property color sutdioYellow: Qt.rgba(255/255, 215/255, 0/255, 1.0)  
+    property int currentTrack: 0
+    readonly property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
+    readonly property color sutdioYellow: Qt.rgba(255/255, 215/255, 0/255, 1.0)  
     readonly property int padding: 30
     
     // signals
     signal clipClicked()
 
     // signal handlers
-    onCurrentTrackChanged: TimelineWidget.selection = []
+    onCurrentTrackChanged: {
+        console.log("Current active track: ", currentTrack)
+    }
 
     // components  
     MouseArea {
@@ -35,10 +37,18 @@ Rectangle {
 
     DropArea {
         anchors.fill: parent
-        onEntered: {}
-        onExited: {}
-        onPositionChanged: {}
-        onDropped: {}
+        onEntered: {
+
+        }
+        onExited: {
+
+        }
+        onPositionChanged: {
+
+        }
+        onDropped: {
+
+        }
     }
 
     TimelineToolbar {
@@ -71,7 +81,7 @@ Rectangle {
                     width: tracksBackground.width
                     height: tracksScrollView.height + padding
                     
-                    // tracks background
+                    // tracks
                     Column {
                         id: tracksBackground 
                         width: root.width + 100
@@ -111,12 +121,16 @@ Rectangle {
         Track {
             model: TimelineModel
             rootIndex: tracksModel.modelIndex(index)
-            color: (index == currentTrack)? selectedTrackColor : sutdioYellow;
-            height: TimelineLogic.trackHeight(false)
-            
+            color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
+            height: TimelineLogic.trackHeight(index == 1)
+            width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor
+            isCurrentTrack: currentTrack == index 
             onClipClicked: { 
-                currentTrack = track.DelegateModel.itemsIndex 
+                currentTrack = track.DelegateModel.itemsIndex  
+                TimelineWidget.selection = clip.DelegateModel.itemsIndex 
+                track.selection = clip.DelegateModel.itemsIndex
+                root.clipClicked() 
             }
             onClipDragged: {
                 

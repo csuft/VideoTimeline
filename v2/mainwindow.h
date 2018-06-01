@@ -13,7 +13,7 @@ namespace timeline {
 		Q_OBJECT 
 		Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 		Q_PROPERTY(int currentTrack READ currentTrack WRITE setCurrentTrack NOTIFY currentTrackChanged) 
-		Q_PROPERTY(QList<int> selection READ selection WRITE setSelection NOTIFY selectionChanged)
+		Q_PROPERTY(int selection READ selection WRITE setSelection NOTIFY selectionChanged) 
 
 	public:
 		MainWindow(QWidget* parent = Q_NULLPTR);
@@ -23,29 +23,31 @@ namespace timeline {
 		void setPosition(int position);
 		void setCurrentTrack(int currentTrack);
 		int currentTrack() const; 
-		void setSelection(QList<int> selection = QList<int>(), int trackIndex = -1);
-		QList<int> selection() const;
+		void setSelection(int selection = 0);
+		int selection() const;
 		Q_INVOKABLE QString timecode(int frames);
 
 	signals:
 		void positionChanged();
 		void currentTrackChanged();
 		void selectionChanged(); 
+		void clipClicked();
 
-	private slots:
-		void onVisibilityChanged(bool visible); 
-		Q_INVOKABLE void onAddClip();
-	
+	public slots:
+		void onVisibilityChanged(bool visible);  
+		void addClip(int trackIndex);
+		void pasteClip(int trackIndex = -1, int clipIndex = -1);
+		void copyClip(int trackIndex = -1, int clipIndex = -1);
+		void cutClip(int trackIndex = -1, int clipIndex = -1);
+		void splitClip(int trackIndex = -1);
+		void removeClip(int trackIndex = -1, int clipIndex = -1);
+
 	private:
 		Timeline* mTimelineWidget;
 		TimelineTracksModel* mTimelineModel; 
 		int mPosition;
-		struct Selection {
-			QList<int> selectedClips;
-			int selectedTrack;
-			bool isMultitrackSelected;
-		};
-		Selection mSelection;
+		int mCurrentTrack; 
+		int mSelection;
 	};
 }
 
