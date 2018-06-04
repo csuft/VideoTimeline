@@ -108,7 +108,8 @@ namespace timeline {
 		return QVariant();
 	}
 
-	QModelIndex TimelineTracksModel::index(int row, int column, const QModelIndex &parent) const {
+	QModelIndex TimelineTracksModel::index(int row, int column, 
+		const QModelIndex &parent) const {
 		if (column > 0)
 			return QModelIndex();
 
@@ -207,12 +208,7 @@ namespace timeline {
 
 	bool TimelineTracksModel::moveClip(int clipIndex, int position) { 
 		return true;
-	} 
-
-	int TimelineTracksModel::insertClip(int trackIndex, const ClipInfo& clip, int position) {
-		// 
-		return -1;
-	}
+	}  
 
 	int TimelineTracksModel::appendClip(int trackIndex) {
 		return -1;
@@ -222,8 +218,32 @@ namespace timeline {
 
 	}
 
-	void TimelineTracksModel::splitClip(int trackIndex, int clipIndex, int position) {
-		
+	void TimelineTracksModel::splitClip(int trackIndex, int clipIndex, int splitPosition) {
+		ClipInfo oldClip;
+		bool ret = getClipInfo(trackIndex, clipIndex, oldClip);
+		if (ret) {
+			int inPoint = oldClip.getInPoint();
+			int outPoint = oldClip.getOutPoint();
+			int duration = splitPosition - inPoint;
+
+			// update old clip
+			resizeClip(trackIndex, clipIndex, inPoint, inPoint + duration);
+			QModelIndex modelIndex = createIndex(clipIndex, 0, trackIndex);
+			QVector<int> updateRoles;
+			updateRoles << DurationRole << OutPointRole;
+			emit dataChanged(modelIndex, modelIndex, updateRoles);
+
+			// insert new clip
+			beginInsertRows(index(trackIndex), clipIndex + 1, clipIndex + 1);
+			ClipInfo newClip((TrackIndex)trackIndex);
+			newClip.setInPoint(inPoint + duration);
+			newClip.setOutPoint(outPoint);
+			newClip.setDuration(outPoint - inPoint - duration);
+			newClip.setSourcePath(oldClip.getSourcePath());
+			newClip.setName(oldClip.getName());
+			insertClip(trackIndex, clipIndex + 1, newClip);
+			endInsertRows();
+		}
 	}
 
 	void TimelineTracksModel::joinClips(int trackIndex, int clipIndex) {
@@ -327,7 +347,58 @@ namespace timeline {
 			}
 		}
 		return length;
-	} 
+	}  
 
+	int TimelineTracksModel::clipsCount(int trackIndex) {
+		if (trackIndex < 0 || trackIndex > tracksCount()) {
+			return -1;
+		}
+
+		return mTracks[trackIndex].size();
+	}
+
+	bool TimelineTracksModel::getClipInfo(int trackIndex, int clipIndex, 
+		ClipInfo& clipInfo) {
+		if (mTracks[trackIndex].count() <= clipIndex) {
+			return false;
+		}
+		clipInfo = mTracks[trackIndex][clipIndex];
+		return true;
+	}
+
+	void TimelineTracksModel::resizeClip(int trackIndex, int clipIndex, 
+		int inPoint, int outPoint) {
+		if (trackIndex < 0 || trackIndex > tracksCount() || clipIndex < 0) {
+			return;
+		}
+		ClipInfo& clip = mTracks[trackIndex][clipIndex];
+		clip.setInPoint(inPoint);
+		clip.setOutPoint(outPoint);
+		clip.setDuration(outPoint - inPoint);
+	}
+
+	bool TimelineTracksModel::insertClip(int trackIndex, int clipIndex, const ClipInfo& clip) {
+		if (trackIndex < 0 || trackIndex >= tracksCount() || clipIndex < 0) {
+			return false;
+		}
+		mTracks[trackIndex].insert(clipIndex, clip);
+		return true;
+	}
+
+	int TimelineTracksModel::getClipIndexAt(int trackIndex, int position) {
+		if (trackIndex < 0 || trackIndex >= tracksCount() || position < 0) {
+			return -1;
+		}
+		int clips = clipsCount(trackIndex);
+		for (int clipIndex = 0; clipIndex < clips; ++clipIndex) {
+			int inPos = mTracks[trackIndex][clipIndex].getInPoint();
+			int outPos = mTracks[trackIndex][clipIndex].getOutPoint();
+			if (inPos < position && outPos > position) {
+				return clipIndex;
+			}
+		}
+		
+		return -1;
+	}
 }
 

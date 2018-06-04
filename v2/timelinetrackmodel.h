@@ -47,6 +47,7 @@ namespace timeline {
 		qreal mFrameRate;
 		bool mIsBlank;
 	};
+	Q_DECLARE_TYPEINFO(ClipInfo, Q_COMPLEX_TYPE);
 
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
@@ -89,6 +90,12 @@ namespace timeline {
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
 		int maxTrackLength() const; 
+		int tracksCount() const { return 2; }
+		int clipsCount(int trackIndex);
+		int getClipIndexAt(int trackIndex, int position);
+		bool getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo);
+		void resizeClip(int trackIndex, int clipIndex, int inPoint, int outPoint);
+		bool insertClip(int trackIndex, int clipIndex, const ClipInfo& clip);
 
 	signals:
 		void created();
@@ -108,7 +115,7 @@ namespace timeline {
 		void notifyClipOut(int trackIndex, int clipIndex);
 		bool moveClipValid(int clipIndex, int position);
 		bool moveClip(int clipIndex, int position); 
-		int insertClip(int trackIndex, const ClipInfo& clip, int position);
+		
 		int appendClip(int trackIndex);
 		void removeClip(int trackIndex, int clipIndex); 
 		void splitClip(int trackIndex, int clipIndex, int position);
@@ -117,7 +124,6 @@ namespace timeline {
 	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
-		int tracksCount() const { return 2; }
 		int randNumber(int low, int high);
 
 	private slots:

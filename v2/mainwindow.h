@@ -3,6 +3,8 @@
 
 #include <QMainWindow> 
 #include <QDebug>
+#include <QUndoStack>
+#include <QMenuBar>
 
 #include "timeline.h"
 #include "timelinetrackmodel.h"
@@ -39,12 +41,21 @@ namespace timeline {
 		void pasteClip(int trackIndex = -1, int clipIndex = -1);
 		void copyClip(int trackIndex = -1, int clipIndex = -1);
 		void cutClip(int trackIndex = -1, int clipIndex = -1);
-		void splitClip(int trackIndex = -1);
+		void splitClip(int trackIndex = -1, int clipIndex = -1);
 		void removeClip(int trackIndex = -1, int clipIndex = -1);
+
+	private:
+		void chooseClipAtPosition(int position, int& trackIndex, int& clipIndex);
+		int clipIndexAtPosition(int trackIndex, int position);
+		bool isBlankClip(int trackIndex, int clipIndex);
+		int clipIndexAtPlayhead(int trackIndex);
+		bool getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo);
 
 	private:
 		Timeline* mTimelineWidget;
 		TimelineTracksModel* mTimelineModel; 
+		QUndoStack* mUndoStack;
+		QMenuBar* mMenuBar;
 		int mPosition;
 		int mCurrentTrack; 
 		int mSelection;
