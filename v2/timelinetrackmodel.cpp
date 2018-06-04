@@ -227,7 +227,7 @@ namespace timeline {
 			int duration = splitPosition - inPoint;
 
 			// update old clip
-			resizeClip(trackIndex, clipIndex, inPoint, outPoint - 1);
+			resizeClip(trackIndex, clipIndex, inPoint, inPoint + duration);
 			QModelIndex modelIndex = createIndex(clipIndex, 0, trackIndex);
 			QVector<int> updateRoles;
 			updateRoles << DurationRole << OutPointRole;
@@ -239,6 +239,8 @@ namespace timeline {
 			newClip.setInPoint(inPoint + duration);
 			newClip.setOutPoint(outPoint);
 			newClip.setDuration(outPoint - inPoint - duration);
+			newClip.setSourcePath(oldClip.getSourcePath());
+			newClip.setName(oldClip.getName());
 			insertClip(trackIndex, clipIndex + 1, newClip);
 			endInsertRows();
 		}
@@ -376,11 +378,27 @@ namespace timeline {
 	}
 
 	bool TimelineTracksModel::insertClip(int trackIndex, int clipIndex, const ClipInfo& clip) {
-		if (trackIndex < 0 || trackIndex > tracksCount() || clipIndex < 0) {
+		if (trackIndex < 0 || trackIndex >= tracksCount() || clipIndex < 0) {
 			return false;
 		}
 		mTracks[trackIndex].insert(clipIndex, clip);
 		return true;
+	}
+
+	int TimelineTracksModel::getClipIndexAt(int trackIndex, int position) {
+		if (trackIndex < 0 || trackIndex >= tracksCount() || position < 0) {
+			return -1;
+		}
+		int clips = clipsCount(trackIndex);
+		for (int clipIndex = 0; clipIndex < clips; ++clipIndex) {
+			int inPos = mTracks[trackIndex][clipIndex].getInPoint();
+			int outPos = mTracks[trackIndex][clipIndex].getOutPoint();
+			if (inPos < position && outPos > position) {
+				return clipIndex;
+			}
+		}
+		
+		return -1;
 	}
 }
 

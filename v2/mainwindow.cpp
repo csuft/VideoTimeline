@@ -123,11 +123,12 @@ namespace timeline {
 	}
 	
 	void MainWindow::splitClip(int trackIndex, int clipIndex) {
-		qDebug() << "split clip " << trackIndex << " position: " << mPosition;
+		qDebug() << "split clip: track->" << trackIndex << " position->" << mPosition;
 		if (trackIndex < 0 || clipIndex < 0) {
 			chooseClipAtPosition(mPosition, trackIndex, clipIndex);
 		}
 		if (trackIndex < 0 || clipIndex < 0) {
+			qDebug() << "No available clip can be choosed";
 			return;
 		}
 		setCurrentTrack(trackIndex);
@@ -158,7 +159,7 @@ namespace timeline {
 			if (trackIndex == currentTrack()) {
 				continue;
 			}
-			clipIndex = clipIndexAtPosition(trackIndex, clipIndex);
+			clipIndex = clipIndexAtPosition(trackIndex, position);
 			if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
 				return;
 			}
@@ -180,7 +181,7 @@ namespace timeline {
 			trackIndex = currentTrack();
 		}
 		if (trackIndex >= 0 && trackIndex < mTimelineModel->tracksCount()) {
-
+			clipIndex = mTimelineModel->getClipIndexAt(trackIndex, position);
 		}
 
 		return clipIndex;
