@@ -18,7 +18,7 @@ namespace timeline {
 		Q_PROPERTY(int selection READ selection WRITE setSelection NOTIFY selectionChanged) 
 
 	public:
-		MainWindow(QWidget* parent = Q_NULLPTR);
+		static MainWindow& singleton();
 		~MainWindow() = default;  
 		void load(bool force = false);
 		int position() const { return mPosition; }
@@ -33,7 +33,11 @@ namespace timeline {
 		void positionChanged();
 		void currentTrackChanged();
 		void selectionChanged(); 
+		void aboutToShutdown();
 		void clipClicked();
+
+	protected:
+		void closeEvent(QCloseEvent *event) override;
 
 	public slots:
 		void onVisibilityChanged(bool visible);  
@@ -45,6 +49,7 @@ namespace timeline {
 		void removeClip(int trackIndex = -1, int clipIndex = -1);
 
 	private:
+		MainWindow(QWidget* parent = Q_NULLPTR);
 		void chooseClipAtPosition(int position, int& trackIndex, int& clipIndex);
 		int clipIndexAtPosition(int trackIndex, int position);
 		bool isBlankClip(int trackIndex, int clipIndex);
@@ -61,5 +66,7 @@ namespace timeline {
 		int mSelection;
 	};
 }
+
+#define MAINWINDOW timeline::MainWindow::singleton()
 
 #endif // _MAIN_WINDOW_H

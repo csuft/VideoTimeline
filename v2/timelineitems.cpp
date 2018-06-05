@@ -35,22 +35,19 @@ namespace timeline {
 	}
 
 	void TimelineWaveform::paint(QPainter *painter) {
-		QVariantList data = m_audioLevels.toList();
+		QVariantList data = mAudioLevels.toList();
 		if (data.isEmpty())
 			return;
-
-		// In and out points are # frames at current fps,
-		// but audio levels are created at 25 fps.
-		// Scale in and out point to 25 fps.
-		const int inPoint = qRound(m_inPoint / 25.0);
-		const int outPoint = qRound(m_outPoint / 25.0);
+		 
+		// audio levels created at 25fps
+		const int inPoint = qRound(mInPoint/30 * 25.0);
+		const int outPoint = qRound(mOutPoint/30 * 25.0);
 		const qreal indicesPrPixel = qreal(outPoint - inPoint) / width();
 
 		QPainterPath path;
 		path.moveTo(-1, height());
 		int i = 0;
-		for (; i < width(); ++i)
-		{
+		for (; i < width(); ++i) {
 			int idx = inPoint + int(i * indicesPrPixel);
 			if (idx + 1 >= data.length())
 				break;
@@ -58,10 +55,10 @@ namespace timeline {
 			path.lineTo(i, height() - level * height());
 		}
 		path.lineTo(i, height());
-		painter->fillPath(path, m_color.lighter());
+		painter->fillPath(path, mColor.lighter());
 
 		QPen pen(painter->pen());
-		pen.setColor(m_color.darker());
+		pen.setColor(mColor.darker());
 		painter->strokePath(path, pen);
 	} 
 

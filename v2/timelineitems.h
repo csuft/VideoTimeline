@@ -24,10 +24,10 @@ namespace timeline {
 
 	class TimelineWaveform : public QQuickPaintedItem {
 		Q_OBJECT
-		Q_PROPERTY(QVariant levels MEMBER m_audioLevels NOTIFY propertyChanged)
-		Q_PROPERTY(QColor fillColor MEMBER m_color NOTIFY propertyChanged)
-		Q_PROPERTY(int inPoint MEMBER m_inPoint NOTIFY inPointChanged)
-		Q_PROPERTY(int outPoint MEMBER m_outPoint NOTIFY outPointChanged)
+		Q_PROPERTY(QVariant levels MEMBER mAudioLevels NOTIFY propertyChanged)
+		Q_PROPERTY(QColor fillColor MEMBER mColor NOTIFY propertyChanged)
+		Q_PROPERTY(int inPoint MEMBER mInPoint NOTIFY inPointChanged)
+		Q_PROPERTY(int outPoint MEMBER mOutPoint NOTIFY outPointChanged)
 
 	public:
 		TimelineWaveform();
@@ -39,10 +39,10 @@ namespace timeline {
 		void outPointChanged();
 
 	private:
-		QVariant m_audioLevels;
-		int m_inPoint;
-		int m_outPoint;
-		QColor m_color;
+		QVariant mAudioLevels;
+		int mInPoint;
+		int mOutPoint;
+		QColor mColor;
 	};
 
 	void registerTimelineItems();

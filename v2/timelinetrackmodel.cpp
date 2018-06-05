@@ -210,12 +210,24 @@ namespace timeline {
 		return true;
 	}  
 
+	void TimelineTracksModel::moveClipToEnd(int trackIndex, int clipIndex, int position) {
+
+	}
+
 	int TimelineTracksModel::appendClip(int trackIndex) {
 		return -1;
 	}
 
 	void TimelineTracksModel::removeClip(int trackIndex, int clipIndex) {
-
+		if (trackIndex < 0 || trackIndex >= tracksCount() 
+			|| clipIndex < 0 || clipIndex >= mTracks[trackIndex].size()) {
+			return;
+		}
+		beginRemoveRows(index(trackIndex), clipIndex, clipIndex);
+		mTracks[trackIndex][clipIndex].setBlank(true);
+		endRemoveRows();
+		emit modified();
+		consolidateBlanks(trackIndex);
 	}
 
 	void TimelineTracksModel::splitClip(int trackIndex, int clipIndex, int splitPosition) {
@@ -247,10 +259,6 @@ namespace timeline {
 	}
 
 	void TimelineTracksModel::joinClips(int trackIndex, int clipIndex) {
-		
-	}
-	
-	void TimelineTracksModel::moveClipToEnd(int trackIndex, int clipIndex, int position) {
 		
 	} 
 
@@ -399,6 +407,28 @@ namespace timeline {
 		}
 		
 		return -1;
+	}
+
+	void TimelineTracksModel::consolidateBlanks(int trackIndex) { 
+		for (int i = 1; i < mTracks[trackIndex].count(); ++i) {
+			if (mTracks[trackIndex][i - 1].isBlank() 
+				&& mTracks[trackIndex][i].isBlank()) {
+				int inPos = mTracks[trackIndex][i - 1].getInPoint();
+				int duration = mTracks[trackIndex][i - 1].getDuration()
+					+ mTracks[trackIndex][i].getDuration() - 1;
+				mTracks[trackIndex][i - 1].setDuration(duration);
+				mTracks[trackIndex][i - 1].setOutPoint(inPos + duration);
+				
+				QVector<int> updatedRoles;
+				updatedRoles << DurationRole << OutPointRole;
+				QModelIndex modelIndex = createIndex(i - 1, 0, trackIndex);
+				emit dataChanged(modelIndex, modelIndex, updatedRoles);
+
+				beginRemoveRows(index(trackIndex), i, i);
+				mTracks[trackIndex].removeAt(i);
+				endRemoveRows();
+			}
+		} 
 	}
 }
 

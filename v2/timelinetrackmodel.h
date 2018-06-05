@@ -114,8 +114,7 @@ namespace timeline {
 		int trimClipOut(int trackIndex, int clipIndex, int delta);
 		void notifyClipOut(int trackIndex, int clipIndex);
 		bool moveClipValid(int clipIndex, int position);
-		bool moveClip(int clipIndex, int position); 
-		
+		bool moveClip(int clipIndex, int position);  
 		int appendClip(int trackIndex);
 		void removeClip(int trackIndex, int clipIndex); 
 		void splitClip(int trackIndex, int clipIndex, int position);
@@ -125,6 +124,7 @@ namespace timeline {
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
 		int randNumber(int low, int high);
+		void consolidateBlanks(int trackIndex);
 
 	private slots:
 		void adjustBackgroundDuration();

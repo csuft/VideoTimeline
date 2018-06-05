@@ -25,7 +25,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BUILD_DIR})
 
 ################################################################################
 # Sources and headers   
-FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui Quick Qml QuickWidgets REQUIRED)  
+FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui Quick Qml Sql QuickWidgets REQUIRED)  
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 IF(APPLE)
@@ -58,7 +58,7 @@ ELSE()
 ENDIF()
  
 # https://www.kdab.com/using-cmake-with-qt-5/ 
-qt5_use_modules(${PROJECT_NAME} Core Widgets Gui Quick Qml QuickWidgets) 
+qt5_use_modules(${PROJECT_NAME} Core Widgets Gui Quick Qml Sql QuickWidgets) 
 
 include(FeatureSummary)
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

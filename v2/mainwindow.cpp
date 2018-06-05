@@ -55,6 +55,15 @@ namespace timeline {
 #endif  
 	} 
 
+	void MainWindow::closeEvent(QCloseEvent *event) {
+		emit aboutToShutdown();
+	}
+
+	MainWindow& MainWindow::singleton() {
+		static MainWindow* instance = new MainWindow;
+		return *instance;
+	}
+
 	void MainWindow::onVisibilityChanged(bool visible) {
 		if (visible) {
 			load();
@@ -139,19 +148,23 @@ namespace timeline {
 
 	void MainWindow::removeClip(int trackIndex, int clipIndex) {
 		qDebug() << "remove clip: track->" << trackIndex << " clip->" << clipIndex;
+		if (trackIndex < 0 || clipIndex < 0) {
+			return;
+		}
+		mTimelineModel->removeClip(trackIndex, clipIndex);
 	}
 
 	void MainWindow::chooseClipAtPosition(int position, int& trackIndex, int& clipIndex) {
-		if (trackIndex != -1) {
+		if (trackIndex >= 0) {
 			clipIndex = clipIndexAtPosition(trackIndex, position);
-			if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+			if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
 				return;
 			}
 		}
 		
 		trackIndex = currentTrack();
 		clipIndex = clipIndexAtPosition(trackIndex, position);
-		if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+		if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
 			return;
 		}
 
@@ -160,7 +173,7 @@ namespace timeline {
 				continue;
 			}
 			clipIndex = clipIndexAtPosition(trackIndex, position);
-			if (clipIndex != -1 && !isBlankClip(trackIndex, clipIndex)) {
+			if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
 				return;
 			}
 		}
