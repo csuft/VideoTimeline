@@ -67,6 +67,16 @@ Rectangle {
         }
     }
 
+    function generateAudioWaves() {
+        if (!waveform.visible) return
+        waveRepeater.model = Math.ceil(waveform.innerWidth/waveform.maxWidth)
+        for (var i = 0; i < waveRepeater.count; ++i) {
+            waveRepeater.itemAt(0).update()
+        }
+    }
+
+    onAudioLevelsChanged: generateAudioWaves()
+
     Image {
         id: outThumbnail
         visible: false
@@ -105,6 +115,18 @@ Rectangle {
         property int maxWidth: 10000
         property int innerWidth: clipRoot.width - clipRoot.border.width * 2
 
+        Repeater {
+            id: waveRepeater
+            TimelineWaveform {
+                width: Math.min(waveform.innerWidth, waveform.maxWidth)
+                height: waveform.height
+                fillColor: getColor()
+                property int channels: 2
+                inPoint: Math.round(clipRoot.inPoint + index * waveform.maxWidth/timeScale)*channels
+                outPoint: inPoint + Math.round(width/timeScale)*channels
+                levels: audioLevels
+            }
+        }
     }
 
     // peak line

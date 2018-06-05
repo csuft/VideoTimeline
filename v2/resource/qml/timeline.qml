@@ -11,6 +11,47 @@ Rectangle {
     id: root  
     color: 'transparent' 
 
+    // functions 
+    function setZoom(value) {
+        toolbar.scaleSlider.value = value;
+        for (var i = 0; i < tracksRepeater.count, ++i) {
+            tracksRepeater.itemAt(i).redrawAudioWaves();
+        }
+    }
+
+    function adjustZoom(by) {
+        setZoom(toolbar.scaleSlider.value + by)
+    }
+
+    function zoomIn() {
+        adjustZoom(0.0625)
+    }
+
+    function zoomOut() {
+        adjustZoom(-0.0625)
+    }
+
+    function resetZoom() {
+        adjustZoom(1.0)
+    }
+
+    function zoomByWheel(wheel) {
+        if (wheel.modifiers & Qt.ControlModifier) {
+            adjustZoom(wheel.angleDelta.y / 720)
+        }
+        if (wheel.modifiers & Qt.ShiftModifier) {
+            TimelineModel.trackHeight = Math.max(30, TimelineModel.trackHeight + wheel.angleDelta.y/5)
+        }
+    }
+
+    function makeTracksTaller() {
+        TimelineModel.trackHeight += 20
+    }
+
+    function makeTracksShorter() {
+        TimelineModel.trackHeight = Math.max(30, TimelineModel.trackHeight - 20)
+    }
+
     // custom properties
     property int currentTrack: 0
     readonly property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
@@ -23,7 +64,7 @@ Rectangle {
     // signal handlers
     onCurrentTrackChanged: {
         console.log("Current active track: ", currentTrack)
-    }
+    } 
 
     // components  
     MouseArea {

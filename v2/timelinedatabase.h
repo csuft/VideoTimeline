@@ -38,6 +38,6 @@ namespace timeline {
 	};
 }
 
-#define DataBase DatabaseTask::singleton()
+#define DataBase timeline::TimelineDataBase::singleton()
 
 #endif

@@ -27,6 +27,18 @@ Rectangle {
         return repeater.itemAt(index)
     }
 
+    function redrawAudioWaves() {
+        for (var i = 0; i < repeater.count; ++i) {
+            repeater.itemAt(i).generateWaves()
+        }
+    }
+
+    function reloadAudioWaves(force) {
+        for (var i = 0; i < repeater.count; ++i) {
+            TimelineModel.reloadAudioWaves(trackRoot.DelegateModel.itemsIndex, i, force)
+        }
+    }
+
     color: 'transparent'
     width: clipRow.width
 

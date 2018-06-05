@@ -5,6 +5,10 @@
 int main(int argc, char* argv[]) {
 
 	QApplication app(argc, argv); 
+	app.setApplicationDisplayName("QmlBased Timeline");
+	app.setApplicationName("QmlBased Timeline");
+	app.setOrganizationDomain("com.hust");
+	app.setOrganizationName("hust");
 
 	timeline::MainWindow& mainWindow = MAINWINDOW;
 	mainWindow.show();

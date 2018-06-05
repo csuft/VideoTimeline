@@ -23,6 +23,7 @@ namespace timeline {
 
 	private:
 		TimelineTracksModel* mModel;
+		QModelIndex mModelIndex;
 		bool mIsCanceled;
 		bool mIsForce;
 	};

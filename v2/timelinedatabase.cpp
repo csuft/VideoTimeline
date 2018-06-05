@@ -22,7 +22,7 @@ namespace timeline {
 		}
 	};
 
-	static TimelineDataBase* instance = Q_NULLPTR;
+	static TimelineDataBase* dbinstance = Q_NULLPTR;
 
 	TimelineDataBase::TimelineDataBase(QObject* parent)
 		: QThread(parent),
@@ -31,11 +31,11 @@ namespace timeline {
 	}
 
 	TimelineDataBase& TimelineDataBase::singleton(QWidget* parent) {
-		if (!instance) {
-			instance = new TimelineDataBase(parent);
-			instance->start();
+		if (!dbinstance) {
+			dbinstance = new TimelineDataBase(parent);
+			dbinstance->start();
 		}
-		return *instance;
+		return *dbinstance;
 	}
 
 	bool TimelineDataBase::putThumbnail(const QString& hash, const QImage& image) {
@@ -67,7 +67,7 @@ namespace timeline {
 		QString connection = QSqlDatabase::database().connectionName();
 		QSqlDatabase::database().close();
 		QSqlDatabase::removeDatabase(connection);
-		instance = Q_NULLPTR;
+		dbinstance = Q_NULLPTR;
 	}
 
 	void TimelineDataBase::doTransaction(DatabaseTask* task) {

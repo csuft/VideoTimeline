@@ -3,6 +3,7 @@
 #include "timelinetrackmodel.h"
 #include "thumbnailprovider.h"
 #include "qmlview.h"
+#include "timelinedatabase.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -30,6 +31,8 @@ namespace timeline {
 		mMenuBar = new QMenuBar(this);
 		mMenuBar->addAction(undoAction);
 		mMenuBar->addAction(redoAction); 
+
+		TimelineDataBase::singleton(this);
 
 		setWindowIcon(QIcon(":/images/images/audio-meter.png"));     
 		qmlRegisterType<TimelineTracksModel>("Studio.Timeline", 1, 0, "TimelineTracksModel");
