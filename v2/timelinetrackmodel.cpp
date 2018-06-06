@@ -25,7 +25,7 @@ namespace timeline {
 		: QAbstractItemModel(parent),
 		mScaleFactor(1.0),
 		mTrackHeight(50),
-		mStepSize(5) {
+		mStepSize(30) {
 		load();
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
 	}

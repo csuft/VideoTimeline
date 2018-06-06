@@ -116,11 +116,10 @@ namespace timeline {
 
 	QString MainWindow::timecode(int frames) {
 		const int FFRAMERATE = 30.0;
-		QString timestr("%1:%2:%3.%4");
+		QString timestr("%1:%2:%3");
 		timestr = timestr.arg(frames / (FFRAMERATE*FFRAMERATE*FFRAMERATE))
 			.arg(frames / (FFRAMERATE*FFRAMERATE))
-			.arg(frames / (FFRAMERATE))
-			.arg(frames % FFRAMERATE);
+			.arg(frames / (FFRAMERATE));
 		return timestr;
 	}
 

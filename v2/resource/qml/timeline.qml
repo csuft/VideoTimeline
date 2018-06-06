@@ -111,7 +111,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: parent.width  
+                    width: root.width  
                 }
             } 
 
