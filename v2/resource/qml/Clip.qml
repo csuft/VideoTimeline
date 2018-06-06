@@ -8,11 +8,12 @@ import QtQuick.Window 2.2
 //  Component instances can directly access the component scopes of their ancestors.
 Rectangle {
     id: clipRoot
-    property string clipName: ''
-    property string clipSource: '' 
+    property string name: ''
+    property string source: '' 
     property int inPoint: 0
     property int outPoint: 0
-    property int clipDuration: 0 
+    property int duration: 0 
+    property double frameRate: 30
     property bool isAudio: false 
     property bool isBlank: false
     property var audioLevels 
@@ -43,7 +44,7 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        console.log("clip name: ", clipName)
+        console.log("clip name: ", name)
         console.log("is audio: ", isAudio)
     }
 
@@ -157,7 +158,7 @@ Rectangle {
 
     Text {
         id: label
-        text: clipName
+        text: name
         visible: !isBlank 
         font.pointSize: 8
         anchors {

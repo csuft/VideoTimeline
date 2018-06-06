@@ -45,15 +45,16 @@ Rectangle {
     DelegateModel {
         id: trackModel
         Clip {
-            clipName: model.name
-            clipSource: model.source
-            clipDuration: model.duration 
-            inPoint: model.in
-            outPoint: model.out 
+            name: model.name
+            source: model.source
+            duration: model.duration 
+            inPoint: model.in 
+            outPoint: model.out
             audioLevels: model.audioLevels
             isAudio: model.audio
             isBlank: model.blank
-            width: model.duration * timeScale
+            frameRate: model.fps
+            width: model.duration / model.fps * timeScale * TimelineModel.stepSize
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
             selected: trackRoot.isCurrentTrack && trackRoot.selection == index

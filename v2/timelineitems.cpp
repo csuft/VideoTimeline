@@ -40,9 +40,8 @@ namespace timeline {
 			return;
 		 
 		qDebug() << "in point: " << mInPoint << " out point: " << mOutPoint;
-		// audio levels created at 25fps
-		const int inPoint = qRound(mInPoint/30 * 25.0);
-		const int outPoint = qRound(mOutPoint/30 * 25.0);
+		const int inPoint = qRound(mInPoint/30.0);
+		const int outPoint = qRound(mOutPoint/30.0);
 		const qreal indicesPrPixel = qreal(outPoint - inPoint) / width();
 
 		QPainterPath path;

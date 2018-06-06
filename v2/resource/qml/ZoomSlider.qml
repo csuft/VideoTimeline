@@ -25,13 +25,15 @@ Rectangle {
         maximumValue: 8.0
         value: 0
         function setScaleFactor() {
-            var stepSize;
-            if (value == 0.0) {stepSize = 2}
-            else if (value == 1.0) { stepSize = 5}
-            else if (value == 2.0) { stepSize = 10}
-            else { stepSize = 15} 
+            var factor;
+            if (value <= 3.0) {factor = 1.0/1.0}
+            else if (value == 4.0) { factor = 1.0/2.0}
+            else if (value == 5.0) { factor = 1.0/4.0}
+            else if (value == 6.0) { factor = 1.0/8.0}
+            else if (value == 7.0) { factor = 1.0/20.0}
+            else if (value == 8.0) { factor = 1.0/40.0}
 
-            TimelineModel.scaleFactor = stepSize
+            TimelineModel.scaleFactor = factor
         }
         onValueChanged: {
             if (!pressed && typeof TimelineModel.scaleFactor != 'undefined')
@@ -40,7 +42,7 @@ Rectangle {
         onPressedChanged: { 
             if (!pressed) {
                 setScaleFactor()
-                for (var i = 0; i < tracksRepeater.count, ++i) {
+                for (var i = 0; i < tracksRepeater.count; ++i) {
                     tracksRepeater.itemAt(i).redrawAudioWaves();
                 }
             }

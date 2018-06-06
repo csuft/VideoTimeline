@@ -2,8 +2,8 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 
 Rectangle { 
-    property real timeScale: 1.0
-    property int stepSize: Math.round(100 * Math.max(1.0, timeScale)) 
+    property real timeScale: TimelineModel.scaleFactor
+    property int stepSize: TimelineModel.stepSize
 
     id: rulerTop 
     height: 30
@@ -16,12 +16,11 @@ Rectangle {
             width: 1 
             x: index * stepSize
             color: 'black'
-            Label { 
-                anchors.leftMargin: 2
+            Label {  
                 anchors.bottom: parent.top
-                anchors.bottomMargin: 2 
-                x: index * stepSize + 2
-                text: TimelineWidget.timecode(index * stepSize / timeScale)
+                anchors.bottomMargin: 2  
+                text: TimelineWidget.timecode(index * 30  / timeScale)
+                visible: index % 3 == 0 ? true : false
                 font.pointSize: 7.5
             }
         }

@@ -41,7 +41,7 @@ namespace timeline {
 		int mModelIndex;
 		QString mName;
 		QUrl mSourcePath;
-		int mDuration;   // frame index
+		int mDuration;   // frame counts
 		int mInPoint;    // frame index
 		int mOutPoint;   // frame index
 		qreal mFrameRate;
@@ -54,6 +54,7 @@ namespace timeline {
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
 		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
 		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
+		Q_PROPERTY(int stepSize READ stepSize WRITE setStepSize NOTIFY stepSizeChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -90,6 +91,8 @@ namespace timeline {
 		double scaleFactor() const;
 		void setScaleFactor(double scale); 
 		int maxTrackLength() const; 
+		int stepSize() const { return mStepSize; }
+		void setStepSize(int stepSize);
 		int tracksCount() const { return 2; }
 		int clipsCount(int trackIndex);
 		int getClipIndexAt(int trackIndex, int position);
@@ -107,6 +110,7 @@ namespace timeline {
 		void scaleFactorChanged(); 
 		void durationChanged();
 		void maxTrackLengthChanged();
+		void stepSizeChanged(int stepSize);
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -133,6 +137,7 @@ namespace timeline {
 		QList<ClipInfo> mTracks[2];
 		double mScaleFactor;
 		int mTrackHeight;
+		int mStepSize;
 	}; 
 }
 

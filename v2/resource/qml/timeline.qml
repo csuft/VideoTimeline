@@ -15,7 +15,7 @@ Rectangle {
     function setZoom(value) {
         if (value >= toolbar.minimum && value <= toolbar.maximum) {
             toolbar.scaleSlider.value = value;
-            for (var i = 0; i < tracksRepeater.count, ++i) {
+            for (var i = 0; i < tracksRepeater.count; ++i) {
                 tracksRepeater.itemAt(i).redrawAudioWaves();
             }
         } 
@@ -74,7 +74,7 @@ Rectangle {
         anchors.fill: parent 
         acceptedButtons: Qt.LeftButton
         onClicked: {
-            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x) / TimelineModel.scaleFactor 
+            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x)
         } 
     }   
 
@@ -111,7 +111,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: parent.width 
+                    width: parent.width  
                 }
             } 
 
@@ -143,7 +143,7 @@ Rectangle {
             color: 'black'
             width: 1
             height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
-            x: TimelineWidget.position * TimelineModel.scaleFactor - tracksScrollView.flickableItem.contentX
+            x: TimelineWidget.position - tracksScrollView.flickableItem.contentX
             y: 0
         }
 
