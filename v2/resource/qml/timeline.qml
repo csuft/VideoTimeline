@@ -13,10 +13,12 @@ Rectangle {
 
     // functions 
     function setZoom(value) {
-        toolbar.scaleSlider.value = value;
-        for (var i = 0; i < tracksRepeater.count, ++i) {
-            tracksRepeater.itemAt(i).redrawAudioWaves();
-        }
+        if (value >= toolbar.minimum && value <= toolbar.maximum) {
+            toolbar.scaleSlider.value = value;
+            for (var i = 0; i < tracksRepeater.count, ++i) {
+                tracksRepeater.itemAt(i).redrawAudioWaves();
+            }
+        } 
     }
 
     function adjustZoom(by) {
@@ -24,15 +26,15 @@ Rectangle {
     }
 
     function zoomIn() {
-        adjustZoom(0.0625)
+        adjustZoom(1.0)
     }
 
     function zoomOut() {
-        adjustZoom(-0.0625)
+        adjustZoom(-1.0)
     }
 
     function resetZoom() {
-        adjustZoom(1.0)
+        adjustZoom(0.0)
     }
 
     function zoomByWheel(wheel) {

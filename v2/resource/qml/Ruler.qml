@@ -1,8 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 
-Rectangle {
-    property int index: 100
+Rectangle { 
     property real timeScale: 1.0
     property int stepSize: Math.round(100 * Math.max(1.0, timeScale)) 
 

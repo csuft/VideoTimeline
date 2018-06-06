@@ -3,6 +3,8 @@ import QtQuick.Controls 1.0
 
 Rectangle {
     property alias value: slider.value
+    property alias minimum: slider.minimumValue
+    property alias maximum: slider.maximumValue
     SystemPalette { id: activePalette }
 
     color: activePalette.window
@@ -20,10 +22,16 @@ Rectangle {
             rightMargin: 4
         }
         minimumValue: 0
-        maximumValue: 3.0
-        value: 1
+        maximumValue: 8.0
+        value: 0
         function setScaleFactor() {
-            TimelineModel.scaleFactor = Math.pow(value, 3) + 0.01
+            var stepSize;
+            if (value == 0.0) {stepSize = 2}
+            else if (value == 1.0) { stepSize = 5}
+            else if (value == 2.0) { stepSize = 10}
+            else { stepSize = 15} 
+
+            TimelineModel.scaleFactor = stepSize
         }
         onValueChanged: {
             if (!pressed && typeof TimelineModel.scaleFactor != 'undefined')
