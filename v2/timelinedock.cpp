@@ -28,7 +28,7 @@ namespace timeline {
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus); 
-
+		setWidget(mTimelineWidget);
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else

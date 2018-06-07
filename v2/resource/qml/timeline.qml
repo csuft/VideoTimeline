@@ -102,7 +102,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: TimelineModel.maxTrackLength
+                    width: TimelineModel.maxTrackLength + padding
                     MouseArea {
                         id: rulerMouseArea
                         anchors.fill: parent 
@@ -117,17 +117,15 @@ Rectangle {
             ScrollView {
                 id: tracksScrollView
                 width: root.width
-                height: root.height - ruler.height - toolbar.height
-
+                height: root.height - ruler.height - toolbar.height 
+                
                 Item { 
-                    width: tracksBackground.width
-                    height: tracksScrollView.height + padding
+                    width: tracksBackground.width + padding
+                    height: tracksScrollView.height
                     
                     // tracks
                     Column {
                         id: tracksBackground 
-                        width: root.width
-                        height: parent.height
                         Repeater {
                             id: tracksRepeater
                             model: tracksModel 
@@ -165,7 +163,7 @@ Rectangle {
             rootIndex: tracksModel.modelIndex(index)
             color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
             height: TimelineLogic.trackHeight(index == 1)
-            width: TimelineModel.maxTrackLength
+            width: TimelineModel.maxTrackLength + padding
             timeScale: TimelineModel.scaleFactor
             isCurrentTrack: currentTrack == index 
             onClipClicked: { 

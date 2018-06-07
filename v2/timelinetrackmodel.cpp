@@ -254,6 +254,7 @@ namespace timeline {
 			newClip.setDuration(outPoint - inPoint - duration);
 			newClip.setSourcePath(oldClip.getSourcePath());
 			newClip.setName(oldClip.getName());
+			newClip.setFrameRate(oldClip.getFrameRate());
 			insertClip(trackIndex, clipIndex + 1, newClip);
 			endInsertRows();
 		}

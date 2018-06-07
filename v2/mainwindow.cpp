@@ -25,7 +25,7 @@ namespace timeline {
 		setDockNestingEnabled(true);
 		mDockWidget = new TimelineDock(this);
 		addDockWidget(Qt::BottomDockWidgetArea, mDockWidget); 
-		showMaximized();
+		resize(800, 300);
 	} 
 
 	void MainWindow::closeEvent(QCloseEvent *event) {
