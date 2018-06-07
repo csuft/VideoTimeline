@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <qmath.h>
 #include <QTimer> 
+#include <QDebug>
 #include <QTime>
 
 static const quintptr NO_PARENT_ID = quintptr(-1); 
@@ -293,7 +294,7 @@ namespace timeline {
 
 			ClipInfo info2((TrackIndex)j);
 			info2.setInPoint(info.getOutPoint());
-			info2.setDuration(randNumber(800, 1300));
+			info2.setDuration(randNumber(100, 200));
 			info2.setFrameRate(30);
 			info2.setOutPoint(info2.getInPoint() + info2.getDuration());
 			if (j == 0) {
@@ -346,7 +347,7 @@ namespace timeline {
 				}
 			}
 		}
-		return length;
+		return length + 30; //30 is padding
 	}  
 
 	int TimelineTracksModel::clipsCount(int trackIndex) {
@@ -400,5 +401,28 @@ namespace timeline {
 		
 		return -1;
 	} 
+
+	bool TimelineTracksModel::switchClip(int trackIndex, int clipIndex1, int clipIndex2) {
+		qDebug() << "clip index 1: " << clipIndex1 << " clip index 2: " << clipIndex2;
+		if (trackIndex < 0 || trackIndex >= tracksCount()
+			|| clipIndex1 >= mTracks[trackIndex].count() || clipIndex1 < 0
+			|| clipIndex2 >= mTracks[trackIndex].count() || clipIndex2 < 0
+			|| clipIndex1 == clipIndex2) {
+			return false;
+		}
+		ClipInfo tempClip = mTracks[trackIndex][clipIndex1];
+		mTracks[trackIndex][clipIndex1] = mTracks[trackIndex][clipIndex2];
+		mTracks[trackIndex][clipIndex2] = tempClip;
+
+		QModelIndex modelIndex1 = createIndex(clipIndex1, 0, trackIndex);
+		QVector<int> updateRoles;
+		updateRoles << InPointRole << DurationRole << OutPointRole;
+		emit dataChanged(modelIndex1, modelIndex1, updateRoles);
+
+		QModelIndex modelIndex2 = createIndex(clipIndex2, 0, trackIndex); 
+		emit dataChanged(modelIndex2, modelIndex2, updateRoles);
+
+		return true;
+	}
 }
 
