@@ -6,6 +6,7 @@
 #include "timelinedatabase.h"
 
 #include <QApplication>
+#include <QTime>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QQmlEngine>
@@ -116,11 +117,11 @@ namespace timeline {
 
 	QString MainWindow::timecode(int frames) {
 		const int FFRAMERATE = 30.0;
-		QString timestr("%1:%2:%3");
-		timestr = timestr.arg(frames / (FFRAMERATE*FFRAMERATE*FFRAMERATE))
-			.arg(frames / (FFRAMERATE*FFRAMERATE))
-			.arg(frames / (FFRAMERATE));
-		return timestr;
+		QTime time;
+		time.setHMS(frames / (FFRAMERATE*FFRAMERATE*FFRAMERATE), 
+			frames / (FFRAMERATE*FFRAMERATE), 
+			frames / (FFRAMERATE)); 
+		return time.toString();
 	}
 
 	void MainWindow::addClip(int trackIndex) {
