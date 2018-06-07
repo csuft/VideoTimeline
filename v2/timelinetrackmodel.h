@@ -46,9 +46,10 @@ namespace timeline {
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
-		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
+		Q_PROPERTY(double tickTimeFactor READ tickTimeFactor WRITE setTickTimeFactor NOTIFY tickTimeFactorChanged)
 		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
-		Q_PROPERTY(int stepSize READ stepSize WRITE setStepSize NOTIFY stepSizeChanged)
+		Q_PROPERTY(int tickStep READ tickStep WRITE setTickSize NOTIFY tickStepChanged)
+		Q_PROPERTY(double cursorStep READ cursorStep WRITE setCursorStep NOTIFY cursorStepChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -81,11 +82,13 @@ namespace timeline {
 		bool trimClipOutValid(int trackIndex, int clipIndex, int delta);
 		int trackHeight() const;
 		void setTrackHeight(int height);
-		double scaleFactor() const;
-		void setScaleFactor(double scale); 
+		double tickTimeFactor() const { return mTickTimeFactor; }
+		void setTickTimeFactor(double scale); 
 		int maxTrackLength() const; 
-		int stepSize() const { return mStepSize; }
-		void setStepSize(int stepSize);
+		int tickStep() const { return mTickStep; }
+		void setTickStep(int tickStep);
+		void setCursorStep(double cursorStep);
+		double cursorStep() const { return mCursorStep; }
 		int tracksCount() const { return 2; }
 		int clipsCount(int trackIndex);
 		int getClipIndexAt(int trackIndex, int position);
@@ -100,10 +103,11 @@ namespace timeline {
 		void modified();
 		void seeked(int position);
 		void trackHeightChanged();
-		void scaleFactorChanged(); 
+		void tickTimeFactorChanged(); 
 		void durationChanged();
 		void maxTrackLengthChanged();
-		void stepSizeChanged(int stepSize);
+		void tickStepChanged(int stepSize);
+		void cursorStepChanged();
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -128,9 +132,10 @@ namespace timeline {
 
 	private: 
 		QList<ClipInfo> mTracks[2];
-		double mScaleFactor;
+		double mTickTimeFactor;
 		int mTrackHeight;
-		int mStepSize;
+		int mTickStep;
+		double mCursorStep;
 	}; 
 }
 

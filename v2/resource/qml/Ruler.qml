@@ -4,8 +4,8 @@ import QtQuick.Controls 1.0
 Rectangle { 
     property real timeScale: TimelineModel.scaleFactor
     property int stepSize: TimelineModel.stepSize
-    readonly property int majorTick: 18
-    readonly property int minorTick: 10
+    readonly property int majorTick: 14
+    readonly property int minorTick: 8
     id: rulerTop 
     height: 30
 
@@ -23,7 +23,8 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: TimelineWidget.timecode(index * 30  / timeScale)
                 visible: index % 3 == 0 ? true : false
-                font.pointSize: 7.5
+                font.pointSize: 6
+                font.family: "Microsoft Yahei"  
             }
         }
     }

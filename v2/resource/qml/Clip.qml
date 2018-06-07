@@ -59,7 +59,7 @@ Rectangle {
         }
     }
 
-    radius: 5
+    radius: 3
     border.color: selected? 'red' : 'black'
     border.width: 1
     // If clipping is enabled, an item will clip its own painting, 

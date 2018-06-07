@@ -23,9 +23,10 @@ namespace timeline {
 
 	TimelineTracksModel::TimelineTracksModel(QObject *parent)
 		: QAbstractItemModel(parent),
-		mScaleFactor(1.0),
+		mTickTimeFactor(1.0),
 		mTrackHeight(50),
-		mStepSize(30) {
+		mTickStep(30), 
+		mCursorStep(1.0) {
 		load();
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
 	}
@@ -178,18 +179,19 @@ namespace timeline {
 		emit trackHeightChanged();
 	}
 
-	double TimelineTracksModel::scaleFactor() const {
-		return mScaleFactor;
+	void TimelineTracksModel::setTickTimeFactor(double scale) {  
+		mTickTimeFactor = scale;
+		emit tickTimeFactorChanged();
 	}
 
-	void TimelineTracksModel::setScaleFactor(double scale) {  
-		mScaleFactor = scale;
-		emit scaleFactorChanged();
+	void TimelineTracksModel::setTickStep(int tickStep) {
+		mTickStep = tickStep;
+		emit tickStepChanged(mTickStep);
 	}
 
-	void TimelineTracksModel::setStepSize(int stepSize) {
-		mStepSize = stepSize;
-		emit stepSizeChanged(mStepSize);
+	void TimelineTracksModel::setCursorStep(double cursorStep) {
+		mCursorStep = cursorStep;
+		emit cursorStepChanged();
 	}
 
 	int TimelineTracksModel::trimClipOut(int trackIndex, int clipIndex, int delta) {
