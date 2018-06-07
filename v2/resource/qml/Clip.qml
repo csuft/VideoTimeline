@@ -14,8 +14,7 @@ Rectangle {
     property int outPoint: 0
     property int duration: 0 
     property double frameRate: 30
-    property bool isAudio: false 
-    property bool isBlank: false
+    property bool isAudio: false  
     property var audioLevels 
     property int trackIndex 
     property bool selected: false   
@@ -50,7 +49,7 @@ Rectangle {
 
     radius: 5
     border.color: selected? 'red' : 'black'
-    border.width: isBlank? 0 : 1
+    border.width: 1
     // If clipping is enabled, an item will clip its own painting, 
     // as well as the painting of its children, to its bounding rectangle.
     clip: true 
@@ -59,13 +58,11 @@ Rectangle {
     opacity: Drag.active? 0.5 : 1.0
 
     function getColor() {
-        return isBlank? 'transparent' : isAudio? 'darkseagreen' : 'green'
+        return isAudio? 'darkseagreen' : 'green'
     }  
 
     function imagePath(time) {
-        if (isBlank || isAudio) {
-            return ''
-        }
+        return ''
     }
 
     function generateAudioWaves() {
@@ -107,7 +104,7 @@ Rectangle {
 
     Row {
         id: waveform
-        visible: !isBlank
+        visible: true
         height: isAudio? parent.height : parent.height / 2
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -133,7 +130,7 @@ Rectangle {
     // peak line
     Rectangle { 
         width: parent.width - parent.border.width * 2
-        visible: !isAudio && !isBlank
+        visible: !isAudio
         height: 1
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -146,7 +143,7 @@ Rectangle {
     Rectangle {
         // text background
         color: 'lightgray'
-        visible: !isBlank 
+        visible: true
         opacity: 0.5
         anchors.top: parent.top
         anchors.left: parent.left
@@ -159,7 +156,7 @@ Rectangle {
     Text {
         id: label
         text: name
-        visible: !isBlank 
+        visible: true
         font.pointSize: 8
         anchors {
             top: parent.top
@@ -195,7 +192,7 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        enabled: isBlank
+        enabled: true
         acceptedButtons: Qt.RightButton
         onClicked: menu.show()
     }
@@ -203,7 +200,7 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent 
-        enabled: !isBlank
+        enabled: true
         acceptedButtons: Qt.LeftButton
         drag.target: parent
         drag.axis: Drag.XAxis
@@ -231,7 +228,7 @@ Rectangle {
 
     Rectangle {
         id: trimIn
-        enabled: !isBlank
+        enabled: true
         anchors.left: parent.left
         anchors.leftMargin: 0
         height: parent.height
@@ -265,7 +262,7 @@ Rectangle {
     }
     Rectangle {
         id: trimOut
-        enabled: !isBlank 
+        enabled: true 
         anchors.right: parent.right
         anchors.rightMargin: 0
         height: parent.height
@@ -303,28 +300,28 @@ Rectangle {
             popup()
         }
         MenuItem {
-            visible: !isBlank
+            visible: true
             text: qsTr('Cut') 
         }
         MenuItem {
-            visible: !isBlank 
+            visible: true
             text: qsTr('Copy') 
         }
         MenuSeparator {
-            visible: !isBlank 
+            visible: true
         }
         MenuItem {
             text: qsTr('Remove') 
         }
         MenuSeparator {
-            visible: !isBlank 
+            visible: true 
         }
         MenuItem {
-            visible: !isBlank 
+            visible: true
             text: qsTr('Split At Playhead') 
         }
         MenuItem {
-            visible: !isBlank
+            visible: true
             text: qsTr('Rebuild Audio Waveform') 
         }
         onPopupVisibleChanged: {

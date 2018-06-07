@@ -51,8 +51,7 @@ namespace timeline {
 	private:
 		MainWindow(QWidget* parent = Q_NULLPTR);
 		void chooseClipAtPosition(int position, int& trackIndex, int& clipIndex);
-		int clipIndexAtPosition(int trackIndex, int position);
-		bool isBlankClip(int trackIndex, int clipIndex);
+		int clipIndexAtPosition(int trackIndex, int position); 
 		int clipIndexAtPlayhead(int trackIndex);
 		bool getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo);
 

@@ -166,14 +166,14 @@ namespace timeline {
 	void MainWindow::chooseClipAtPosition(int position, int& trackIndex, int& clipIndex) {
 		if (trackIndex >= 0) {
 			clipIndex = clipIndexAtPosition(trackIndex, position);
-			if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
+			if (clipIndex >= 0) {
 				return;
 			}
 		}
 		
 		trackIndex = currentTrack();
 		clipIndex = clipIndexAtPosition(trackIndex, position);
-		if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
+		if (clipIndex >= 0) {
 			return;
 		}
 
@@ -182,20 +182,14 @@ namespace timeline {
 				continue;
 			}
 			clipIndex = clipIndexAtPosition(trackIndex, position);
-			if (clipIndex >= 0 && !isBlankClip(trackIndex, clipIndex)) {
+			if (clipIndex >= 0) {
 				return;
 			}
 		}
 
 		trackIndex = -1;
 		clipIndex = -1;
-	}
-
-	bool MainWindow::isBlankClip(int trackIndex, int clipIndex) {
-		Q_ASSERT(trackIndex >= 0 && clipIndex >= 0);
-		return mTimelineModel->index(clipIndex, 0, mTimelineModel->index(trackIndex))
-			.data(TimelineTracksModel::IsBlankRole).toBool();
-	}
+	} 
 
 	int MainWindow::clipIndexAtPosition(int trackIndex, int position) {
 		int clipIndex = -1;

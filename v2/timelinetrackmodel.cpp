@@ -12,8 +12,7 @@ static const quintptr NO_PARENT_ID = quintptr(-1);
 namespace timeline {
 
 	ClipInfo::ClipInfo(TrackIndex index) 
-		: mTrackIndex(index),
-		mIsBlank(false){
+		: mTrackIndex(index) {
 
 	}
 
@@ -82,9 +81,7 @@ namespace timeline {
 			case FrameRateRole:
 				return clipInfo.getFrameRate();
 			case AudioLevelsRole:
-				return QVariant();
-			case IsBlankRole:
-				return clipInfo.isBlank();
+				return QVariant(); 
 			case IsAudioRole:
 				return trackIndex == AudioTrack;
 			default:
@@ -144,8 +141,7 @@ namespace timeline {
 		roles[DurationRole] = "duration";
 		roles[InPointRole] = "in";
 		roles[OutPointRole] = "out"; 
-		roles[IsAudioRole] = "audio";
-		roles[IsBlankRole] = "blank";
+		roles[IsAudioRole] = "audio"; 
 		roles[FrameRateRole] = "fps";
 		roles[AudioLevelsRole] = "audioLevels";   
 		return roles;
@@ -229,11 +225,10 @@ namespace timeline {
 			|| clipIndex < 0 || clipIndex >= mTracks[trackIndex].size()) {
 			return;
 		}
-		beginRemoveRows(index(trackIndex), clipIndex, clipIndex);
-		mTracks[trackIndex][clipIndex].setBlank(true);
+		beginRemoveRows(index(trackIndex), clipIndex, clipIndex); 
+		// TODO
 		endRemoveRows();
-		emit modified();
-		consolidateBlanks(trackIndex);
+		emit modified(); 
 	}
 
 	void TimelineTracksModel::splitClip(int trackIndex, int clipIndex, int splitPosition) {
@@ -301,8 +296,7 @@ namespace timeline {
 			info1.setDuration(randNumber(100, 300));
 			info1.setOutPoint(info1.getInPoint() + info1.getDuration());
 			info1.setFrameRate(30); 
-			info1.setModelIndex(1);
-			info1.setBlank(true);
+			info1.setModelIndex(1); 
 			mTracks[j].push_back(info1);
 
 			ClipInfo info2((TrackIndex)j);
@@ -413,28 +407,6 @@ namespace timeline {
 		}
 		
 		return -1;
-	}
-
-	void TimelineTracksModel::consolidateBlanks(int trackIndex) { 
-		for (int i = 1; i < mTracks[trackIndex].count(); ++i) {
-			if (mTracks[trackIndex][i - 1].isBlank() 
-				&& mTracks[trackIndex][i].isBlank()) {
-				int inPos = mTracks[trackIndex][i - 1].getInPoint();
-				int duration = mTracks[trackIndex][i - 1].getDuration()
-					+ mTracks[trackIndex][i].getDuration() - 1;
-				mTracks[trackIndex][i - 1].setDuration(duration);
-				mTracks[trackIndex][i - 1].setOutPoint(inPos + duration);
-				
-				QVector<int> updatedRoles;
-				updatedRoles << DurationRole << OutPointRole;
-				QModelIndex modelIndex = createIndex(i - 1, 0, trackIndex);
-				emit dataChanged(modelIndex, modelIndex, updatedRoles);
-
-				beginRemoveRows(index(trackIndex), i, i);
-				mTracks[trackIndex].removeAt(i);
-				endRemoveRows();
-			}
-		} 
-	}
+	} 
 }
 

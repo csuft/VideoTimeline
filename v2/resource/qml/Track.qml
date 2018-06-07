@@ -51,8 +51,7 @@ Rectangle {
             inPoint: model.in 
             outPoint: model.out
             audioLevels: model.audioLevels
-            isAudio: model.audio
-            isBlank: model.blank
+            isAudio: model.audio 
             frameRate: model.fps
             width: model.duration / model.fps * timeScale * TimelineModel.stepSize
             height: trackRoot.height 

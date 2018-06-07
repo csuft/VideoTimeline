@@ -32,9 +32,7 @@ namespace timeline {
 		int getOutPoint() const { return mOutPoint; }
 		void setOutPoint(int out) { mOutPoint = out; }
 		qreal getFrameRate() const { return mFrameRate; }
-		void setFrameRate(qreal fps) { mFrameRate = fps; }
-		bool isBlank() const { return mIsBlank; }
-		void setBlank(bool blank) { mIsBlank = blank; }
+		void setFrameRate(qreal fps) { mFrameRate = fps; } 
 
 	private:
 		TrackIndex mTrackIndex;
@@ -44,8 +42,7 @@ namespace timeline {
 		int mDuration;   // frame counts
 		int mInPoint;    // frame index
 		int mOutPoint;   // frame index
-		qreal mFrameRate;
-		bool mIsBlank;
+		qreal mFrameRate; 
 	};
 	Q_DECLARE_TYPEINFO(ClipInfo, Q_COMPLEX_TYPE);
 
@@ -62,8 +59,7 @@ namespace timeline {
 			DurationRole,
 			InPointRole,     
 			OutPointRole,      
-			IsAudioRole,
-			IsBlankRole,
+			IsAudioRole, 
 			FrameRateRole,
 			AudioLevelsRole   
 		};
@@ -127,8 +123,7 @@ namespace timeline {
 	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
-		int randNumber(int low, int high);
-		void consolidateBlanks(int trackIndex);
+		int randNumber(int low, int high); 
 
 	private slots:
 		void adjustBackgroundDuration();
