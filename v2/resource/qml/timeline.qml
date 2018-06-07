@@ -107,8 +107,8 @@ Rectangle {
                         id: rulerMouseArea
                         anchors.fill: parent 
                         acceptedButtons: Qt.LeftButton
-                        onClicked: {
-                            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x)
+                        onClicked: { 
+                            TimelineWidget.position = mouse.x 
                         } 
                     }   
                 }
@@ -136,7 +136,7 @@ Rectangle {
         }
         Rectangle {
             id: cursor
-            visible: true
+            visible: TimelineWidget.position > -1
             color: 'black'
             width: 1
             height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
@@ -146,7 +146,7 @@ Rectangle {
 
         TimelinePlayhead {
             id: playhead
-            visible: true
+            visible: TimelineWidget.position > -1
             x: cursor.x - 5
             y: 0
             width: 11
