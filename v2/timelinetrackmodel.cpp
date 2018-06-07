@@ -292,7 +292,7 @@ namespace timeline {
 
 			ClipInfo info2((TrackIndex)j);
 			info2.setInPoint(info.getOutPoint());
-			info2.setDuration(randNumber(100, 300));
+			info2.setDuration(randNumber(800, 1300));
 			info2.setFrameRate(30);
 			info2.setOutPoint(info2.getInPoint() + info2.getDuration());
 			if (j == 0) {

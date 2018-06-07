@@ -68,16 +68,7 @@ Rectangle {
         console.log("Current active track: ", currentTrack)
     } 
 
-    // components  
-    MouseArea {
-        id: tracksMouseArea
-        anchors.fill: parent 
-        acceptedButtons: Qt.LeftButton
-        onClicked: {
-            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x)
-        } 
-    }   
-
+    // components   
     DropArea {
         anchors.fill: parent
         onEntered: {
@@ -112,6 +103,14 @@ Rectangle {
                 Ruler {
                     id: ruler
                     width: TimelineModel.maxTrackLength
+                    MouseArea {
+                        id: rulerMouseArea
+                        anchors.fill: parent 
+                        acceptedButtons: Qt.LeftButton
+                        onClicked: {
+                            TimelineWidget.position = (tracksScrollView.flickableItem.contentX + mouse.x)
+                        } 
+                    }   
                 }
             } 
 
