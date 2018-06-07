@@ -12,16 +12,7 @@ Rectangle {
 
     signal clipClicked(var clip, var track)
     signal clipDragged(var clip, int x, int y)
-    signal clipDropped(var clip) 
-    signal checkSnap(var clip) 
-
-    function snapClip(clip) {
-        TrackLogic.snapClip(clip, repeater)
-    }
-
-    function snapDrop(clip) {
-        TrackLogic.snapDrop(clip, repeater)
-    }
+    signal clipDropped(var clip)  
 
     function clipAt(index) {
         return repeater.itemAt(index)
