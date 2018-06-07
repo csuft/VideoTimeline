@@ -18,9 +18,7 @@ namespace timeline {
 		ClipInfo(TrackIndex index = VideoTrack);
 		~ClipInfo();
 
-		TrackIndex getTrackIndex() const { return mTrackIndex; }
-		int getModelIndex() const { return mModelIndex; }
-		void setModelIndex(int modelIndex) { mModelIndex = modelIndex; }
+		TrackIndex getTrackIndex() const { return mTrackIndex; } 
 		QString getName() const { return mName; }
 		void setName(const QString& name) { mName = name; }
 		QUrl getSourcePath() const { return mSourcePath; }
@@ -35,8 +33,7 @@ namespace timeline {
 		void setFrameRate(qreal fps) { mFrameRate = fps; } 
 
 	private:
-		TrackIndex mTrackIndex;
-		int mModelIndex;
+		TrackIndex mTrackIndex; 
 		QString mName;
 		QUrl mSourcePath;
 		int mDuration;   // frame counts

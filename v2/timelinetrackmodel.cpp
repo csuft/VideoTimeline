@@ -287,42 +287,33 @@ namespace timeline {
 				info.setName("VID_20180801.mp3");
 			}
 			info.setSourcePath(QUrl("VID_20180801.mp4"));
-			info.setFrameRate(30);
-			info.setModelIndex(0);
+			info.setFrameRate(30); 
 			mTracks[j].push_back(info);
-			
-			ClipInfo info1((TrackIndex)j);
-			info1.setInPoint(info.getOutPoint());
-			info1.setDuration(randNumber(100, 300));
-			info1.setOutPoint(info1.getInPoint() + info1.getDuration());
-			info1.setFrameRate(30); 
-			info1.setModelIndex(1); 
-			mTracks[j].push_back(info1);
 
 			ClipInfo info2((TrackIndex)j);
-			info2.setInPoint(info1.getOutPoint());
+			info2.setInPoint(info.getOutPoint());
 			info2.setDuration(randNumber(100, 300));
+			info2.setFrameRate(30);
 			info2.setOutPoint(info2.getInPoint() + info2.getDuration());
 			if (j == 0) {
 				info2.setName("VID_20180801.mp4");
 			}
 			else {
 				info2.setName("VID_20180801.mp3");
-			} 
-			info2.setModelIndex(2);
+			}  
 			mTracks[j].push_back(info2);
 
 			ClipInfo info3((TrackIndex)j);
 			info3.setInPoint(info2.getOutPoint());
 			info3.setDuration(randNumber(100, 300));
 			info3.setOutPoint(info3.getInPoint() + info3.getDuration());
+			info3.setFrameRate(30);
 			if (j == 0) {
 				info3.setName("VID_20180801.mp4");
 			}
 			else {
 				info3.setName("VID_20180801.mp3");
-			}
-			info3.setModelIndex(3);
+			} 
 			mTracks[j].push_back(info3);
 		}
 	}

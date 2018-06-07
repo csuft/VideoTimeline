@@ -127,7 +127,7 @@ Rectangle {
                     // tracks
                     Column {
                         id: tracksBackground 
-                        width: root.width + 100
+                        width: root.width
                         height: parent.height
                         Repeater {
                             id: tracksRepeater
