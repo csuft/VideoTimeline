@@ -1,6 +1,5 @@
 import QtQuick 2.0
-import QtQml.Models 2.1
-import 'Track.js' as TrackLogic
+import QtQml.Models 2.1 
 
 Rectangle {
     id: trackRoot
@@ -44,9 +43,11 @@ Rectangle {
             audioLevels: model.audioLevels
             isAudio: model.audio 
             frameRate: model.fps
+            x: model.in
             width: model.duration / model.fps * timeScale * TimelineModel.stepSize
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
+            clipIndex: index
             selected: trackRoot.isCurrentTrack && trackRoot.selection == index
             onClicked: { 
                 trackRoot.clipClicked(clip, trackRoot)  

@@ -3,6 +3,7 @@
 #include "mainwindow.h" 
 
 int main(int argc, char* argv[]) {
+	qSetMessagePattern("Message:%{message} File:%{file} Line:%{line} Function:%{function}");
 
 	QApplication app(argc, argv); 
 	app.setApplicationDisplayName("QmlBased Timeline");

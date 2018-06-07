@@ -66,29 +66,7 @@ Rectangle {
     // signal handlers
     onCurrentTrackChanged: {
         console.log("Current active track: ", currentTrack)
-    } 
-
-    // components  
-    // entered 信号在有物体被拖入区域时发射，
-    // exited 信号在物体被拖出区域时发射，
-    // 当物体在区域内被拖着来回移动时会不断发射 positionChanged 信号，
-    // 当用户释放了物体，dropped 信号被发射。 
-    // containsDrag 属性是个布尔值，指示自己的辖区内当前是否有物体被拖动。
-    DropArea {
-        anchors.fill: parent
-        onEntered: {
-
-        }
-        onExited: {
-
-        }
-        onPositionChanged: {
-
-        }
-        onDropped: {
-
-        }
-    }
+    }  
 
     TimelineToolbar {
         id: toolbar 
@@ -107,7 +85,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: TimelineModel.maxTrackLength + padding
+                    width: TimelineModel.maxTrackLength
                     MouseArea {
                         id: rulerMouseArea
                         anchors.fill: parent 
@@ -168,7 +146,7 @@ Rectangle {
             rootIndex: tracksModel.modelIndex(index)
             color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
             height: TimelineLogic.trackHeight(index == 1)
-            width: TimelineModel.maxTrackLength + padding
+            width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor
             isCurrentTrack: currentTrack == index 
             onClipClicked: { 
@@ -182,10 +160,7 @@ Rectangle {
             }
             onClipDropped: {
                 
-            }
-            onCheckSnap: {
-                
-            }
+            } 
         } 
     }
 }

@@ -116,6 +116,7 @@ namespace timeline {
 		void removeClip(int trackIndex, int clipIndex); 
 		void splitClip(int trackIndex, int clipIndex, int position);
 		void joinClips(int trackIndex, int clipIndex);  
+		bool switchClip(int trackIndex, int clipIndex1, int clipIndex2);
 
 	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 

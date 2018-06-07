@@ -23,7 +23,6 @@
         <file>qml/Timeline.js</file>
         <file>qml/timeline.qml</file>
         <file>qml/TimelineToolbar.qml</file>
-        <file>qml/Track.js</file>
         <file>qml/Track.qml</file>
         <file>qml/ZoomSlider.qml</file>
         <file>qml/Theme.js</file>
