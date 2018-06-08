@@ -17,7 +17,6 @@ Rectangle {
     property bool isAudio: false  
     property var audioLevels 
     property int trackIndex 
-    property int clipIndex
     property bool selected: false   
 
     signal clicked(var clip)
@@ -43,6 +42,21 @@ Rectangle {
         }
     }
 
+    Component.onCompleted: {
+        console.log("clip name: ", name)
+        console.log("is audio: ", isAudio)
+    }
+
+    radius: 5
+    border.color: selected? 'red' : 'black'
+    border.width: 1
+    // If clipping is enabled, an item will clip its own painting, 
+    // as well as the painting of its children, to its bounding rectangle.
+    clip: true 
+    Drag.active: mouseArea.drag.active
+    Drag.proposedAction: Qt.MoveAction
+    opacity: Drag.active? 0.5 : 1.0
+
     function getColor() {
         return isAudio? 'darkseagreen' : 'green'
     }  
@@ -58,61 +72,6 @@ Rectangle {
             waveRepeater.itemAt(0).update()
         }
     }
-
-    radius: 5
-    border.color: selected? 'red' : 'black'
-    border.width: 1
-    // If clipping is enabled, an item will clip its own painting, 
-    // as well as the painting of its children, to its bounding rectangle.
-    clip: true 
-    // components  
-    // entered 信号在有物体被拖入区域时发射，
-    // exited 信号在物体被拖出区域时发射，
-    // 当物体在区域内被拖着来回移动时会不断发射 positionChanged 信号，
-    // 当用户释放了物体，dropped 信号被发射。 
-    // containsDrag 属性是个布尔值，指示自己的辖区内当前是否有物体被拖动。
-    DropArea {
-        anchors.fill: parent
-        onEntered: {
-            //TimelineModel.switchClip(trackIndex, drag.source.clipIndex, clipRoot.clipIndex)
-        } 
-    }
-    Drag.active: mouseArea.drag.active
-    Drag.proposedAction: Qt.MoveAction
-    Drag.source: mouseArea 
-    opacity: Drag.active? 0.8 : 1.0
-
-    NumberAnimation on x { duration: 1000 }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent 
-        enabled: true
-        acceptedButtons: Qt.LeftButton
-        drag.target: parent
-        drag.axis: Drag.XAxis
-        drag.minimumX: 0
-        drag.maximumX: TimelineModel.maxTrackLength - clipRoot.width
-        onPressed: {
-            parent.clicked(clipRoot) 
-        }
-        onPositionChanged: {
-            parent.dragged(clipRoot, mouse)
-        }
-        onReleased: {
-            parent.dropped(clipRoot)
-        }
-        onDoubleClicked: TimelineWidget.position = clipRoot.x / TimelineModel.scaleFactor
-        onWheel: zoomByWheel(wheel)
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.RightButton
-            propagateComposedEvents: true
-            cursorShape: Qt.ArrowCursor
-            onClicked: menu.show()
-        }
-    } 
 
     onAudioLevelsChanged: generateAudioWaves()
 
@@ -229,7 +188,43 @@ Rectangle {
                 color: Qt.darker(getColor())
             }
         }
-    ]  
+    ]
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: true
+        acceptedButtons: Qt.RightButton
+        onClicked: menu.show()
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent 
+        enabled: true
+        acceptedButtons: Qt.LeftButton
+        drag.target: parent
+        drag.axis: Drag.XAxis
+        property int startX
+        onPressed: {
+            parent.clicked(clipRoot) 
+        }
+        onPositionChanged: {
+            parent.dragged(clipRoot, mouse)
+        }
+        onReleased: {
+            parent.dropped(clipRoot)
+        }
+        onDoubleClicked: TimelineWidget.position = clipRoot.x / TimelineModel.scaleFactor
+        onWheel: zoomByWheel(wheel)
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.RightButton
+            propagateComposedEvents: true
+            cursorShape: Qt.ArrowCursor
+            onClicked: menu.show()
+        }
+    } 
 
     Rectangle {
         id: trimIn
@@ -249,7 +244,8 @@ Rectangle {
             hoverEnabled: true
             cursorShape: Qt.SizeHorCursor
             drag.target: parent
-            drag.axis: Drag.XAxis 
+            drag.axis: Drag.XAxis
+            property double startX
 
             onPressed: {
 

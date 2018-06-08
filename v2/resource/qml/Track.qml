@@ -1,14 +1,14 @@
 import QtQuick 2.0
 import QtQml.Models 2.1 
 
-Rectangle {
+ListView {
     id: trackRoot
-    property alias model: trackModel.model
-    property alias rootIndex: trackModel.rootIndex 
+    //property alias model: trackModel.model
+    //property alias rootIndex: trackModel.rootIndex 
     property real timeScale: 1.0 
     property bool isCurrentTrack: false 
     property int selection: 0
-
+     
     signal clipClicked(var clip, var track)
     signal clipDragged(var clip, int x, int y)
     signal clipDropped(var clip)  
@@ -29,55 +29,135 @@ Rectangle {
         }
     }
 
-    color: 'transparent'
-    width: clipRow.width
+    Rectangle {
+        color: isCurrentTrack ? 'black' : 'white'
+        width: parent.width
+        height: parent.height
+        z: -1
+    }
+ 
+    width: parent.width
+    orientation: ListView.Horizontal
 
-    DelegateModel {
-        id: trackModel
-        Clip {
-            name: model.name
-            source: model.source
-            duration: model.duration 
-            inPoint: model.in 
-            outPoint: model.out
-            audioLevels: model.audioLevels
-            isAudio: model.audio 
-            frameRate: model.fps
-            x: model.in
-            width: model.duration / model.fps * timeScale * TimelineModel.stepSize
-            height: trackRoot.height 
-            trackIndex: trackRoot.DelegateModel.itemsIndex  
-            clipIndex: index
-            selected: trackRoot.isCurrentTrack && trackRoot.selection == index
-            onClicked: { 
-                trackRoot.clipClicked(clip, trackRoot)  
+    displaced: Transition {
+        NumberAnimation { properties: "x,y"; easing.type: Easing.OutQuad }
+    }
+    model: DelegateModel {
+        id: visualModel
+        model: ListModel {
+            id: colorModel
+            ListElement {
+                color: "blue"
+                width: 120
             }
-            onMoved: {  
-
+            ListElement {
+                color: "green"
+                width: 60
             }
-            onDragged: { 
-                
+            ListElement {
+                color: "red"
+                width: 170
             }
-            onTrimmingIn: {
-
+            ListElement {
+                color: "yellow"
+                width:55
             }
-            onTrimmedIn: {
-
-            }
-            onTrimmingOut: {
-
-            }
-            onTrimmedOut: {
-
+            ListElement {
+                color: "orange"
+                width:120
             } 
-            onDropped: {
-                trackRoot.clipDropped(clip)
+        }
+        delegate: MouseArea {
+            id: delegateRoot
+
+            property int visualIndex: DelegateModel.itemsIndex
+
+            width: model.width; height: trackRoot.height
+            drag.target: icon
+
+            Rectangle {
+                id: icon
+                width: model.width; height: trackRoot.height
+                anchors {
+                    horizontalCenter: parent.horizontalCenter;
+                    verticalCenter: parent.verticalCenter
+                }
+                color: model.color
+                radius: 3
+
+                Drag.active: delegateRoot.drag.active
+                Drag.source: delegateRoot
+                Drag.hotSpot.x: 30
+                Drag.hotSpot.y: 30
+
+                states: [
+                    State {
+                        when: icon.Drag.active
+                        ParentChange {
+                            target: icon
+                            parent: root
+                        }
+
+                        AnchorChanges {
+                            target: icon;
+                            anchors.horizontalCenter: undefined;
+                            anchors.verticalCenter: undefined
+                        }
+                    }
+                ]
+            }
+
+            DropArea {
+                anchors { fill: parent;}
+
+                onEntered: { 
+                    visualModel.items.move(drag.source.visualIndex, delegateRoot.visualIndex)
+                }
             }
         }
     }
 
-    Row {
-        id: clipRow
-        Repeater { id: repeater; model: trackModel }
-    }
+    // DelegateModel {
+    //     id: trackModel 
+    //     Clip {
+    //         name: model.name
+    //         source: model.source
+    //         duration: model.duration 
+    //         inPoint: model.in 
+    //         outPoint: model.out
+    //         audioLevels: model.audioLevels
+    //         isAudio: model.audio 
+    //         frameRate: model.fps
+    //         x: model.in
+    //         width: model.duration / model.fps * timeScale * TimelineModel.stepSize
+    //         height: trackRoot.height 
+    //         trackIndex: trackRoot.DelegateModel.itemsIndex  
+            
+    //         selected: trackRoot.isCurrentTrack && trackRoot.selection == index
+    //         onClicked: { 
+    //             trackRoot.clipClicked(clip, trackRoot)  
+    //         }
+    //         onMoved: {  
+
+    //         }
+    //         onDragged: { 
+                
+    //         }
+    //         onTrimmingIn: {
+
+    //         }
+    //         onTrimmedIn: {
+
+    //         }
+    //         onTrimmingOut: {
+
+    //         }
+    //         onTrimmedOut: {
+
+    //         } 
+    //         onDropped: {
+    //             trackRoot.clipDropped(clip)
+    //         }
+    //     }
+    // } 
 } 

@@ -136,15 +136,13 @@ Rectangle {
             height: 5
         }
     }
-    
-
+     
     DelegateModel {
         id: tracksModel
         model: TimelineModel
         Track {
-            model: TimelineModel
-            rootIndex: tracksModel.modelIndex(index)
-            color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
+            //model: TimelineModel
+            //rootIndex: tracksModel.modelIndex(index) 
             height: TimelineLogic.trackHeight(index == 1)
             width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor
