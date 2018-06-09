@@ -3,26 +3,26 @@ import QtQuick.Controls 1.0
 
 Rectangle { 
     property real refFrameRate: TimelineModel.referenceFrameRate
-    property int stepInterval: TimelineModel.stepInterval
+    property int tickInterval: TimelineModel.tickInterval
     readonly property int majorTick: 14
     readonly property int minorTick: 8
     id: rulerTop 
-    height: 30
+    height: 30  
 
     Repeater {
-        model: parent.width / stepInterval
+        model: parent.width / tickInterval
         Rectangle {
             anchors.bottom: rulerTop.bottom
-            height:  index % TimelineWidget.visibleTickStep == 0 ? majorTick : minorTick
+            height:  index % 3 == 0 ? majorTick : minorTick
             width: 1 
-            x: index * stepInterval
+            x: index * tickInterval
             color: 'black'
-            Label {  
+            Label {    
                 anchors.bottom: parent.top
                 anchors.bottomMargin: 2  
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: TimelineWidget.timecode(index * referenceFrameRate / TimelineModel.tickTimeFactor)
-                visible: index % TimelineWidget.visibleTickStep == 0 ? true : false
+                text: TimelineWidget.timecode(index * TimelineModel.referenceFrameRate / TimelineModel.tickTimeFactor)
+                visible: index % 3 == 0 ? true : false
                 font.pointSize: 6
                 font.family: "Microsoft Yahei"  
             }

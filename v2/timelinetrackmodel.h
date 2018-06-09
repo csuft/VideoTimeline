@@ -91,14 +91,14 @@ namespace timeline {
 		void setCursorStep(double cursorStep);
 		double cursorStep() const { return mCursorStep; }
 		double referenceFrameRate() const { return mReferenceFrameRate; }
-		void setReferenceFrameRate(double fps);
-		int tickIndex() const;
+		void setReferenceFrameRate(double fps); 
 		int tracksCount() const { return 2; }
 		int clipsCount(int trackIndex);
 		int getClipIndexAt(int trackIndex, int position);
 		bool getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo);
 		void resizeClip(int trackIndex, int clipIndex, int inPoint, int outPoint);
 		bool insertClip(int trackIndex, int clipIndex, const ClipInfo& clip);
+		void updateScale();
 
 	signals:
 		void created();

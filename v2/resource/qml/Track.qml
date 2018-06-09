@@ -18,7 +18,7 @@ Rectangle {
 
     function redrawAudioWaves() {
         for (var i = 0; i < repeater.count; ++i) {
-            repeater.itemAt(i).generateWaves()
+            //repeater.itemAt(i).generateWaves()
         }
     }
 

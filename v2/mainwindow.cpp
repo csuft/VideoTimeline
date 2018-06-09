@@ -3,7 +3,6 @@
 
 #include <QApplication>
 #include <QTime>
-#include <QDebug>
 #include <QVBoxLayout>
 
 namespace timeline {

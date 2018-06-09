@@ -24,17 +24,16 @@ Rectangle {
         minimumValue: 0
         maximumValue: 8.0
         value: 0
+        stepSize: 1.0
+        tickmarksEnabled: true
         function setScaleFactor() {
-            var factor;
-            if (value <= 3.0) {factor = 1.0/1.0}
-            else if (value == 4.0) { factor = 1.0/2.0}
-            else if (value == 5.0) { factor = 1.0/4.0}
-            else if (value == 6.0) { factor = 1.0/8.0}
-            else if (value == 7.0) { factor = 1.0/20.0}
-            else if (value == 8.0) { factor = 1.0/40.0}
-
-            TimelineModel.tickTimeFactor = factor
-            TimelineWidget.visibleTickStep = value
+            if (value <= 3.0) {TimelineModel.tickTimeFactor = 1.0/1.0}
+            else if (value == 4.0) { TimelineModel.tickTimeFactor = 1.0/2.0}
+            else if (value == 5.0) { TimelineModel.tickTimeFactor = 1.0/4.0}
+            else if (value == 6.0) { TimelineModel.tickTimeFactor = 1.0/8.0}
+            else if (value == 7.0) { TimelineModel.tickTimeFactor = 1.0/20.0}
+            else if (value == 8.0) { TimelineModel.tickTimeFactor = 1.0/40.0}
+            TimelineWidget.visibleTickStep = value 
         }
         onValueChanged: {
             if (!pressed && typeof TimelineModel.scaleFactor != 'undefined') {

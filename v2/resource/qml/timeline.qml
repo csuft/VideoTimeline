@@ -85,7 +85,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: TimelineModel.tracksAreaLength
+                    width: tracksBackground.width
                     MouseArea {
                         id: rulerMouseArea
                         anchors.fill: parent 

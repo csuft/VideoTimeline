@@ -179,8 +179,13 @@ namespace timeline {
 		emit trackHeightChanged();
 	}
 
+	void TimelineTracksModel::updateScale() {
+		setCursorStep(tickInterval() * tickTimeFactor() / referenceFrameRate());
+	}
+
 	void TimelineTracksModel::setTickTimeFactor(double scale) {  
 		mTickTimeFactor = scale;
+		updateScale();
 		emit tickTimeFactorChanged();
 	}
 
@@ -286,7 +291,7 @@ namespace timeline {
 	void TimelineTracksModel::load() { 
 		// load from XML file 
 		setReferenceFrameRate(30); 
-		setCursorStep(tickInterval() * tickTimeFactor() / referenceFrameRate());
+		updateScale();
 		for (int j = 0; j < 2; ++j) {  
 			ClipInfo info((TrackIndex)j);
 			info.setInPoint(0);
@@ -351,16 +356,18 @@ namespace timeline {
 	// 30 is padding and it is necessary to make
 	// tracks area more natural
 	int TimelineTracksModel::tracksAreaLength() const {
-		int length = 0;
+		int longest = 0;
 		for (size_t i = 0; i < tracksCount(); i++) {
+			int trackLen = 0;
 			for (size_t j = 0; j < mTracks[i].count(); j++) {
-				double width = mTracks[i].at(j).getDuration() * cursorStep();
-				if (length < width) {
-					length = width;
-				}
+				trackLen += mTracks[i].at(j).getDuration() * cursorStep();
+			}
+			if (trackLen > longest) {
+				longest = trackLen;
 			}
 		}
-		return length + 30;
+
+		return longest + 30;
 	}  
 
 	int TimelineTracksModel::clipsCount(int trackIndex) {
