@@ -87,14 +87,16 @@ namespace timeline {
 	QString TimelineDock::timecode(int frames) { 
 		int seconds = frames / mTimelineModel->referenceFrameRate();
 		QTime time;
-		time.setHMS(seconds / 3600,
-			seconds / 60,
-			seconds);
+		time.setHMS(seconds / 3600, seconds / 60, seconds);
 		return time.toString();
 	} 
 
 	void TimelineDock::addClip(int trackIndex) {
 		qDebug() << "add clip " << trackIndex;
+		if (trackIndex < 0) {
+			trackIndex = currentTrack();
+		}
+		mTimelineModel->appendClip(trackIndex);
 	}
 
 	void TimelineDock::pasteClip(int trackIndex, int clipIndex) {

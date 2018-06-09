@@ -27,8 +27,7 @@ namespace timeline {
 		mTrackHeight(50),
 		mTickInterval(30), 
 		mCursorStep(1.0) {
-		load();
-		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
+		load(); 
 	}
 
 	TimelineTracksModel::~TimelineTracksModel() {
@@ -230,7 +229,25 @@ namespace timeline {
 	}
 
 	int TimelineTracksModel::appendClip(int trackIndex) {
-		return -1;
+		if (trackIndex < 0 || trackIndex >= tracksCount()) {
+			return -1;
+		}
+		ClipInfo newClip((TrackIndex)trackIndex);
+		newClip.setName("New added clip");
+		newClip.setSourcePath(QUrl("test.mp4"));
+		newClip.setInPoint(60);
+		newClip.setDuration(randNumber(300, 400));
+		newClip.setOutPoint(newClip.getInPoint() + newClip.getDuration());
+		newClip.setFrameRate(30);
+
+		int clipIndex = mTracks[trackIndex].count();
+
+		beginInsertRows(index(trackIndex), clipIndex, clipIndex);
+		insertClip(trackIndex, clipIndex, newClip);
+		endInsertRows();
+	
+		emit clipAppended(tracksAreaLength());
+		return clipIndex;
 	}
 
 	void TimelineTracksModel::removeClip(int trackIndex, int clipIndex) {
@@ -260,7 +277,6 @@ namespace timeline {
 			emit dataChanged(modelIndex, modelIndex, updateRoles);
 
 			// insert new clip
-			beginInsertRows(index(trackIndex), clipIndex + 1, clipIndex + 1);
 			ClipInfo newClip((TrackIndex)trackIndex);
 			newClip.setInPoint(inPoint + duration);
 			newClip.setOutPoint(outPoint);
@@ -268,6 +284,7 @@ namespace timeline {
 			newClip.setSourcePath(oldClip.getSourcePath());
 			newClip.setName(oldClip.getName());
 			newClip.setFrameRate(oldClip.getFrameRate());
+			beginInsertRows(index(trackIndex), clipIndex + 1, clipIndex + 1); 
 			insertClip(trackIndex, clipIndex + 1, newClip);
 			endInsertRows();
 		}
@@ -281,11 +298,7 @@ namespace timeline {
 		QVector<int> roles;
 		roles << AudioLevelsRole;
 		emit dataChanged(index, index, roles);
-	}
-
-	void TimelineTracksModel::adjustBackgroundDuration() {
-	
-	}  
+	} 
 
 	// 确定音频和视频轨道的帧率
 	void TimelineTracksModel::load() { 

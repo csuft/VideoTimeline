@@ -78,4 +78,11 @@ Rectangle {
         id: clipRow
         Repeater { id: repeater; model: trackModel }
     }
+
+    Connections {
+        target: TimelineModel
+        onClipAppended: {
+            trackRoot.width = tracksLength
+        } 
+    }
 } 

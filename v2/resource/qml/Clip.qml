@@ -70,11 +70,6 @@ Rectangle {
     Drag.source: mouseArea 
     opacity: Drag.active? 0.8 : 1.0
 
-    transitions: Transition {
-        NumberAnimation {properties: "width"; easing.type: Easing.InOutQuad; duration: 1000}
-        PropertyAnimation { duration: 3000 }
-    }
-
     MouseArea {
         id: mouseArea
         anchors.fill: parent 

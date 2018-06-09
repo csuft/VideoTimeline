@@ -37,8 +37,8 @@ namespace timeline {
 		QString mName;
 		QUrl mSourcePath;
 		int mDuration;   // frame counts
-		int mInPoint;    // frame index
-		int mOutPoint;   // frame index
+		int mInPoint;    // start frame index of clip
+		int mOutPoint;   // end frame index of clip
 		qreal mFrameRate; 
 	};
 	Q_DECLARE_TYPEINFO(ClipInfo, Q_COMPLEX_TYPE);
@@ -112,7 +112,8 @@ namespace timeline {
 		void tracksAreaLengthChanged();
 		void tickIntervalChanged(int stepSize);
 		void cursorStepChanged(double stepSize);
-		void referenceFrameRateChanged(double fps); 
+		void referenceFrameRateChanged(double fps);
+		void clipAppended(int tracksLength);
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -130,10 +131,7 @@ namespace timeline {
 	private:
 		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
 		void getAudioLevels(); 
-		int randNumber(int low, int high); 
-
-	private slots:
-		void adjustBackgroundDuration();
+		int randNumber(int low, int high);  
 
 	private: 
 		QList<ClipInfo> mTracks[2];

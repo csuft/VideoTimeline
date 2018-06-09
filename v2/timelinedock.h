@@ -30,7 +30,7 @@ namespace timeline {
 		void positionChanged();
 		void currentTrackChanged();
 		void selectionChanged();
-		void clipClicked(); 
+		void clipClicked();
 
 	public slots:
 		void onVisibilityChanged(bool visible);
