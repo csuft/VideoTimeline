@@ -56,11 +56,11 @@ namespace timeline {
 	}
 
 	void TimelineDock::setPosition(int position) {
-		if (position <= mTimelineModel->maxTrackLength()) {
+		if (position <= mTimelineModel->tracksAreaLength()) {
 			mPosition = position;
 		}
 		else {
-			mPosition = mTimelineModel->maxTrackLength();
+			mPosition = mTimelineModel->tracksAreaLength();
 		}
 		emit positionChanged();
 	}
@@ -84,12 +84,27 @@ namespace timeline {
 	}
 
 	QString TimelineDock::timecode(int frames) {
-		const int FFRAMERATE = 30.0;
+		double frameRate = mTimelineModel->referenceFrameRate();
 		QTime time;
-		time.setHMS(frames / (FFRAMERATE*FFRAMERATE*FFRAMERATE),
-			frames / (FFRAMERATE*FFRAMERATE),
-			frames / (FFRAMERATE));
+		time.setHMS(frames / (frameRate*frameRate*frameRate),
+			frames / (frameRate*frameRate),
+			frames / (frameRate));
 		return time.toString();
+	}
+
+	void TimelineDock::setVisibleTickStep(double value) {
+		if (value == 0.0) {
+			mVisibleTickStep = 2;
+		}
+		else if (value == 1.0) {
+			mVisibleTickStep = 5;
+		}
+		else if (value == 2.0) {
+			mVisibleTickStep = 10;
+		}
+		else {
+			mVisibleTickStep = 15;
+		}
 	}
 
 	void TimelineDock::addClip(int trackIndex) {

@@ -33,11 +33,13 @@ Rectangle {
             else if (value == 7.0) { factor = 1.0/20.0}
             else if (value == 8.0) { factor = 1.0/40.0}
 
-            TimelineModel.scaleFactor = factor
+            TimelineModel.tickTimeFactor = factor
+            TimelineWidget.visibleTickStep = value
         }
         onValueChanged: {
-            if (!pressed && typeof TimelineModel.scaleFactor != 'undefined')
+            if (!pressed && typeof TimelineModel.scaleFactor != 'undefined') {
                 setScaleFactor()
+            } 
         }
         onPressedChanged: { 
             if (!pressed) {

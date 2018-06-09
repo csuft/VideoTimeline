@@ -12,6 +12,7 @@ namespace timeline {
 		Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 		Q_PROPERTY(int currentTrack READ currentTrack WRITE setCurrentTrack NOTIFY currentTrackChanged)
 		Q_PROPERTY(int selection READ selection WRITE setSelection NOTIFY selectionChanged)
+		Q_PROPERTY(int visibleTickStep READ visibleTickStep WRITE setVisibleTickStep NOTIFY visibleTickStepChanged)
 	public:
 		TimelineDock(QWidget *parent);
 		~TimelineDock() = default; 
@@ -24,12 +25,15 @@ namespace timeline {
 		void setSelection(int selection = 0);
 		int selection() const;
 		Q_INVOKABLE QString timecode(int frames);
+		int visibleTickStep() const { return mVisibleTickStep; }
+		void setVisibleTickStep(double value);
 
 	signals:
 		void positionChanged();
 		void currentTrackChanged();
 		void selectionChanged();
 		void clipClicked();
+		void visibleTickStepChanged();
 
 	public slots:
 		void onVisibilityChanged(bool visible);
@@ -52,6 +56,7 @@ namespace timeline {
 		int mPosition;
 		int mCurrentTrack;
 		int mSelection;
+		int mVisibleTickStep;
 	}; 
 }  
 

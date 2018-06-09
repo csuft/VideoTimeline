@@ -47,9 +47,10 @@ namespace timeline {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
 		Q_PROPERTY(double tickTimeFactor READ tickTimeFactor WRITE setTickTimeFactor NOTIFY tickTimeFactorChanged)
-		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
-		Q_PROPERTY(int tickStep READ tickStep WRITE setTickSize NOTIFY tickStepChanged)
+		Q_PROPERTY(int tracksAreaLength READ tracksAreaLength NOTIFY tracksAreaLengthChanged)
+		Q_PROPERTY(int tickInterval READ tickInterval WRITE setTickInterval NOTIFY tickIntervalChanged)
 		Q_PROPERTY(double cursorStep READ cursorStep WRITE setCursorStep NOTIFY cursorStepChanged)
+		Q_PROPERTY(double referenceFrameRate READ referenceFrameRate WRITE setReferenceFrameRate NOTIFY referenceFrameRateChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -84,11 +85,14 @@ namespace timeline {
 		void setTrackHeight(int height);
 		double tickTimeFactor() const { return mTickTimeFactor; }
 		void setTickTimeFactor(double scale); 
-		int maxTrackLength() const; 
-		int tickStep() const { return mTickStep; }
-		void setTickStep(int tickStep);
+		int tracksAreaLength() const; 
+		int tickInterval() const { return mTickInterval; }
+		void setTickInterval(int interval);
 		void setCursorStep(double cursorStep);
 		double cursorStep() const { return mCursorStep; }
+		double referenceFrameRate() const { return mReferenceFrameRate; }
+		void setReferenceFrameRate(double fps);
+		int tickIndex() const;
 		int tracksCount() const { return 2; }
 		int clipsCount(int trackIndex);
 		int getClipIndexAt(int trackIndex, int position);
@@ -105,9 +109,10 @@ namespace timeline {
 		void trackHeightChanged();
 		void tickTimeFactorChanged(); 
 		void durationChanged();
-		void maxTrackLengthChanged();
-		void tickStepChanged(int stepSize);
-		void cursorStepChanged();
+		void tracksAreaLengthChanged();
+		void tickIntervalChanged(int stepSize);
+		void cursorStepChanged(double stepSize);
+		void referenceFrameRateChanged(double fps); 
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -134,8 +139,10 @@ namespace timeline {
 		QList<ClipInfo> mTracks[2];
 		double mTickTimeFactor;
 		int mTrackHeight;
-		int mTickStep;
+		int mTickInterval;
 		double mCursorStep;
+		double mReferenceFrameRate;
+		int mTickIndex;
 	}; 
 }
 

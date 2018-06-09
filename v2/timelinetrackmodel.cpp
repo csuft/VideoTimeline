@@ -25,7 +25,7 @@ namespace timeline {
 		: QAbstractItemModel(parent),
 		mTickTimeFactor(1.0),
 		mTrackHeight(50),
-		mTickStep(30), 
+		mTickInterval(30), 
 		mCursorStep(1.0) {
 		load();
 		connect(this, SIGNAL(modified()), SLOT(adjustBackgroundDuration()));
@@ -97,8 +97,8 @@ namespace timeline {
 			case Qt::DisplayRole:
 				return trackIndex == VideoTrack ? "Video Track" : "Audio Track"; 
 			case DurationRole: { 
-				return maxTrackLength();
-			} 
+				return tracksAreaLength();
+			}  
 			case IsAudioRole:
 				return trackIndex == AudioTrack; 
 			default:
@@ -184,15 +184,20 @@ namespace timeline {
 		emit tickTimeFactorChanged();
 	}
 
-	void TimelineTracksModel::setTickStep(int tickStep) {
-		mTickStep = tickStep;
-		emit tickStepChanged(mTickStep);
+	void TimelineTracksModel::setTickInterval(int interval) {
+		mTickInterval = interval;
+		emit tickIntervalChanged(interval);
 	}
 
 	void TimelineTracksModel::setCursorStep(double cursorStep) {
 		mCursorStep = cursorStep;
-		emit cursorStepChanged();
+		emit cursorStepChanged(mCursorStep);
 	}
+
+	void TimelineTracksModel::setReferenceFrameRate(double fps) {
+		mReferenceFrameRate = fps;
+		emit referenceFrameRateChanged(fps);
+	} 
 
 	int TimelineTracksModel::trimClipOut(int trackIndex, int clipIndex, int delta) {
 		return 0;
@@ -277,9 +282,12 @@ namespace timeline {
 	
 	}  
 
+	// 确定音频和视频轨道的帧率
 	void TimelineTracksModel::load() { 
-		// load from XML file
-		for (int j = 0; j < 2; ++j) { 
+		// load from XML file 
+		setReferenceFrameRate(30); 
+		setCursorStep(tickInterval() * tickTimeFactor() / referenceFrameRate());
+		for (int j = 0; j < 2; ++j) {  
 			ClipInfo info((TrackIndex)j);
 			info.setInPoint(0);
 			info.setDuration(randNumber(100, 300));
@@ -340,16 +348,19 @@ namespace timeline {
 		
 	} 
 
-	int TimelineTracksModel::maxTrackLength() const {
+	// 30 is padding and it is necessary to make
+	// tracks area more natural
+	int TimelineTracksModel::tracksAreaLength() const {
 		int length = 0;
-		for (size_t i = 0; i < 2; i++) {
+		for (size_t i = 0; i < tracksCount(); i++) {
 			for (size_t j = 0; j < mTracks[i].count(); j++) {
-				if (length < mTracks[i].at(j).getOutPoint()) {
-					length = mTracks[i].at(j).getOutPoint();
+				double width = mTracks[i].at(j).getDuration() * cursorStep();
+				if (length < width) {
+					length = width;
 				}
 			}
 		}
-		return length + 30; //30 is padding
+		return length + 30;
 	}  
 
 	int TimelineTracksModel::clipsCount(int trackIndex) {

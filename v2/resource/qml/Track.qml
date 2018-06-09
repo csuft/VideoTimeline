@@ -5,7 +5,6 @@ Rectangle {
     id: trackRoot
     property alias model: trackModel.model
     property alias rootIndex: trackModel.rootIndex 
-    property real timeScale: 1.0 
     property bool isCurrentTrack: false 
     property int selection: 0
 
@@ -42,9 +41,8 @@ Rectangle {
             outPoint: model.out
             audioLevels: model.audioLevels
             isAudio: model.audio 
-            frameRate: model.fps
-            x: model.in
-            width: model.duration / model.fps * timeScale * TimelineModel.stepSize
+            frameRate: model.fps 
+            width: model.duration * TimelineModel.cursorStep
             height: trackRoot.height 
             trackIndex: trackRoot.DelegateModel.itemsIndex  
             clipIndex: index
