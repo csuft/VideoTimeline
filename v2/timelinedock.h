@@ -4,6 +4,7 @@
 #include "timeline.h"
 #include "timelinetrackmodel.h"
 #include <QDockWidget>
+#include <QDebug>
 
 namespace timeline {
 
@@ -11,7 +12,7 @@ namespace timeline {
 		Q_OBJECT
 		Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 		Q_PROPERTY(int currentTrack READ currentTrack WRITE setCurrentTrack NOTIFY currentTrackChanged)
-		Q_PROPERTY(int selection READ selection WRITE setSelection NOTIFY selectionChanged)
+		Q_PROPERTY(int selection READ selection WRITE setSelection NOTIFY selectionChanged) 
 	public:
 		TimelineDock(QWidget *parent);
 		~TimelineDock() = default; 
@@ -23,13 +24,13 @@ namespace timeline {
 		int currentTrack() const;
 		void setSelection(int selection = 0);
 		int selection() const;
-		Q_INVOKABLE QString timecode(int frames);
+		Q_INVOKABLE QString timecode(int frames);  
 
 	signals:
 		void positionChanged();
 		void currentTrackChanged();
 		void selectionChanged();
-		void clipClicked();
+		void clipClicked(); 
 
 	public slots:
 		void onVisibilityChanged(bool visible);
@@ -52,6 +53,7 @@ namespace timeline {
 		int mPosition;
 		int mCurrentTrack;
 		int mSelection;
+		int mVisibleTickStep;
 	}; 
 }  
 

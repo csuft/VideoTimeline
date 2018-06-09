@@ -16,7 +16,8 @@ namespace timeline {
 		:mTimelineWidget(new Timeline(QmlUtilities::sharedEngine(), this)),
 		mTimelineModel(new TimelineTracksModel), 
 		mPosition(0),
-		mSelection(0) {
+		mSelection(0),
+		mVisibleTickStep(2) {
 		QDir importPath = QmlUtilities::qmlDir();
 		mTimelineWidget->engine()->addImportPath(importPath.path());
 		mTimelineWidget->engine()->addImageProvider(QString("thumbnail"), new ThumbnailProvider);
@@ -56,11 +57,11 @@ namespace timeline {
 	}
 
 	void TimelineDock::setPosition(int position) {
-		if (position <= mTimelineModel->maxTrackLength()) {
+		if (position <= mTimelineModel->tracksAreaLength()) {
 			mPosition = position;
 		}
 		else {
-			mPosition = mTimelineModel->maxTrackLength();
+			mPosition = mTimelineModel->tracksAreaLength();
 		}
 		emit positionChanged();
 	}
@@ -83,14 +84,14 @@ namespace timeline {
 		return mSelection;
 	}
 
-	QString TimelineDock::timecode(int frames) {
-		const int FFRAMERATE = 30.0;
+	QString TimelineDock::timecode(int frames) { 
+		int seconds = frames / mTimelineModel->referenceFrameRate();
 		QTime time;
-		time.setHMS(frames / (FFRAMERATE*FFRAMERATE*FFRAMERATE),
-			frames / (FFRAMERATE*FFRAMERATE),
-			frames / (FFRAMERATE));
+		time.setHMS(seconds / 3600,
+			seconds / 60,
+			seconds);
 		return time.toString();
-	}
+	} 
 
 	void TimelineDock::addClip(int trackIndex) {
 		qDebug() << "add clip " << trackIndex;

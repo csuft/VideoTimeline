@@ -2,28 +2,29 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 
 Rectangle { 
-    property real timeScale: TimelineModel.scaleFactor
-    property int stepSize: TimelineModel.stepSize
-    readonly property int majorTick: 18
-    readonly property int minorTick: 10
+    property real refFrameRate: TimelineModel.referenceFrameRate
+    property int tickInterval: TimelineModel.tickInterval
+    readonly property int majorTick: 14
+    readonly property int minorTick: 8
     id: rulerTop 
-    height: 30
+    height: 30  
 
     Repeater {
-        model: parent.width / stepSize
+        model: parent.width / tickInterval
         Rectangle {
             anchors.bottom: rulerTop.bottom
             height:  index % 3 == 0 ? majorTick : minorTick
             width: 1 
-            x: index * stepSize
+            x: index * tickInterval
             color: 'black'
-            Label {  
+            Label {    
                 anchors.bottom: parent.top
                 anchors.bottomMargin: 2  
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: TimelineWidget.timecode(index * 30  / timeScale)
+                text: TimelineWidget.timecode(index * TimelineModel.referenceFrameRate / TimelineModel.tickTimeFactor)
                 visible: index % 3 == 0 ? true : false
-                font.pointSize: 7.5
+                font.pointSize: 6
+                font.family: "Microsoft Yahei"  
             }
         }
     }

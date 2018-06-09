@@ -59,30 +59,21 @@ Rectangle {
         }
     }
 
-    radius: 5
+    radius: 3
     border.color: selected? 'red' : 'black'
     border.width: 1
     // If clipping is enabled, an item will clip its own painting, 
     // as well as the painting of its children, to its bounding rectangle.
-    clip: true 
-    // components  
-    // entered 信号在有物体被拖入区域时发射，
-    // exited 信号在物体被拖出区域时发射，
-    // 当物体在区域内被拖着来回移动时会不断发射 positionChanged 信号，
-    // 当用户释放了物体，dropped 信号被发射。 
-    // containsDrag 属性是个布尔值，指示自己的辖区内当前是否有物体被拖动。
-    DropArea {
-        anchors.fill: parent
-        onEntered: {
-            //TimelineModel.switchClip(trackIndex, drag.source.clipIndex, clipRoot.clipIndex)
-        } 
-    }
+    clip: true  
     Drag.active: mouseArea.drag.active
     Drag.proposedAction: Qt.MoveAction
     Drag.source: mouseArea 
     opacity: Drag.active? 0.8 : 1.0
 
-    NumberAnimation on x { duration: 1000 }
+    transitions: Transition {
+        NumberAnimation {properties: "width"; easing.type: Easing.InOutQuad; duration: 1000}
+        PropertyAnimation { duration: 3000 }
+    }
 
     MouseArea {
         id: mouseArea
@@ -92,7 +83,7 @@ Rectangle {
         drag.target: parent
         drag.axis: Drag.XAxis
         drag.minimumX: 0
-        drag.maximumX: TimelineModel.maxTrackLength - clipRoot.width
+        drag.maximumX: TimelineModel.tracksAreaLength - clipRoot.width
         onPressed: {
             parent.clicked(clipRoot) 
         }
@@ -102,7 +93,7 @@ Rectangle {
         onReleased: {
             parent.dropped(clipRoot)
         }
-        onDoubleClicked: TimelineWidget.position = clipRoot.x / TimelineModel.scaleFactor
+        onDoubleClicked: TimelineWidget.position = clipRoot.x
         onWheel: zoomByWheel(wheel)
 
         MouseArea {
@@ -161,8 +152,8 @@ Rectangle {
                 height: waveform.height
                 fillColor: getColor()
                 property int channels: 2
-                inPoint: Math.round(clipRoot.inPoint + index * waveform.maxWidth/timeScale)*channels
-                outPoint: inPoint + Math.round(width/timeScale)*channels
+                inPoint: Math.round(clipRoot.inPoint + index * waveform.maxWidth/TimelineModel.cursorStep)*channels
+                outPoint: inPoint + Math.round(width/TimelineModel.cursorStep)*channels
                 levels: audioLevels
             }
         }

@@ -85,7 +85,7 @@ Rectangle {
                 interactive: false
                 Ruler {
                     id: ruler
-                    width: TimelineModel.maxTrackLength
+                    width: tracksBackground.width
                     MouseArea {
                         id: rulerMouseArea
                         anchors.fill: parent 
@@ -130,7 +130,7 @@ Rectangle {
         TimelinePlayhead {
             id: playhead
             visible: TimelineWidget.position > -1
-            x: cursor.x - 5
+            x: TimelineWidget.position - tracksScrollView.flickableItem.contentX - 5
             y: 0
             width: 11
             height: 5
@@ -146,8 +146,7 @@ Rectangle {
             rootIndex: tracksModel.modelIndex(index)
             color: (index == currentTrack)? sutdioYellow : selectedTrackColor;
             height: TimelineLogic.trackHeight(index == 1)
-            width: TimelineModel.maxTrackLength
-            timeScale: TimelineModel.scaleFactor
+            width: TimelineModel.tracksAreaLength 
             isCurrentTrack: currentTrack == index 
             onClipClicked: { 
                 currentTrack = track.DelegateModel.itemsIndex  

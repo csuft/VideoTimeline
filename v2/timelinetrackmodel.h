@@ -46,9 +46,11 @@ namespace timeline {
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
 		Q_PROPERTY(int trackHeight READ trackHeight WRITE setTrackHeight NOTIFY trackHeightChanged)
-		Q_PROPERTY(double scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged) 
-		Q_PROPERTY(int maxTrackLength READ maxTrackLength NOTIFY maxTrackLengthChanged)
-		Q_PROPERTY(int stepSize READ stepSize WRITE setStepSize NOTIFY stepSizeChanged)
+		Q_PROPERTY(double tickTimeFactor READ tickTimeFactor WRITE setTickTimeFactor NOTIFY tickTimeFactorChanged)
+		Q_PROPERTY(int tracksAreaLength READ tracksAreaLength NOTIFY tracksAreaLengthChanged)
+		Q_PROPERTY(int tickInterval READ tickInterval WRITE setTickInterval NOTIFY tickIntervalChanged)
+		Q_PROPERTY(double cursorStep READ cursorStep WRITE setCursorStep NOTIFY cursorStepChanged)
+		Q_PROPERTY(double referenceFrameRate READ referenceFrameRate WRITE setReferenceFrameRate NOTIFY referenceFrameRateChanged)
 	public: 
 		enum { 
 			NameRole = Qt::UserRole + 1,
@@ -81,17 +83,22 @@ namespace timeline {
 		bool trimClipOutValid(int trackIndex, int clipIndex, int delta);
 		int trackHeight() const;
 		void setTrackHeight(int height);
-		double scaleFactor() const;
-		void setScaleFactor(double scale); 
-		int maxTrackLength() const; 
-		int stepSize() const { return mStepSize; }
-		void setStepSize(int stepSize);
+		double tickTimeFactor() const { return mTickTimeFactor; }
+		void setTickTimeFactor(double scale); 
+		int tracksAreaLength() const; 
+		int tickInterval() const { return mTickInterval; }
+		void setTickInterval(int interval);
+		void setCursorStep(double cursorStep);
+		double cursorStep() const { return mCursorStep; }
+		double referenceFrameRate() const { return mReferenceFrameRate; }
+		void setReferenceFrameRate(double fps); 
 		int tracksCount() const { return 2; }
 		int clipsCount(int trackIndex);
 		int getClipIndexAt(int trackIndex, int position);
 		bool getClipInfo(int trackIndex, int clipIndex, ClipInfo& clipInfo);
 		void resizeClip(int trackIndex, int clipIndex, int inPoint, int outPoint);
 		bool insertClip(int trackIndex, int clipIndex, const ClipInfo& clip);
+		void updateScale();
 
 	signals:
 		void created();
@@ -100,10 +107,12 @@ namespace timeline {
 		void modified();
 		void seeked(int position);
 		void trackHeightChanged();
-		void scaleFactorChanged(); 
+		void tickTimeFactorChanged(); 
 		void durationChanged();
-		void maxTrackLengthChanged();
-		void stepSizeChanged(int stepSize);
+		void tracksAreaLengthChanged();
+		void tickIntervalChanged(int stepSize);
+		void cursorStepChanged(double stepSize);
+		void referenceFrameRateChanged(double fps); 
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
@@ -128,9 +137,12 @@ namespace timeline {
 
 	private: 
 		QList<ClipInfo> mTracks[2];
-		double mScaleFactor;
+		double mTickTimeFactor;
 		int mTrackHeight;
-		int mStepSize;
+		int mTickInterval;
+		double mCursorStep;
+		double mReferenceFrameRate;
+		int mTickIndex;
 	}; 
 }
 
