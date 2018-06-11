@@ -156,13 +156,14 @@ namespace timeline {
 		int version = 0;
 		QSqlQuery query;
 		if (query.exec("CREATE TABLE dbversion (version INTEGER);")) {
-			if (!query.exec("INSERT INTO version VALUES(0);")){
+			if (!query.exec("INSERT INTO dbversion VALUES(0);")){
 				qDebug() << "Failed to create version table" << query.lastError().text();
 			}
 		}
 		else if (query.exec("SELECT version FROM dbversion;")) {
-			query.next();
-			version = query.value(0).toInt();
+			if (query.next()) {
+				version = query.value(0).toInt();
+			} 
 		}
 		else {
 			qDebug() << "Failed to get version" << query.lastError().text();
@@ -170,7 +171,8 @@ namespace timeline {
 		if (version < 1) { 
 			if (query.exec("CREATE TABLE thumbnails (hash TEXT PRIMARY KEY NOT NULL, \
 							accessed DATETIME NOT NULL, image BLOB);")) {
-				version = 1;
+				if (!query.exec("UPDATE dbversion SET version = 1;"))
+					qDebug() << "Failed to update version" << query.lastError();
 			}
 			else {
 				qDebug() << "Failed to create thumbnails table." << query.lastError().text();

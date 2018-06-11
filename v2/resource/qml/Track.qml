@@ -76,7 +76,10 @@ Rectangle {
 
     Row {
         id: clipRow
-        Repeater { id: repeater; model: trackModel }
+        Repeater { 
+            id: repeater
+            model: trackModel 
+        } 
     }
 
     Connections {
