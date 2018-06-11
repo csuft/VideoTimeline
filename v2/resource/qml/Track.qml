@@ -84,7 +84,7 @@ Rectangle {
 
     Connections {
         target: TimelineModel
-        onClipAppended: {
+        onAdjustBackground: {
             trackRoot.width = tracksLength
         } 
     }

@@ -113,7 +113,7 @@ namespace timeline {
 		void tickIntervalChanged(int stepSize);
 		void cursorStepChanged(double stepSize);
 		void referenceFrameRateChanged(double fps);
-		void clipAppended(int tracksLength);
+		void adjustBackground(int tracksLength);
 
 	public slots:  
 		int trimClipIn(int trackIndex, int clipIndex, int delta);

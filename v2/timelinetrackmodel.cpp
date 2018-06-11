@@ -246,7 +246,7 @@ namespace timeline {
 		insertClip(trackIndex, clipIndex, newClip);
 		endInsertRows();
 	
-		emit clipAppended(tracksAreaLength());
+		emit adjustBackground(tracksAreaLength());
 		return clipIndex;
 	}
 
@@ -256,9 +256,9 @@ namespace timeline {
 			return;
 		}
 		beginRemoveRows(index(trackIndex), clipIndex, clipIndex); 
-		// TODO
+		mTracks[trackIndex].removeAt(clipIndex);
 		endRemoveRows();
-		emit modified(); 
+		emit adjustBackground(tracksAreaLength());
 	}
 
 	void TimelineTracksModel::splitClip(int trackIndex, int clipIndex, int splitPosition) {
