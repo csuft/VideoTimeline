@@ -151,14 +151,32 @@ namespace timeline {
 		mCommitTimer->setSingleShot(true);
 		mCommitTimer->setInterval(5000);
 		connect(mCommitTimer, &QTimer::timeout, this, &TimelineDataBase::commitTransaction);
-		 
+		
+		// determine whether the table is already created
+		int version = 0;
 		QSqlQuery query;
-		bool success = query.exec("CREATE TABLE thumbnails (hash TEXT PRIMARY KEY NOT NULL, \
-			accessed DATETIME NOT NULL, image BLOB);");
-		if (!success) {
-			qDebug() << "Failed to create thumbnails table.";
-			return;
-		} 
+		if (query.exec("CREATE TABLE dbversion (version INTEGER);")) {
+			if (!query.exec("INSERT INTO version VALUES(0);")){
+				qDebug() << "Failed to create version table" << query.lastError().text();
+			}
+		}
+		else if (query.exec("SELECT version FROM dbversion;")) {
+			query.next();
+			version = query.value(0).toInt();
+		}
+		else {
+			qDebug() << "Failed to get version" << query.lastError().text();
+		}
+		if (version < 1) { 
+			if (query.exec("CREATE TABLE thumbnails (hash TEXT PRIMARY KEY NOT NULL, \
+							accessed DATETIME NOT NULL, image BLOB);")) {
+				version = 1;
+			}
+			else {
+				qDebug() << "Failed to create thumbnails table." << query.lastError().text();
+				return;
+			}
+		}
 
 		while (true) {
 			DatabaseTask* task = 0;
