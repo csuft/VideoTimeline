@@ -121,11 +121,7 @@ namespace timeline {
 			result = createIndex(row, column, NO_PARENT_ID);
 		}
 		return result;
-	}
-
-	QModelIndex TimelineTracksModel::makeIndex(int trackIndex, int clipIndex) const {
-		return index(clipIndex, 0, index(trackIndex));
-	}
+	} 
 
 	QModelIndex TimelineTracksModel::parent(const QModelIndex &index) const { 
 		if (!index.isValid() || index.internalId() == NO_PARENT_ID)
@@ -387,11 +383,11 @@ namespace timeline {
 	}  
 
 	int TimelineTracksModel::clipsCount(int trackIndex) {
-		if (trackIndex < 0 || trackIndex > tracksCount()) {
+		if (trackIndex < 0 || trackIndex >= tracksCount()) {
 			return -1;
 		}
 
-		return mTracks[trackIndex].size();
+		return mTracks[trackIndex].count();
 	}
 
 	bool TimelineTracksModel::getClipInfo(int trackIndex, int clipIndex, 

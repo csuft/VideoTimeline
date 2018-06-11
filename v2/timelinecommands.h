@@ -3,18 +3,67 @@
 
 #include <QUndoCommand>
 
+#include "timelinetrackmodel.h"
+#include "commandhelper.h"
+
 namespace timeline { 
-	
-	class InsertCommand : public QUndoCommand {
-		
+
+	// add, remove, copy, cut, split
+	class AddCommand : public QUndoCommand {
+		explicit AddCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
+			int position, QUndoCommand* parent = Q_NULLPTR);
+		virtual void redo();
+		virtual void undo();
+
+	private:
+		TimelineTracksModel& mModel;
 		
 	};
 	
-	class AppendCommand : public QUndoCommand {
-		
+	class RemoveCommand : public QUndoCommand {
+		explicit RemoveCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
+			int position, QUndoCommand* parent = Q_NULLPTR);
+		virtual void redo();
+		virtual void undo();
+
+	private:
+		TimelineTracksModel& mModel;
 		
 	};
 	
+	class CopyCommand : public QUndoCommand {
+		explicit CopyCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
+			int position, QUndoCommand* parent = Q_NULLPTR);
+		virtual void redo();
+		virtual void undo();
+
+	private:
+		TimelineTracksModel& mModel;
+	};
+
+	class CutCommand : public QUndoCommand {
+		explicit CutCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
+			int position, QUndoCommand* parent = Q_NULLPTR);
+		virtual void redo();
+		virtual void undo();
+
+	private:
+		TimelineTracksModel& mModel;
+	};
+
+	class SplitCommand : public QUndoCommand {
+	public:
+		explicit SplitCommand(TimelineTracksModel& model, int trackIndex, int clipIndex, 
+			int position, QUndoCommand* parent = Q_NULLPTR);
+		virtual void redo();
+		virtual void undo();
+
+	private:
+		TimelineTracksModel& mModel;
+		int mTrackIndex;
+		int mClipIndex;
+		int mPosition;
+	};
 }
 
 

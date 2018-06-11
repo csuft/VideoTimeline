@@ -72,8 +72,7 @@ namespace timeline {
 		virtual QModelIndex index(int row, int column = 0, const QModelIndex &parent = QModelIndex()) const override;
 		virtual QModelIndex parent(const QModelIndex &index) const override;
 		virtual QHash<int, QByteArray> roleNames() const override;
-
-		QModelIndex makeIndex(int trackIndex, int clipIndex) const;
+		
 		void audioLevelsReady(const QModelIndex &index); 
 		void load();
 		Q_INVOKABLE void reload();
