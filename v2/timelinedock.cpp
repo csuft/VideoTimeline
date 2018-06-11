@@ -97,14 +97,14 @@ namespace timeline {
 			trackIndex = currentTrack();
 		}
 		mTimelineModel->appendClip(trackIndex);
-	}
+	} 
 
-	void TimelineDock::pasteClip(int trackIndex, int clipIndex) {
-		qDebug() << "paste clip: track->" << trackIndex << " clip->" << clipIndex;
-	}
-
-	void TimelineDock::copyClip(int trackIndex, int clipIndex) {
-		qDebug() << "copy clip: track->" << trackIndex << " clip->" << clipIndex;
+	void TimelineDock::copyClip(int trackIndex) {
+		qDebug() << "copy clip: track->" << trackIndex;
+		if (trackIndex < 0) {
+			trackIndex = currentTrack();
+		}
+		mTimelineModel->copyClip(trackIndex, mSelection);
 	}
 
 	void TimelineDock::cutClip(int trackIndex, int clipIndex) {

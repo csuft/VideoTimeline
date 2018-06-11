@@ -119,17 +119,15 @@ namespace timeline {
 		int trimClipIn(int trackIndex, int clipIndex, int delta);
 		void notifyClipIn(int trackIndex, int clipIndex);
 		int trimClipOut(int trackIndex, int clipIndex, int delta);
-		void notifyClipOut(int trackIndex, int clipIndex);
-		bool moveClipValid(int clipIndex, int position);
+		void notifyClipOut(int trackIndex, int clipIndex); 
 		bool moveClip(int clipIndex, int position);  
 		int appendClip(int trackIndex);
 		void removeClip(int trackIndex, int clipIndex); 
-		void splitClip(int trackIndex, int clipIndex, int position);
-		void joinClips(int trackIndex, int clipIndex);  
+		void splitClip(int trackIndex, int clipIndex, int position); 
 		bool switchClip(int trackIndex, int clipIndex1, int clipIndex2);
+		void copyClip(int trackIndex, int clipIndex);
 
-	private:
-		void moveClipToEnd(int trackIndex, int clipIndex, int position); 
+	private: 
 		void getAudioLevels(); 
 		int randNumber(int low, int high);  
 

@@ -214,18 +214,25 @@ namespace timeline {
 			roles << AudioLevelsRole;
 			emit dataChanged(index, index, roles); 
 		} 
-	}
-
-	bool TimelineTracksModel::moveClipValid(int clipIndex, int position) {
-		return true;
-	}
+	} 
 
 	bool TimelineTracksModel::moveClip(int clipIndex, int position) { 
 		return true;
-	}  
+	}   
 
-	void TimelineTracksModel::moveClipToEnd(int trackIndex, int clipIndex, int position) {
+	void TimelineTracksModel::copyClip(int trackIndex, int clipIndex) {
+		if (trackIndex < 0 || trackIndex >= tracksCount()
+			|| clipIndex < 0 || clipIndex >= mTracks[trackIndex].count()) {
+			return;
+		}
+		ClipInfo originalClip = mTracks[trackIndex][clipIndex];
+		ClipInfo newClip = originalClip;
+		int newIndex = mTracks[trackIndex].count();
+		beginInsertRows(index(trackIndex), newIndex, newIndex);
+		insertClip(trackIndex, newIndex, newClip);
+		endInsertRows();
 
+		emit adjustBackground(tracksAreaLength());
 	}
 
 	int TimelineTracksModel::appendClip(int trackIndex) {
@@ -288,10 +295,6 @@ namespace timeline {
 			insertClip(trackIndex, clipIndex + 1, newClip);
 			endInsertRows();
 		}
-	}
-
-	void TimelineTracksModel::joinClips(int trackIndex, int clipIndex) {
-		
 	} 
 
 	void TimelineTracksModel::audioLevelsReady(const QModelIndex& index) {

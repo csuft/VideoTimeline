@@ -35,8 +35,7 @@ namespace timeline {
 	public slots:
 		void onVisibilityChanged(bool visible);
 		void addClip(int trackIndex);
-		void pasteClip(int trackIndex = -1, int clipIndex = -1);
-		void copyClip(int trackIndex = -1, int clipIndex = -1);
+		void copyClip(int trackIndex = -1);
 		void cutClip(int trackIndex = -1, int clipIndex = -1);
 		void splitClip(int trackIndex = -1, int clipIndex = -1);
 		void removeClip(int trackIndex = -1, int clipIndex = -1);

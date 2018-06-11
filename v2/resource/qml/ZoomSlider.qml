@@ -35,8 +35,8 @@ Rectangle {
             else if (value == 8.0) { TimelineModel.tickTimeFactor = 1.0/40.0}
             TimelineWidget.visibleTickStep = value 
         }
-        onValueChanged: {
-            if (!pressed && typeof TimelineModel.scaleFactor != 'undefined') {
+        onValueChanged: { 
+            if (!pressed && typeof TimelineModel.tickTimeFactor != 'undefined') {
                 setScaleFactor()
             } 
         }

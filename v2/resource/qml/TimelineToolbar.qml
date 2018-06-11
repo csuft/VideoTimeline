@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
+import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 
 ToolBar { 
@@ -13,18 +14,19 @@ ToolBar {
     height: 24
     anchors.margins: 0
 
+    style: ToolBarStyle {
+        background: Rectangle {
+            anchors.fill: parent
+            color: "black"
+        }
+    }
+
     RowLayout {
         ToolButton {
             action: addAction
             implicitWidth: 28
             implicitHeight: 24
-        }
-
-        ToolButton {
-            action: pasteAction
-            implicitWidth: 28
-            implicitHeight: 24
-        }
+        } 
 
         ToolButton {
             action: copyAction
@@ -89,46 +91,34 @@ ToolBar {
     Action {
         id: addAction 
         tooltip: qsTr('Add a new clip video track')
-        iconSource: 'qrc:/test.png'
+        iconSource: 'qrc:///images/images/audio-meter.png'
         onTriggered: TimelineWidget.addClip(currentTrack)
     }
      
     Action {
         id: removeAction
         tooltip: qsTr('Remove current clip')
-        iconName: 'list-remove'
-        iconSource: 'qrc:/list-remove.png'
+        iconSource: 'qrc:///images/images/edit-cut.png'
         onTriggered: TimelineWidget.removeClip(currentTrack, TimelineWidget.selection)
     }
 
     Action {
         id: cutAction
         tooltip: qsTr('Cut current clip')
-        iconSource: 'qrc:/test.png'
+        iconSource: 'qrc:///images/images/edit-cut.png'
         onTriggered: TimelineWidget.cutClip(currentTrack, TimelineWidget.selection)
     }
 
     Action {
         id: copyAction
-        tooltip: qsTr('Copy - Copy the current clip')
-        iconName: 'edit-copy'
-        iconSource: 'qrc::///images/images/audio-volume-muted.png' 
+        tooltip: qsTr('Copy the current clip to the end of the current track')
+        iconSource: 'qrc:///images/images/object-locked.png' 
         onTriggered: TimelineWidget.copyClip(currentTrack, TimelineWidget.selection)
-    }
-
-    Action {
-        id: pasteAction
-        tooltip: qsTr('Paste - Paste the current clip to the end of track')
-        iconName: 'edit-paste'
-        iconSource: 'qrc:///images/images/audio-meter.png'
-        enabled: TimelineWidget.selection
-        onTriggered: TimelineWidget.removeSelection(true)
-    }
+    } 
 
     Action {
         id: splitAction
         tooltip: qsTr('Split At Playhead')
-        iconName: 'slice'
         iconSource: 'qrc:///images/images/slice.png'
         onTriggered: TimelineWidget.splitClip(currentTrack)
     }
@@ -136,7 +126,6 @@ ToolBar {
     Action {
         id: zoomOutAction
         tooltip: qsTr("Zoom timeline out (-)")
-        iconName: 'zoom-out'
         iconSource: 'qrc:///images/images/zoom-out.png'
         onTriggered: root.zoomOut()
     }
@@ -144,8 +133,7 @@ ToolBar {
     Action {
         id: zoomInAction
         tooltip: qsTr("Zoom timeline in (+)")
-        iconName: 'zoom-in'
-        iconSource: "qrc:///images/images/zoom-out.png"
+        iconSource: "qrc:///images/images/zoom-in.png"
         onTriggered: root.zoomIn()
     }
 }

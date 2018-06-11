@@ -13,8 +13,8 @@ Rectangle {
 
     // functions 
     function setZoom(value) {
-        if (value >= toolbar.minimum && value <= toolbar.maximum) {
-            toolbar.scaleSlider.value = value;
+        if (value >= toolbar.scaleSlider.minimum && value <= toolbar.scaleSlider.maximum) {
+            toolbar.scaleSlider.value = value; 
             for (var i = 0; i < tracksRepeater.count; ++i) {
                 tracksRepeater.itemAt(i).redrawAudioWaves();
             }
@@ -25,7 +25,7 @@ Rectangle {
         setZoom(toolbar.scaleSlider.value + by)
     }
 
-    function zoomIn() {
+    function zoomIn() { 
         adjustZoom(1.0)
     }
 
