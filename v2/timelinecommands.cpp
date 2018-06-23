@@ -2,6 +2,7 @@
 
 namespace timeline {
 	
+	/// add clip command
 	AddCommand::AddCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
 		int position, QUndoCommand* parent)
 		: mModel(model){
@@ -16,9 +17,9 @@ namespace timeline {
 
 	}
 		 
-	 
+	/// remove clip command
 	RemoveCommand::RemoveCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
-		int position, QUndoCommand* parent = Q_NULLPTR)
+		int position, QUndoCommand* parent)
 		: mModel(model) {
 
 	}
@@ -31,8 +32,9 @@ namespace timeline {
 
 	}
 		 
+	/// copy clip command
 	CopyCommand::CopyCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
-		int position, QUndoCommand* parent = Q_NULLPTR)
+		int position, QUndoCommand* parent)
 		: mModel(model) {
 
 	}
@@ -45,9 +47,9 @@ namespace timeline {
 
 	}
 		 
-		 
+	/// cut clip command
 	CutCommand::CutCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
-		int position, QUndoCommand* parent = Q_NULLPTR)
+		int position, QUndoCommand* parent)
 		: mModel(model) {
 
 	}
@@ -59,9 +61,9 @@ namespace timeline {
 
 	}
 		 
-		 
+	/// split clip command
 	SplitCommand::SplitCommand(TimelineTracksModel& model, int trackIndex, int clipIndex,
-		int position, QUndoCommand* parent = Q_NULLPTR)
+		int position, QUndoCommand* parent)
 		: mModel(model) {
 
 	}
