@@ -139,10 +139,10 @@ Rectangle {
      
     DelegateModel {
         id: tracksModel
-        model: TimelineModel
+        model: 2
         Track {
-            //model: TimelineModel
-            //rootIndex: tracksModel.modelIndex(index) 
+            dataModel: TimelineModel
+            rootIndex: tracksModel.modelIndex(index) 
             height: TimelineLogic.trackHeight(index == 1)
             width: TimelineModel.maxTrackLength
             timeScale: TimelineModel.scaleFactor

@@ -3,8 +3,8 @@ import QtQml.Models 2.1
 
 ListView {
     id: trackRoot
-    //property alias model: trackModel.model
-    //property alias rootIndex: trackModel.rootIndex 
+    property alias dataModel: visualModel.model
+    property alias rootIndex: visualModel.rootIndex 
     property real timeScale: 1.0 
     property bool isCurrentTrack: false 
     property int selection: 0
@@ -44,45 +44,45 @@ ListView {
     }
     model: DelegateModel {
         id: visualModel
-        model: ListModel {
-            id: colorModel
-            ListElement {
-                color: "blue"
-                width: 120
-            }
-            ListElement {
-                color: "green"
-                width: 60
-            }
-            ListElement {
-                color: "red"
-                width: 170
-            }
-            ListElement {
-                color: "yellow"
-                width:55
-            }
-            ListElement {
-                color: "orange"
-                width:120
-            } 
-        }
+        // model: ListModel {
+        //     id: colorModel
+        //     ListElement {
+        //         color: "blue"
+        //         width: 120
+        //     }
+        //     ListElement {
+        //         color: "green"
+        //         width: 60
+        //     }
+        //     ListElement {
+        //         color: "red"
+        //         width: 170
+        //     }
+        //     ListElement {
+        //         color: "yellow"
+        //         width:55
+        //     }
+        //     ListElement {
+        //         color: "orange"
+        //         width:120
+        //     } 
+        // }
         delegate: MouseArea {
             id: delegateRoot
 
             property int visualIndex: DelegateModel.itemsIndex
 
-            width: model.width; height: trackRoot.height
+            width: 100; height: trackRoot.height
             drag.target: icon
 
             Rectangle {
                 id: icon
-                width: model.width; height: trackRoot.height
+                width: 100; height: trackRoot.height
                 anchors {
                     horizontalCenter: parent.horizontalCenter;
                     verticalCenter: parent.verticalCenter
                 }
-                color: model.color
+                color: 'red'
                 radius: 3
 
                 Drag.active: delegateRoot.drag.active

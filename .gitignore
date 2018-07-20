@@ -12,3 +12,4 @@ moc_*
 /Release/
 /x64/
 /.vscode/
+/build
