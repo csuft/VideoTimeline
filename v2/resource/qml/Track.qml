@@ -43,30 +43,7 @@ ListView {
         NumberAnimation { properties: "x,y"; easing.type: Easing.OutQuad }
     }
     model: DelegateModel {
-        id: visualModel
-        // model: ListModel {
-        //     id: colorModel
-        //     ListElement {
-        //         color: "blue"
-        //         width: 120
-        //     }
-        //     ListElement {
-        //         color: "green"
-        //         width: 60
-        //     }
-        //     ListElement {
-        //         color: "red"
-        //         width: 170
-        //     }
-        //     ListElement {
-        //         color: "yellow"
-        //         width:55
-        //     }
-        //     ListElement {
-        //         color: "orange"
-        //         width:120
-        //     } 
-        // }
+        id: visualModel 
         delegate: MouseArea {
             id: delegateRoot
 

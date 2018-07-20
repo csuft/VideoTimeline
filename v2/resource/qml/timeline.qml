@@ -139,7 +139,7 @@ Rectangle {
      
     DelegateModel {
         id: tracksModel
-        model: 2
+        model: TimelineModel
         Track {
             dataModel: TimelineModel
             rootIndex: tracksModel.modelIndex(index) 
