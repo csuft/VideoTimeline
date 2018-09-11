@@ -1,5 +1,5 @@
 #include "timelinetrackmodel.h" 
-#include "mainwindow.h"    
+//#include "mainwindow.h"    
 
 #include <QScopedPointer>
 #include <QApplication>
@@ -25,8 +25,8 @@ namespace timeline {
 		: QAbstractItemModel(parent),
 		mTickTimeFactor(1.0),
 		mTrackHeight(50),
-		mTickInterval(30), 
-		mCursorStep(1.0) {
+		mTickInterval(30),
+		mCursorStep(30.0) {
 		load(); 
 	}
 
@@ -311,7 +311,7 @@ namespace timeline {
 		for (int j = 0; j < 2; ++j) {  
 			ClipInfo info((TrackIndex)j);
 			info.setInPoint(0);
-			info.setDuration(randNumber(100, 300));
+			info.setDuration(randNumber(700, 800));
 			info.setOutPoint(info.getInPoint() + info.getDuration());
 			if (j == 0) {
 				info.setName("VID_20180801.mp4");
@@ -325,7 +325,7 @@ namespace timeline {
 
 			ClipInfo info2((TrackIndex)j);
 			info2.setInPoint(info.getOutPoint());
-			info2.setDuration(randNumber(100, 200));
+			info2.setDuration(randNumber(100, 900));
 			info2.setFrameRate(30);
 			info2.setOutPoint(info2.getInPoint() + info2.getDuration());
 			if (j == 0) {
@@ -338,7 +338,7 @@ namespace timeline {
 
 			ClipInfo info3((TrackIndex)j);
 			info3.setInPoint(info2.getOutPoint());
-			info3.setDuration(randNumber(100, 300));
+			info3.setDuration(randNumber(100, 800));
 			info3.setOutPoint(info3.getInPoint() + info3.getDuration());
 			info3.setFrameRate(30);
 			if (j == 0) {

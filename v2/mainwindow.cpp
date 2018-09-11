@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QTime>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 namespace timeline {
 
@@ -20,10 +21,15 @@ namespace timeline {
 		mMenuBar->addAction(redoAction); 
 		setMenuBar(mMenuBar);
 
-		TimelineDataBase::singleton(this);
-		setDockNestingEnabled(true);
+		TimelineDataBase::singleton(this); 
 		mDockWidget = new TimelineDock(this);
-		addDockWidget(Qt::BottomDockWidgetArea, mDockWidget); 
+		QScrollArea* area = new QScrollArea;
+		area->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+		area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		area->setWidget(mDockWidget);
+		area->setWidgetResizable(true);
+		setCentralWidget(area);
+
 		resize(800, 300);
 	} 
 

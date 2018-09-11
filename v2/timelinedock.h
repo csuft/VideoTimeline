@@ -8,7 +8,7 @@
 
 namespace timeline {
 
-	class TimelineDock : public QDockWidget {
+	class TimelineDock : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 		Q_PROPERTY(int currentTrack READ currentTrack WRITE setCurrentTrack NOTIFY currentTrackChanged)
@@ -31,6 +31,7 @@ namespace timeline {
 		void currentTrackChanged();
 		void selectionChanged();
 		void clipClicked();
+		void updateCursor();
 
 	public slots:
 		void onVisibilityChanged(bool visible);
@@ -38,7 +39,7 @@ namespace timeline {
 		void copyClip(int trackIndex = -1);
 		void cutClip(int trackIndex = -1, int clipIndex = -1);
 		void splitClip(int trackIndex = -1, int clipIndex = -1);
-		void removeClip(int trackIndex = -1, int clipIndex = -1);
+		void removeClip(int trackIndex = -1, int clipIndex = -1); 
 
 	private:
 		void chooseClipAtPosition(int position, int& trackIndex, int& clipIndex);

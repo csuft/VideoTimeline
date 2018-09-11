@@ -1,28 +1,19 @@
 import QtQuick 2.2
 import QtQml.Models 2.1
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.3
 import Studio.Timeline 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtQuick.Controls.Styles 1.4 
 import 'Timeline.js' as TimelineLogic
 
 Rectangle {
     // system attributes
     id: root  
-    color: 'transparent' 
-
-    // functions 
-    function setZoom(value) {
-        if (value >= toolbar.scaleSlider.minimum && value <= toolbar.scaleSlider.maximum) {
-            toolbar.scaleSlider.value = value; 
-            for (var i = 0; i < tracksRepeater.count; ++i) {
-                tracksRepeater.itemAt(i).redrawAudioWaves();
-            }
-        } 
-    }
+    color: '#232323' 
 
     function adjustZoom(by) {
-        setZoom(toolbar.scaleSlider.value + by)
+        setZoom(by)
     }
 
     function zoomIn() { 
@@ -52,13 +43,13 @@ Rectangle {
 
     function makeTracksShorter() {
         TimelineModel.trackHeight = Math.max(30, TimelineModel.trackHeight - 20)
-    }
+    } 
 
     // custom properties
     property int currentTrack: 0
     readonly property color selectedTrackColor: Qt.rgba(0.5, 0.5, 0, 0.3)
     readonly property color sutdioYellow: Qt.rgba(255/255, 215/255, 0/255, 1.0)  
-    readonly property int padding: 30
+    readonly property int padding: 0
     
     // signals
     signal clipClicked()
@@ -66,75 +57,108 @@ Rectangle {
     // signal handlers
     onCurrentTrackChanged: {
         console.log("Current active track: ", currentTrack)
-    }  
-
-    TimelineToolbar {
-        id: toolbar 
-        width: parent.width
-        height: 40
-        anchors.top: parent.top
-    }
+    }   
 
     Row {
-        anchors.top: toolbar.bottom  
-        Column { 
-            Flickable {
-                contentX: tracksScrollView.flickableItem.contentX
-                width: tracksBackground.width
-                height: ruler.height
-                interactive: false
-                Ruler {
-                    id: ruler
+         ScrollView {
+            id: tracksScrollView
+            width: root.width
+            height: root.height
+            contentWidth: scrollColumn.width
+            contentHeight: scrollColumn.height
+            Column { 
+                id: scrollColumn
+                Flickable {
+                    contentX: tracksScrollView.contentItem.x
                     width: tracksBackground.width
-                    MouseArea {
-                        id: rulerMouseArea
-                        anchors.fill: parent 
-                        acceptedButtons: Qt.LeftButton
-                        onClicked: { 
-                            TimelineWidget.position = mouse.x 
-                        } 
-                    }   
+                    height: ruler.height
+                    interactive: false
+                    Ruler {
+                        id: ruler
+                        width: tracksBackground.width
+                        MouseArea {
+                            id: rulerMouseArea
+                            anchors.fill: parent 
+                            acceptedButtons: Qt.LeftButton
+                            onClicked: { 
+                                TimelineWidget.position = mouse.x  
+                            } 
+                        }   
+                    }
+                }  
+                                     
+                // tracks
+                Column {
+                    id: tracksBackground 
+                    Repeater {
+                        id: tracksRepeater
+                        model: tracksModel 
+                    } 
                 }
+                
             } 
 
-            ScrollView {
-                id: tracksScrollView
-                width: root.width
-                height: root.height - ruler.height - toolbar.height 
-                
-                Item { 
-                    width: tracksBackground.width + padding
-                    height: tracksScrollView.height
-                    
-                    // tracks
-                    Column {
-                        id: tracksBackground 
-                        Repeater {
-                            id: tracksRepeater
-                            model: tracksModel 
+            Item {
+                id: cursorItem 
+                width: playhead.width
+                height: playhead.height + cursor.height
+                x:TimelineWidget.position - tracksScrollView.contentItem.x - 5
+                y:0
+                Rectangle {
+                    id: cursor
+                    visible: tracksBackground.width > 0
+                    color: '#707070'
+                    width: 1
+                    height: tracksScrollView.height + padding
+                    x: 5
+                    y: 0
+                }
+
+                TimelinePlayhead {
+                    id: playhead
+                    visible: tracksBackground.width > 0
+                    x: 0
+                    y: 0
+                    width: 11
+                    height: 5 
+                } 
+
+                MouseArea { 
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.SizeAllCursor
+                    acceptedButtons: Qt.LeftButton
+                    drag.target: cursorItem
+                    drag.axis: Drag.XAxis
+                    drag.minimumX: 0 
+
+                    property bool mousePressed: false
+                    onPressed: {
+                        console.log("mouse press, x: ", cursorItem.x);
+                        mousePressed = true;
+                    }
+                    onReleased: {
+                        console.log("mouse release, x: ", cursorItem.x);
+                        mousePressed = false;
+                    }
+                    onPositionChanged: {
+                        if (mousePressed) {
+                            console.log("mouse position changed: x", cursorItem.x);
                         } 
                     }
-                } 
-            } 
-        }
-        Rectangle {
-            id: cursor
-            visible: TimelineWidget.position > -1
-            color: 'black'
-            width: 1
-            height: tracksScrollView.height + padding - tracksScrollView.__horizontalScrollBar.height
-            x: TimelineWidget.position - tracksScrollView.flickableItem.contentX
-            y: 0
-        }
+                }
 
-        TimelinePlayhead {
-            id: playhead
-            visible: TimelineWidget.position > -1
-            x: TimelineWidget.position - tracksScrollView.flickableItem.contentX - 5
-            y: 0
-            width: 11
-            height: 5
+                Connections {
+                    target: TimelineWidget
+                    onUpdateCursor: {
+                        console.log("cursor step: ", TimelineModel.cursorStep);
+                        cursorItem.x = cursorItem.x + TimelineModel.cursorStep;
+                    }
+                }
+            }
+             
         }
+       
     }
     
 

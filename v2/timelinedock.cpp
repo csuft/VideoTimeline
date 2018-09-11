@@ -8,7 +8,9 @@
 #include <QDockWidget>
 #include <QQuickItem>
 #include <QDir>
+#include <QHBoxLayout>
 #include <QTime>
+#include <QTimer>
 
 namespace timeline { 
 
@@ -29,7 +31,19 @@ namespace timeline {
 		mTimelineWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 		mTimelineWidget->setClearColor(palette().window().color());
 		mTimelineWidget->setFocusPolicy(Qt::StrongFocus); 
-		setWidget(mTimelineWidget);
+		
+
+		QTimer* timer = new QTimer(this);
+		timer->setInterval(1000);
+		timer->setSingleShot(false);
+		timer->start();
+
+		connect(timer, &QTimer::timeout, this, [&]() {
+			emit updateCursor();
+		});
+
+		QVBoxLayout* mainLayout = new QVBoxLayout(this);
+		mainLayout->addWidget(mTimelineWidget);
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else
@@ -184,7 +198,7 @@ namespace timeline {
 			return false;
 		}
 		return mTimelineModel->getClipInfo(trackIndex, clipIndex, clipInfo);
-	}
+	} 
 }
 
 
