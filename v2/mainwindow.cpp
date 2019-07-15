@@ -51,7 +51,7 @@ namespace timeline {
 #ifdef Q_OS_WIN 
 		onVisibilityChanged(true);
 #else
-		connect(this, &QDockWidget::visibilityChanged, this, &MainWindow::load);
+        connect(this, SIGNAL(QDockWidget::visibilityChanged(bool)), this, SLOT(MainWindow::load(bool)));
 #endif  
 	} 
 
