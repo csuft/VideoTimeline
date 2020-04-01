@@ -47,7 +47,6 @@ namespace timeline {
 		qreal mFrameRate;
 		bool mIsBlank;
 	};
-	Q_DECLARE_TYPEINFO(ClipInfo, Q_COMPLEX_TYPE);
 
 	class TimelineTracksModel : public QAbstractItemModel {
 		Q_OBJECT
@@ -136,5 +135,6 @@ namespace timeline {
 	}; 
 }
 
+Q_DECLARE_TYPEINFO(timeline::ClipInfo, Q_COMPLEX_TYPE);
 
 #endif // TIMELINETRACKMODEL_H
